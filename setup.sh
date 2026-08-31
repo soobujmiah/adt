@@ -23,8 +23,8 @@ set -euo pipefail
 
 # ── Constants ──────────────────────────────────────────────────────────────────
 
-REPO_OWNER="hamza72x"
-REPO_NAME="android-sdk-linux-arm64"
+REPO_OWNER="soobujmiah"
+REPO_NAME="adt"
 REPO="${REPO_OWNER}/${REPO_NAME}"
 REPO_URL="https://github.com/${REPO}"
 RAW_URL="https://raw.githubusercontent.com/${REPO}/main"
@@ -278,16 +278,19 @@ cmd_install_build_tools() {
     echo ""
 
     if [[ "$status" == "verified" ]]; then
-        local release_tag
-        release_tag="$(get_release_tag "build-tools" "$version" 2>/dev/null || echo "")"
+        # Prefer the checked-in, validated artifact; fall back to release download, then source
+        if ! install_local_artifact "build-tools" "$version" "$bt_dir"; then
+            local release_tag
+            release_tag="$(get_release_tag "build-tools" "$version" 2>/dev/null || echo "")"
 
-        if [[ -n "$release_tag" ]]; then
-            # Download pre-built binary
-            download_and_install_release "$release_tag" "$bt_dir" "build-tools"
-        else
-            warn "No pre-built binary available for ${version}."
-            info "Building from source instead..."
-            build_tools_from_source "build-tools" "$version"
+            if [[ -n "$release_tag" ]]; then
+                # Download pre-built binary
+                download_and_install_release "$release_tag" "$bt_dir" "build-tools"
+            else
+                warn "No verified artifact or GitHub Release is available for ${version}."
+                info "Building from source instead..."
+                build_tools_from_source "build-tools" "$version"
+            fi
         fi
     else
         warn "Version ${version} is unverified — no pre-built binary available."
@@ -343,15 +346,17 @@ cmd_install_platform_tools() {
     echo ""
 
     if [[ "$status" == "verified" ]]; then
-        local release_tag
-        release_tag="$(get_release_tag "platform-tools" "$version" 2>/dev/null || echo "")"
+        if ! install_local_artifact "platform-tools" "$version" "$pt_dir"; then
+            local release_tag
+            release_tag="$(get_release_tag "platform-tools" "$version" 2>/dev/null || echo "")"
 
-        if [[ -n "$release_tag" ]]; then
-            download_and_install_release "$release_tag" "$pt_dir" "platform-tools"
-        else
-            warn "No pre-built binary available."
-            info "Building from source instead..."
-            build_tools_from_source "platform-tools" "$version"
+            if [[ -n "$release_tag" ]]; then
+                download_and_install_release "$release_tag" "$pt_dir" "platform-tools"
+            else
+                warn "No verified artifact or GitHub Release is available."
+                info "Building from source instead..."
+                build_tools_from_source "platform-tools" "$version"
+            fi
         fi
     else
         warn "Version ${version} is unverified."
@@ -708,7 +713,7 @@ cmd_doctor() {
         ok "Architecture: ${arch}"
     else
         err "Architecture: ${arch} — this project only supports aarch64"
-        ((issues++))
+        issues=$((issues+1))
     fi
 
     # ANDROID_HOME
@@ -716,7 +721,7 @@ cmd_doctor() {
         ok "ANDROID_HOME: ${ANDROID_HOME}"
     else
         warn "ANDROID_HOME not set"
-        ((issues++))
+        issues=$((issues+1))
     fi
 
     # Build-tools — check each version independently
@@ -726,7 +731,7 @@ cmd_doctor() {
         for d in $(ls -d "$bt_dir"/*/ 2>/dev/null | sort -V); do
             local ver
             ver="$(basename "$d")"
-            ((bt_count++))
+            bt_count=$((bt_count+1))
 
             # Determine arch from aapt2 (or first available binary)
             local arch_label="unknown"
@@ -754,25 +759,25 @@ cmd_doctor() {
                         ok "  ${bin}: OK"
                     else
                         warn "  ${bin}: missing"
-                        ((issues++))
+                        issues=$((issues+1))
                     fi
                 done
             elif [[ "$arch_label" == "x86_64" ]]; then
                 err "build-tools ${ver}: x86_64 (won't run on ARM64!)"
                 echo -e "    ${DIM}Replace with: $0 install-build-tools ${ver}${NC}"
-                ((issues++))
+                issues=$((issues+1))
             else
                 warn "build-tools ${ver}: no binaries found"
-                ((issues++))
+                issues=$((issues+1))
             fi
         done
         if [[ $bt_count -eq 0 ]]; then
             warn "No build-tools installed"
-            ((issues++))
+            issues=$((issues+1))
         fi
     else
         warn "No build-tools installed"
-        ((issues++))
+        issues=$((issues+1))
     fi
 
     # Platform-tools
@@ -787,18 +792,18 @@ cmd_doctor() {
                     ok "  $bin: native ARM64"
                 elif [[ "$ftype" == *"x86_64"* ]]; then
                     err "  $bin: x86_64 (won't run!)"
-                    ((issues++))
+                    issues=$((issues+1))
                 else
                     ok "  $bin: present"
                 fi
             else
                 warn "  $bin: missing"
-                ((issues++))
+                issues=$((issues+1))
             fi
         done
     else
         warn "platform-tools not found"
-        ((issues++))
+        issues=$((issues+1))
     fi
 
     # Platforms
@@ -810,11 +815,11 @@ cmd_doctor() {
             ok "Platforms: ${platforms}"
         else
             warn "No platforms installed"
-            ((issues++))
+            issues=$((issues+1))
         fi
     else
         warn "No platforms installed"
-        ((issues++))
+        issues=$((issues+1))
     fi
 
     # NDK shims
@@ -830,13 +835,13 @@ cmd_doctor() {
                     ok "  NDK ${ver}: llvm-strip OK"
                 else
                     warn "  NDK ${ver}: llvm-strip missing"
-                    ((issues++))
+                    issues=$((issues+1))
                 fi
             done
         fi
     else
         warn "No NDK shims installed"
-        ((issues++))
+        issues=$((issues+1))
     fi
 
     # CMake shim
@@ -849,7 +854,7 @@ cmd_doctor() {
             ftype=$(file -b "$cmake_shim" 2>/dev/null)
             if [[ "$ftype" == *"x86-64"* ]]; then
                 err "CMake 3.22.1: x86_64 binary (needs shim!)"
-                ((issues++))
+                issues=$((issues+1))
             else
                 ok "CMake: present"
             fi
@@ -867,11 +872,11 @@ cmd_doctor() {
             ok "Gradle aapt2 override: $aapt2_path"
         else
             warn "Gradle aapt2 override points to missing file: $aapt2_path"
-            ((issues++))
+            issues=$((issues+1))
         fi
     else
         warn "Gradle aapt2 override not configured"
-        ((issues++))
+        issues=$((issues+1))
     fi
 
     # Java
@@ -881,7 +886,7 @@ cmd_doctor() {
         ok "Java: $java_ver"
     else
         warn "Java not found"
-        ((issues++))
+        issues=$((issues+1))
     fi
 
     # Flutter
@@ -1156,6 +1161,89 @@ accept_licenses() {
     yes 2>/dev/null | run_sdkmanager --licenses >/dev/null 2>&1 || true
 }
 
+# Install from a checked-in, validated artifact in artifacts/ (offline path).
+# Returns 0 on success, 1 when no matching local artifact exists.
+install_local_artifact() {
+    local component="$1" version="$2" dest_dir="$3"   # component: "build-tools" | "platform-tools"
+
+    resolve_script_dir
+    local name="${component}-${version}-linux-arm64.tar.gz"
+    local artifact="${SCRIPT_DIR}/artifacts/${name}"
+    [[ -f "$artifact" ]] || return 1
+
+    info "Local artifact found: artifacts/${name}"
+
+    # Verify against artifacts/SHA256SUMS when a manifest entry exists
+    local sums="${SCRIPT_DIR}/artifacts/SHA256SUMS"
+    if [[ -f "$sums" ]] && check_command sha256sum; then
+        if grep -qF "artifacts/${name}" "$sums"; then
+            (cd "$SCRIPT_DIR" && grep -F "artifacts/${name}" artifacts/SHA256SUMS | sha256sum -c - >/dev/null) \
+                || die "Checksum FAILED for artifacts/${name} — refusing to install a corrupted artifact."
+            ok "SHA256 verified (artifacts/SHA256SUMS)."
+        else
+            warn "No checksum entry for ${name} in artifacts/SHA256SUMS — installing without checksum verification."
+        fi
+    fi
+
+    require_command tar
+
+    local tmpdir
+    tmpdir="$(mktemp -d)"
+    tar -xzf "$artifact" -C "$tmpdir" || { rm -rf "$tmpdir"; die "Could not extract ${artifact}"; }
+
+    local bins_ref
+    if [[ "$component" == "build-tools" ]]; then
+        bins_ref=("${BUILD_TOOLS_BINS[@]}")
+    else
+        bins_ref=("${PLATFORM_TOOLS_BINS[@]}")
+    fi
+
+    mkdir -p "$dest_dir"
+    info "Installing binaries to: ${BOLD}${dest_dir}${NC}"
+
+    local installed=0
+    for bin in "${bins_ref[@]}"; do
+        local src=""
+        for candidate in \
+            "$tmpdir/${component}/${version}/${bin}" \
+            "$tmpdir/${component}/${bin}" \
+            "$tmpdir/bin/${bin}" \
+            "$tmpdir/${bin}"; do
+            if [[ -f "$candidate" ]]; then
+                src="$candidate"
+                break
+            fi
+        done
+        if [[ -n "$src" ]]; then
+            cp "$src" "$dest_dir/$bin"
+            chmod +x "$dest_dir/$bin"
+            installed=$((installed+1))
+            echo -e "    ${GREEN}+${NC} $bin"
+        else
+            echo -e "    ${YELLOW}-${NC} $bin ${DIM}(not found in artifact)${NC}"
+        fi
+    done
+
+    # Carry SDK metadata files when present
+    for meta in source.properties package.xml; do
+        for candidate in \
+            "$tmpdir/${component}/${version}/${meta}" \
+            "$tmpdir/${component}/${meta}"; do
+            if [[ -f "$candidate" ]]; then
+                cp "$candidate" "$dest_dir/$meta"
+                break
+            fi
+        done
+    done
+
+    rm -rf "$tmpdir"
+    if [[ $installed -eq 0 ]]; then
+        die "Artifact ${name} contained no expected ${component} binaries — archive layout mismatch."
+    fi
+    ok "Installed ${installed} binaries from local artifact."
+    return 0
+}
+
 # Download a release tarball and install binaries
 download_and_install_release() {
     local release_tag="$1"
@@ -1167,10 +1255,11 @@ download_and_install_release() {
 
     local version="${release_tag#v}"
 
-    # Try component-specific tarball first, then combined tarball
+    # Try the current artifact naming first, then legacy upstream names
     local tarballs=(
-        "${REPO_NAME}-${component}-${version}.tar.gz"
-        "${REPO_NAME}-${release_tag}.tar.gz"
+        "${component}-${version}-linux-arm64.tar.gz"
+        "android-sdk-linux-arm64-${component}-${version}.tar.gz"
+        "android-sdk-linux-arm64-${release_tag}.tar.gz"
     )
 
     local tmpdir
@@ -1221,7 +1310,7 @@ download_and_install_release() {
         if [[ -n "$src" ]]; then
             cp "$src" "$dest_dir/$bin"
             chmod +x "$dest_dir/$bin"
-            ((installed++))
+            installed=$((installed+1))
             echo -e "    ${GREEN}+${NC} $bin"
         else
             echo -e "    ${YELLOW}-${NC} $bin ${DIM}(not found in tarball)${NC}"

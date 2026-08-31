@@ -6,9 +6,11 @@
 #   - Manual dispatch for testing (no release created unless tag is set)
 #
 # The workflow runs on GitHub's native ARM64 runner (ubuntu-24.04-arm),
-# clones ~38 AOSP repos, builds all tools, and uploads two tarballs:
-#   - android-sdk-linux-arm64-build-tools-<version>.tar.gz
-#   - android-sdk-linux-arm64-platform-tools-<version>.tar.gz
+# clones ~38 AOSP repos, builds all tools, and uploads tarballs named with the
+# same convention as the checked-in artifacts/ directory:
+#   - build-tools-<version>-linux-arm64.tar.gz
+#   - platform-tools-<version>-linux-arm64.tar.gz
+#   - android-sdk-linux-arm64-v<version>.tar.gz (legacy combined, kept for compatibility)
 #
 name: Build & Release
 
@@ -152,7 +154,7 @@ jobs:
             cp "${BUILD_BIN}/${bin}" "$BT_DIR/"
             chmod +x "$BT_DIR/${bin}"
           done
-          BT_TAR="android-sdk-linux-arm64-build-tools-${VERSION}.tar.gz"
+          BT_TAR="build-tools-${VERSION}-linux-arm64.tar.gz"
           tar -czf "${STAGING}/${BT_TAR}" -C "$STAGING" build-tools
           echo "bt_tarball=${STAGING}/${BT_TAR}" >> "$GITHUB_OUTPUT"
           echo "bt_tarball_name=${BT_TAR}" >> "$GITHUB_OUTPUT"
@@ -164,7 +166,7 @@ jobs:
             cp "${BUILD_BIN}/${bin}" "$PT_DIR/"
             chmod +x "$PT_DIR/${bin}"
           done
-          PT_TAR="android-sdk-linux-arm64-platform-tools-${VERSION}.tar.gz"
+          PT_TAR="platform-tools-${VERSION}-linux-arm64.tar.gz"
           tar -czf "${STAGING}/${PT_TAR}" -C "$STAGING" platform-tools
           echo "pt_tarball=${STAGING}/${PT_TAR}" >> "$GITHUB_OUTPUT"
           echo "pt_tarball_name=${PT_TAR}" >> "$GITHUB_OUTPUT"
@@ -227,7 +229,7 @@ jobs:
           ### Quick install
           \`\`\`bash
           # Using setup.sh
-          curl -fsSL https://raw.githubusercontent.com/hamza72x/android-sdk-linux-arm64/main/setup.sh -o setup.sh
+          curl -fsSL https://raw.githubusercontent.com/soobujmiah/adt/main/setup.sh -o setup.sh
           chmod +x setup.sh
           ./setup.sh install-build-tools ${VERSION}
           ./setup.sh install-platform-tools ${VERSION}
@@ -235,9 +237,11 @@ jobs:
 
           ### Manual install
           \`\`\`bash
-          # Download and extract
-          tar xzf android-sdk-linux-arm64-build-tools-${VERSION}.tar.gz -C \$ANDROID_SDK/build-tools/${VERSION}/
-          tar xzf android-sdk-linux-arm64-platform-tools-${VERSION}.tar.gz -C \$ANDROID_SDK/
+          # build-tools tarball contains build-tools/<bins> — strip into the version dir
+          mkdir -p \$ANDROID_SDK/build-tools/${VERSION}
+          tar xzf build-tools-${VERSION}-linux-arm64.tar.gz -C \$ANDROID_SDK/build-tools/${VERSION}/ --strip-components=1
+          # platform-tools tarball contains platform-tools/<bins>
+          tar xzf platform-tools-${VERSION}-linux-arm64.tar.gz -C \$ANDROID_SDK/
           \`\`\`
 
           Built on: \`ubuntu-24.04-arm\` (GitHub Actions)

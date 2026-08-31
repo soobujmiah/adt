@@ -1,14 +1,14 @@
 {
   "build-tools": {
-    "37.0.0": {"status": "verified", "aosp_tag": "platform-tools-35.0.2", "release": "v37.0.0", "tested_on": "Fedora Asahi 43, GCC 15.2.1", "notes": "Uses same AOSP source as 35.0.2 (no platform-tools-37.0.0 tag in AOSP)"},
-    "35.0.2": {"status": "verified", "aosp_tag": "platform-tools-35.0.2", "release": "v35.0.2", "tested_on": "Fedora Asahi 43, GCC 15.2.1; ARM64 PRoot Debian real-device fixture", "notes": "Native ARM64 aapt/aapt2/aidl/zipalign toolchain is installed and validated in the ARM64 PRoot environment. D8 8.2.33 JVM path and signed APK verification are validated. Real Android 16 arm64-v8a APK install, JNI loading, native execution, log output, and process survival are validated."},
+    "37.0.0": {"status": "verified", "aosp_tag": "platform-tools-35.0.2", "tested_on": "Fedora Asahi 43, GCC 15.2.1", "notes": "Uses same AOSP source as 35.0.2 (no platform-tools-37.0.0 tag in AOSP). No release or local artifact is published for this version yet; install = source build."},
+    "35.0.2": {"status": "verified", "aosp_tag": "platform-tools-35.0.2", "tested_on": "Fedora Asahi 43, GCC 15.2.1; ARM64 PRoot Debian real-device fixture", "notes": "Native ARM64 aapt/aapt2/aidl/zipalign toolchain is installed and validated in the ARM64 PRoot environment. D8 8.2.33 JVM path and signed APK verification are validated. Real Android 16 arm64-v8a APK install, JNI loading, native execution, log output, and process survival are validated. Validated offline-installable artifact: artifacts/build-tools-35.0.2-linux-arm64.tar.gz (SHA256 in artifacts/SHA256SUMS)."},
     "35.0.1": {"status": "unverified", "aosp_tag": "platform-tools-35.0.1", "notes": "Should work with base patches, not yet tested"},
     "35.0.0": {"status": "unverified", "aosp_tag": "platform-tools-35.0.0", "notes": "Should work with base patches, not yet tested"},
     "34.0.0": {"status": "unverified", "aosp_tag": "platform-tools-34.0.4", "notes": "Older AOSP, may need additional patches"}
   },
   "platform-tools": {
-    "37.0.0": {"status": "verified", "aosp_tag": "platform-tools-35.0.2", "release": "v37.0.0", "tested_on": "Fedora Asahi 43, GCC 15.2.1", "notes": "Uses same AOSP source as 35.0.2 (no platform-tools-37.0.0 tag in AOSP)"},
-    "35.0.2": {"status": "verified", "aosp_tag": "platform-tools-35.0.2", "release": "v35.0.2", "tested_on": "Fedora Asahi 43, GCC 15.2.1; ARM64 PRoot Debian real-device fixture", "notes": "adb and fastboot are installed and working. adb was used to install, launch, inspect, and collect logs from the physical Android 16 arm64-v8a device during native APK validation."},
+    "37.0.0": {"status": "verified", "aosp_tag": "platform-tools-35.0.2", "tested_on": "Fedora Asahi 43, GCC 15.2.1", "notes": "Uses same AOSP source as 35.0.2 (no platform-tools-37.0.0 tag in AOSP). No release or local artifact is published for this version yet; install = source build."},
+    "35.0.2": {"status": "verified", "aosp_tag": "platform-tools-35.0.2", "tested_on": "Fedora Asahi 43, GCC 15.2.1; ARM64 PRoot Debian real-device fixture", "notes": "adb and fastboot are installed and working. adb was used to install, launch, inspect, and collect logs from the physical Android 16 arm64-v8a device during native APK validation. Validated offline-installable artifact: artifacts/platform-tools-35.0.2-linux-arm64.tar.gz (SHA256 in artifacts/SHA256SUMS)."},
     "35.0.1": {"status": "unverified", "aosp_tag": "platform-tools-35.0.1", "notes": "Should work with base patches, not yet tested"},
     "34.0.4": {"status": "unverified", "aosp_tag": "platform-tools-34.0.4", "notes": "Older AOSP, not yet tested"}
   },
