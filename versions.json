@@ -11,8 +11,8 @@
       "status": "verified",
       "aosp_tag": "platform-tools-35.0.2",
       "release": "v35.0.2",
-      "tested_on": "Fedora Asahi 43, GCC 15.2.1",
-      "notes": "Fully tested with Flutter 3.43"
+      "tested_on": "Fedora Asahi 43, GCC 15.2.1; ARM64 PRoot Debian real-device fixture",
+      "notes": "Native ARM64 aapt2 compile/link verified; D8 8.2.33 JVM path verified; signed APK verification completed. Full physical-device install/launch still pending."
     },
     "35.0.1": {
       "status": "unverified",
@@ -81,6 +81,20 @@
       "status": "verified",
       "url": "https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip",
       "notes": "Java-based, runs on any architecture."
+    }
+  },
+  "java-tools": {
+    "d8": {
+      "status": "verified",
+      "source": "cmdline-tools/latest/lib/r8.jar",
+      "version_observed": "8.2.33",
+      "execution": "JVM"
+    },
+    "apksigner": {
+      "status": "verified-runtime-dependency",
+      "package": "Debian apksigner 35.0.2-1 + libapksig-java 35.0.2-1",
+      "execution": "JVM",
+      "notes": "Used successfully for controlled APK signing/verification on ARM64 PRoot Debian; not yet packaged by ADT itself."
     }
   }
 }
