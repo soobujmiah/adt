@@ -43,12 +43,10 @@ target_compile_options(libopenscreen PRIVATE
     -fno-strict-aliasing
     -Wno-address-of-packed-member
     -Wno-array-bounds
-    -Wno-pointer-sign
     -Wno-unused
     -Wno-unused-but-set-variable
     -Wno-unused-parameter
     -Wno-missing-field-initializers
-    -Werror=implicit-function-declaration
     )
 
 target_compile_options(libopenscreen PRIVATE
