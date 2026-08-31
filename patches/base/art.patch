@@ -42,3 +42,21 @@ index dd73b1c..a180bbe 100644
  #include <string>
  
  namespace art {
+diff --git a/libartbase/base/atomic.h b/libartbase/base/atomic.h
+index 91f1982..1d13baa 100644
+--- a/libartbase/base/atomic.h
++++ b/libartbase/base/atomic.h
+@@ -36,9 +36,11 @@ enum class CASMode {
+ template<typename T>
+ class PACKED(sizeof(T)) Atomic : public std::atomic<T> {
+  public:
+-  Atomic<T>() : std::atomic<T>(T()) { }
++  // C++20 forbids template-ids as constructor names (GCC 13 makes this a hard
++  // error under -std=gnu++20; GCC 14+/Clang only warn). Use the injected name.
++  Atomic() : std::atomic<T>(T()) { }
+ 
+-  explicit Atomic<T>(T value) : std::atomic<T>(value) { }
++  explicit Atomic(T value) : std::atomic<T>(value) { }
+ 
+   // Load data from an atomic variable with Java data memory order semantics.
+   //
