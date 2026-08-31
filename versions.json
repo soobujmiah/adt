@@ -12,7 +12,7 @@
       "aosp_tag": "platform-tools-35.0.2",
       "release": "v35.0.2",
       "tested_on": "Fedora Asahi 43, GCC 15.2.1; ARM64 PRoot Debian real-device fixture",
-      "notes": "Native ARM64 aapt2 compile/link verified; D8 8.2.33 JVM path verified; signed APK verification completed. Full physical-device install/launch still pending."
+      "notes": "Native ARM64 aapt/aapt2/aidl/zipalign toolchain is installed and validated in the ARM64 PRoot environment. D8 8.2.33 JVM path and signed APK verification are validated. Real Android 16 arm64-v8a APK install, JNI loading, native execution, log output, and process survival are validated."
     },
     "35.0.1": {
       "status": "unverified",
@@ -42,8 +42,8 @@
       "status": "verified",
       "aosp_tag": "platform-tools-35.0.2",
       "release": "v35.0.2",
-      "tested_on": "Fedora Asahi 43, GCC 15.2.1",
-      "notes": "Fully tested: adb, fastboot, etc."
+      "tested_on": "Fedora Asahi 43, GCC 15.2.1; ARM64 PRoot Debian real-device fixture",
+      "notes": "adb and fastboot are installed and working. adb was used to install, launch, inspect, and collect logs from the physical Android 16 arm64-v8a device during native APK validation."
     },
     "35.0.1": {
       "status": "unverified",
@@ -53,7 +53,7 @@
     "34.0.4": {
       "status": "unverified",
       "aosp_tag": "platform-tools-34.0.4",
-      "notes": "Older AOSP, may need additional patches"
+      "notes": "Older AOSP, not yet tested"
     }
   },
   "cmake": {
@@ -94,7 +94,7 @@
       "status": "verified-runtime-dependency",
       "package": "Debian apksigner 35.0.2-1 + libapksig-java 35.0.2-1",
       "execution": "JVM",
-      "notes": "Used successfully for controlled APK signing/verification on ARM64 PRoot Debian; not yet packaged by ADT itself."
+      "notes": "Used successfully for controlled APK signing and verification on ARM64 PRoot Debian; not yet packaged by ADT itself."
     }
   }
 }
