@@ -223,7 +223,18 @@ The AOSP source tree and local build output are deliberately excluded from norma
 
 ## Installing on a New ARM64 Device
 
-A complete from-scratch install on any aarch64 Linux with glibc (Termux + PRoot Debian on an ARM64 phone is the validated target; Asahi/RPi/ARM64 servers follow the same path):
+A complete from-scratch install on any aarch64 Linux with glibc (Termux + PRoot Debian on an ARM64 phone is the validated target; Asahi/RPi/ARM64 servers follow the same path).
+
+**Fastest path — one command.** `bootstrap` checks the device automatically, installs missing host dependencies (as root, or via sudo — otherwise it prints the exact root command), installs the SDK tools artifact-first, creates shims, installs sdkmanager + platform, writes the shell environment, verifies with `doctor`, and prints a usage guide:
+
+```bash
+git clone --depth 1 https://github.com/soobujmiah/adt.git
+cd adt
+./setup.sh bootstrap
+source ~/.bashrc
+```
+
+**Step by step** (the same operations bootstrap performs):
 
 ```bash
 # Host prerequisites (Debian/Ubuntu names)

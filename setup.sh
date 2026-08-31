@@ -6,6 +6,7 @@
 # native binaries. Downloads pre-built releases or builds from AOSP source.
 #
 # Usage:
+#   ./setup.sh bootstrap                     # Full automatic setup (fresh device)
 #   ./setup.sh list-versions                 # Show all available versions
 #   ./setup.sh install-build-tools 35.0.2    # Install build-tools
 #   ./setup.sh install-platform-tools 35.0.2 # Install platform-tools
@@ -192,6 +193,224 @@ get_status() {
 get_release_tag() {
     local component="$1" version="$2"
     versions_query ".[\"${component}\"][\"${version}\"][\"release\"]"
+}
+
+# ── Host dependency auto-install + environment ───────────────────────────────
+
+# Map a required command to its package name (Debian / Fedora families)
+pkg_for_deb() { case "$1" in java) echo "openjdk-21-jdk-headless";; ninja) echo "ninja-build";; llvm-strip) echo "llvm";; strip) echo "binutils";; *) echo "$1";; esac; }
+pkg_for_dnf() { case "$1" in java) echo "java-21-openjdk-headless";; ninja) echo "ninja-build";; llvm-strip) echo "llvm";; strip) echo "binutils";; *) echo "$1";; esac; }
+
+# Run a privileged command as root when possible; return 1 when we cannot escalate.
+as_root() {
+    if [[ "$(id -u)" -eq 0 ]]; then
+        "$@"
+    elif check_command sudo; then
+        sudo "$@"
+    else
+        return 1
+    fi
+}
+
+# Ensure host commands exist; auto-install from the distro package manager when missing.
+ensure_commands() {
+    local missing=()
+    local c
+    for c in "$@"; do check_command "$c" || missing+=("$c"); done
+    [[ ${#missing[@]} -eq 0 ]] && return 0
+
+    info "Missing host tools: ${missing[*]} — trying automatic install..."
+    local pkgs=() mgr=""
+    if [[ -f /etc/debian_version ]] || [[ -f /etc/ubuntu_version ]]; then
+        mgr="deb"
+        for c in "${missing[@]}"; do pkgs+=("$(pkg_for_deb "$c")"); done
+    elif [[ -f /etc/fedora-release ]]; then
+        mgr="dnf"
+        for c in "${missing[@]}"; do pkgs+=("$(pkg_for_dnf "$c")"); done
+    fi
+
+    local ok_install=1
+    if [[ "$mgr" == "deb" ]]; then
+        as_root apt-get update -qq && as_root apt-get install -y "${pkgs[@]}" && ok_install=0
+    elif [[ "$mgr" == "dnf" ]]; then
+        as_root dnf install -y "${pkgs[@]}" && ok_install=0
+    fi
+
+    if [[ "$ok_install" -ne 0 ]]; then
+        err "Automatic install needs root or sudo."
+        echo ""
+        if [[ "$mgr" == "dnf" ]]; then
+            echo "  Run this as root, then re-run your last command:"
+            echo ""
+            echo "      dnf install -y ${pkgs[*]}"
+        else
+            echo "  Run this as root (e.g. 'proot-distro login <distro>' without --user), then re-run your last command:"
+            echo ""
+            echo "      apt-get update && apt-get install -y ${pkgs[*]}"
+        fi
+        echo ""
+        die "Missing host tools and no privilege to install them."
+    fi
+
+    local still=()
+    for c in "${missing[@]}"; do check_command "$c" || still+=("$c"); done
+    [[ ${#still[@]} -gt 0 ]] && die "Still missing after install attempt: ${still[*]}"
+    ok "Installed host tools: ${missing[*]}"
+}
+
+# Phase 0 check: what is this device/environment?
+detect_environment() {
+    header "Device & Environment Check"
+
+    local arch
+    arch="$(uname -m)"
+    if [[ "$arch" == "aarch64" || "$arch" == "arm64" ]]; then
+        ok "Architecture: ${arch}"
+    else
+        die "ADT supports aarch64 Linux only — this machine is: ${arch}"
+    fi
+
+    local kver
+    kver="$(uname -r 2>/dev/null || echo unknown)"
+    info "Kernel: ${kver}"
+    if [[ "$kver" == *PRoot* || ( -n "${PREFIX:-}" && "${PREFIX}" == *com.termux* ) ]]; then
+        info "Environment: Termux/PRoot-class on-device Linux"
+    fi
+
+    local distro="unknown"
+    if [[ -r /etc/os-release ]]; then
+        distro="$( . /etc/os-release 2>/dev/null; echo "${ID:-unknown} ${VERSION_ID:-} ${VERSION_CODENAME:-}" )"
+    fi
+    info "Distro: ${distro}"
+
+    if [[ "$(id -u)" -eq 0 ]]; then
+        ok "Privileges: root — host packages can auto-install"
+    elif check_command sudo; then
+        ok "Privileges: user + sudo — host packages auto-install via sudo"
+    else
+        warn "Privileges: non-root, no sudo — missing host tools will be reported as an exact root command"
+    fi
+
+    for c in git curl tar unzip python3 java cmake ninja llvm-strip; do
+        if check_command "$c"; then
+            echo -e "    ${GREEN}+${NC} $c"
+        else
+            echo -e "    ${YELLOW}-${NC} $c ${DIM}(missing — auto-installed in the next step when possible)${NC}"
+        fi
+    done
+
+    local avail_mb
+    avail_mb="$(df -Pm "${SDK_ROOT:-$HOME}" 2>/dev/null | awk 'NR==2 {print $4}')"
+    if [[ -n "$avail_mb" ]]; then
+        if [[ "$avail_mb" -lt 2048 ]]; then
+            warn "Free space: ${avail_mb} MB — SDK + platform needs ~1 GB; AOSP source builds need much more"
+        else
+            ok "Free space: ${avail_mb} MB"
+        fi
+    fi
+}
+
+# Prefer a verified version that ships a checked-in artifact; else first verified.
+get_bootstrap_version() {
+    local component="$1"
+    resolve_script_dir
+    local json
+    json="$(get_versions_json)"
+    echo "$json" | python3 -c "
+import json, os, sys
+data = json.load(sys.stdin)
+component, adir = sys.argv[1], sys.argv[2]
+entries = data.get(component, {})
+verified = [v for v, i in entries.items() if i.get('status') == 'verified']
+for v in verified:
+    if os.path.isfile(os.path.join(adir, component + '-' + v + '-linux-arm64.tar.gz')):
+        print(v); sys.exit(0)
+if verified:
+    print(verified[0]); sys.exit(0)
+sys.exit(1)
+" "$component" "${SCRIPT_DIR}/artifacts"
+}
+
+# Prefer the NDK shim entry with device-tested metadata; else first shim.
+get_bootstrap_ndk() {
+    local json
+    json="$(get_versions_json)"
+    echo "$json" | python3 -c "
+import json, sys
+data = json.load(sys.stdin)
+entries = data.get('ndk', {})
+for v, i in entries.items():
+    if i.get('status') == 'shim' and i.get('tested_on'):
+        print(v); sys.exit(0)
+for v, i in entries.items():
+    if i.get('status') == 'shim':
+        print(v); sys.exit(0)
+sys.exit(1)
+"
+}
+
+# Persist ANDROID_HOME/PATH to ~/.bashrc (idempotent, marked block)
+write_env_block() {
+    require_command python3
+    local profile="$HOME/.bashrc"
+    local display_root="$SDK_ROOT"
+    [[ "$SDK_ROOT" == "$HOME/"* ]] && display_root="\$HOME/${SDK_ROOT#"$HOME"/}"
+    touch "$profile"
+    if grep -q ">>> ADT Android environment >>>" "$profile"; then
+        python3 - "$profile" "$display_root" <<'PY'
+import re, sys
+path, root = sys.argv[1], sys.argv[2]
+block = ('# >>> ADT Android environment >>>\n'
+         'export ANDROID_HOME="%s"\n'
+         'export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin:$PATH"\n'
+         '# <<< ADT Android environment <<<' % root)
+src = open(path).read()
+new = re.sub(r'# >>> ADT Android environment >>>.*?# <<< ADT Android environment <<<',
+             block, src, count=1, flags=re.S)
+open(path, "w").write(new)
+PY
+        info "Updated Android environment block in ${profile}"
+    else
+        {
+            echo ""
+            echo "# >>> ADT Android environment >>>"
+            echo "export ANDROID_HOME=\"${display_root}\""
+            echo "export PATH=\"\$ANDROID_HOME/platform-tools:\$ANDROID_HOME/cmdline-tools/latest/bin:\$PATH\""
+            echo "# <<< ADT Android environment <<<"
+        } >> "$profile"
+        info "Wrote Android environment block to ${profile}"
+    fi
+    echo -e "  ${DIM}Apply now with: source ~/.bashrc — new shells load it automatically${NC}"
+}
+
+print_post_install_guide() {
+    header "Setup Complete — Quick Guide"
+    cat <<EOF
+
+  SDK root: ${SDK_ROOT}
+
+  Now working:
+    build-tools    aapt2 aapt aidl zipalign dexdump split-select
+    platform-tools adb fastboot sqlite3 etc1tool hprof-conv (and F2FS/ext4 tools)
+    NDK / CMake    shims delegating to system tools
+    cmdline-tools  sdkmanager   (Java-based)
+
+  Load the environment into THIS shell:
+    source ~/.bashrc
+
+  Everyday use:
+    adb devices -l                    # talk to a device
+    ./setup.sh status                 # what is installed
+    ./setup.sh doctor                 # re-verify any time
+
+  APK signing (JVM tool, runs on ARM64):
+    apt install apksigner
+
+  Extend / rebuild from AOSP source (heavy, needs more deps + space):
+    ./setup.sh build-build-tools 35.0.2
+    ./setup.sh list-versions          # what else exists
+
+EOF
 }
 
 # ── list-versions ──────────────────────────────────────────────────────────────
@@ -398,7 +617,9 @@ cmd_install_ndk() {
 
     detect_sdk_root
     create_ndk_shim "$version"
-    create_cmake_shim "3.22.1"
+    if ! create_cmake_shim "3.22.1"; then
+        warn "CMake shim not created — install cmake, then: $0 install-cmake"
+    fi
     ok "NDK ${version} shim ready."
 }
 
@@ -416,7 +637,7 @@ cmd_install_cmake() {
     done
 
     detect_sdk_root
-    create_cmake_shim "$version"
+    create_cmake_shim "$version" || die "CMake shim could not be created (needs system cmake)."
     ok "CMake ${version} shim ready."
 }
 
@@ -628,8 +849,11 @@ cmd_build_all() {
     # 4. CMake shim
     if [[ "$skip_cmake" == false ]]; then
         header "4/5  CMake shim ${cmake_version}"
-        create_cmake_shim "$cmake_version"
-        ok "CMake ${cmake_version} shim ready."
+        if create_cmake_shim "$cmake_version"; then
+            ok "CMake ${cmake_version} shim ready."
+        else
+            warn "CMake shim skipped (no system cmake)."
+        fi
     else
         info "4/5  CMake shim: skipped"
     fi
@@ -1035,7 +1259,11 @@ create_ndk_shim() {
 
     local strip_bin
     strip_bin="$(find_strip)"
-    [[ -z "$strip_bin" ]] && die "No strip or llvm-strip found. Install binutils."
+    if [[ -z "$strip_bin" ]]; then
+        ensure_commands llvm-strip
+        strip_bin="$(find_strip)"
+    fi
+    [[ -z "$strip_bin" ]] && die "No strip or llvm-strip found. Install binutils or llvm."
 
     # llvm-strip shim
     local llvm_strip_dir="${ndk_dir}/toolchains/llvm/prebuilt/linux-x86_64/bin"
@@ -1079,7 +1307,12 @@ create_cmake_shim() {
     local sys_ninja
     sys_ninja="$(find_ninja_bin)"
 
-    [[ -z "$sys_cmake" ]] && { warn "System cmake not found, skipping cmake shim."; return; }
+    if [[ -z "$sys_cmake" ]]; then
+        ensure_commands cmake ninja
+        sys_cmake="$(find_cmake_bin)"
+        sys_ninja="$(find_ninja_bin)"
+    fi
+    [[ -z "$sys_cmake" ]] && { warn "System cmake not found, skipping cmake shim."; return 1; }
 
     info "Creating CMake ${cmake_version} shim..."
     echo "  CMake dir: ${cmake_dir}"
@@ -1131,9 +1364,7 @@ ensure_cmdline_tools() {
     if [[ -x "${cmdline_dir}/bin/sdkmanager" ]]; then return 0; fi
 
     info "Installing Android command-line tools..."
-    require_command curl
-    require_command unzip
-    check_command java || die "Java required for sdkmanager. Install JDK 17+."
+    ensure_commands curl unzip java
 
     local tmpdir
     tmpdir="$(mktemp -d)"
@@ -1452,6 +1683,70 @@ build_tools_from_source() {
     fi
 }
 
+# ── setup-env ────────────────────────────────────────────────────────────────
+
+cmd_setup_env() {
+    detect_sdk_root
+    write_env_block
+    ok "Environment configured."
+}
+
+# ── bootstrap ────────────────────────────────────────────────────────────────
+
+# Full automatic setup for a fresh ARM64 device:
+# device check -> host deps -> SDK tools -> shims -> Google packages -> env -> verify -> guide
+cmd_bootstrap() {
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --sdk-root) SDK_ROOT="$2"; shift 2 ;;
+            *) die "Unknown option: $1" ;;
+        esac
+    done
+
+    # Phase 0 — automatic device/environment check
+    detect_environment
+
+    # Phase 1 — host dependencies (auto-install when privilege allows)
+    header "1/6  Host dependencies"
+    ensure_commands git curl tar unzip python3 java cmake ninja llvm-strip
+
+    # Phase 2 — SDK location
+    detect_sdk_root
+
+    # Phase 3 — native tools (prefers checked-in, SHA256-verified artifacts; offline)
+    header "2/6  build-tools + platform-tools"
+    local bt_version pt_version
+    bt_version="$(get_bootstrap_version build-tools)"    || die "No verified build-tools version in versions.json"
+    pt_version="$(get_bootstrap_version platform-tools)" || die "No verified platform-tools version in versions.json"
+    info "Selected: build-tools ${bt_version}, platform-tools ${pt_version} (artifact-preferred)"
+    cmd_install_build_tools "$bt_version"
+    cmd_install_platform_tools "$pt_version"
+
+    # Phase 4 — shims (device-tested NDK version preferred)
+    header "3/6  NDK + CMake shims"
+    local ndk_version
+    ndk_version="$(get_bootstrap_ndk)" || ndk_version=""
+    if [[ -n "$ndk_version" ]]; then
+        cmd_install_ndk "$ndk_version"
+    else
+        warn "No NDK shim version registered — skipping"
+    fi
+
+    # Phase 5 — Google packages (network)
+    header "4/6  sdkmanager + Android platform"
+    cmd_install_cmd_tools
+    cmd_install_platforms android-35
+
+    # Phase 6 — persistent shell environment
+    header "5/6  Shell environment"
+    write_env_block
+
+    # Verification + final guide
+    header "6/6  Verification"
+    cmd_doctor
+    print_post_install_guide
+}
+
 # ── NDK version detection ─────────────────────────────────────────────────────
 
 detect_ndk_version() {
@@ -1504,6 +1799,11 @@ cmd_help() {
 
 BANNER
 
+    echo -e "  ${BOLD}FRESH DEVICE${NC}"
+    echo ""
+    echo "    bootstrap                         Automatic full setup: device check, host deps,"
+    echo "                                      tools, shims, sdkmanager, platform, env, verify"
+    echo ""
     echo -e "  ${BOLD}INSTALL COMMANDS${NC}"
     echo ""
     echo "    install-build-tools <version>     Install build-tools (aapt2, aapt, aidl, ...)"
@@ -1525,6 +1825,7 @@ BANNER
     echo "    status                            Show what's installed"
     echo "    doctor                            Diagnose setup issues"
     echo "    setup-gradle                      Configure Gradle aapt2 override"
+    echo "    setup-env                         Write ANDROID_HOME/PATH to ~/.bashrc"
     echo ""
     echo -e "  ${BOLD}OPTIONS${NC}"
     echo ""
@@ -1564,6 +1865,8 @@ main() {
     shift
 
     case "$command" in
+        bootstrap)              cmd_bootstrap "$@" ;;
+        setup-env)              cmd_setup_env "$@" ;;
         list-versions)          cmd_list_versions "$@" ;;
         install-build-tools)    cmd_install_build_tools "$@" ;;
         install-platform-tools) cmd_install_platform_tools "$@" ;;

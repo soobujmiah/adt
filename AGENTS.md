@@ -313,6 +313,8 @@ deployagent.inc, deployagentscript.inc, etc:
 
 | Command | Description |
 |---------|-------------|
+| `bootstrap` | Fresh-device full setup: automatic device check → host dependency auto-install (root/sudo aware) → artifact-preferred tool install → shims → sdkmanager + platform → persistent env → `doctor` + final guide |
+| `setup-env` | Write/update the `ANDROID_HOME` + `PATH` block in `~/.bashrc` (idempotent) |
 | `list-versions` | Show all available versions with status |
 | `install-build-tools <ver>` | Download pre-built (verified) or error with guidance |
 | `install-platform-tools <ver>` | Same for platform-tools |
