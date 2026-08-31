@@ -108,11 +108,27 @@ def apply_patch(repo_dir, patch_file, component=None, version=None):
         capture_output=True, text=True,
     )
     if result.returncode != 0:
-        print("    (already applied or conflicts, skipping)")
-        return
+        # Distinguish "already applied" (fine on re-runs) from "corrupt/conflicting"
+        # (silent skip here once masked a corrupt patch and failed the build much
+        # later with unpatched source — must be loud).
+        reverse = subprocess.run(
+            "git apply --check --reverse {}".format(rel_patch),
+            shell=True, cwd=str(repo_path),
+            capture_output=True, text=True,
+        )
+        if reverse.returncode == 0:
+            print("    (already applied, skipping)")
+            return
+        print("ERROR: patch {} does not apply to src/{} and is not already applied.".format(
+            patch_path, repo_dir))
+        if result.stderr.strip():
+            print(result.stderr.strip())
+        print("Fix the patch (or the checked-out source tag) and re-run.")
+        raise SystemExit(1)
     subprocess.run(
         "git apply {}".format(rel_patch),
         shell=True, cwd=str(repo_path),
+        check=True,
     )
 
 

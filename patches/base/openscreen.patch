@@ -14,7 +14,7 @@ diff --git a/platform/api/task_runner.h b/platform/api/task_runner.h
 index 948eb08..d50234c 100644
 --- a/platform/api/task_runner.h
 +++ b/platform/api/task_runner.h
-@@ -24,7 +24,12 @@ class TaskRunner {
+@@ -24,10 +24,15 @@ class TaskRunner {
   public:
  // Seem to get an error using clang when compiling with -fno-exceptions:
  //   error: implicit instantiation of undefined template 'std::__1::packaged_task<void () noexcept>'

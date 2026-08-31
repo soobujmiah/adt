@@ -23,6 +23,8 @@ jobs:
     timeout-minutes: 60
 
     strategy:
+      # One version's failure must not hide the other's result
+      fail-fast: false
       matrix:
         # Only verified versions — update this list when new versions are verified
         version: ["37.0.0", "35.0.2"]
