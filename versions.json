@@ -43,6 +43,7 @@
       "aosp_tag": "platform-tools-35.0.2",
       "release": "v35.0.2",
       "tested_on": "Fedora Asahi 43, GCC 15.2.1; ARM64 PRoot Debian real-device fixture",
+      "release": "v35.0.2",
       "notes": "adb and fastboot are installed and working. adb was used to install, launch, inspect, and collect logs from the physical Android 16 arm64-v8a device during native APK validation."
     },
     "35.0.1": {
@@ -66,6 +67,11 @@
     "28.2.13676358": {
       "status": "shim",
       "notes": "Shim for llvm-strip. Used by Flutter 3.43+."
+    },
+    "27.2.12479018": {
+      "status": "shim",
+      "tested_on": "ARM64 PRoot Debian",
+      "notes": "Validated by setup.sh install-ndk. Shim delegates llvm-strip to the working Termux llvm-strip. The bundled x86_64 NDK host compiler is not used in the PRoot environment."
     },
     "27.0.12077973": {
       "status": "shim",
