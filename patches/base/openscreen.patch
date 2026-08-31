@@ -14,16 +14,24 @@ diff --git a/platform/api/task_runner.h b/platform/api/task_runner.h
 index 948eb08..d50234c 100644
 --- a/platform/api/task_runner.h
 +++ b/platform/api/task_runner.h
-@@ -24,7 +24,8 @@ class TaskRunner {
+@@ -24,7 +24,12 @@ class TaskRunner {
   public:
  // Seem to get an error using clang when compiling with -fno-exceptions:
  //   error: implicit instantiation of undefined template 'std::__1::packaged_task<void () noexcept>'
 -#if __has_feature(cxx_exceptions)
-+// GCC's std::packaged_task also doesn't support noexcept function types.
-+#if defined(__clang__) && __has_feature(cxx_exceptions)
++#if defined(__clang__)
++#if __has_feature(cxx_exceptions)
    using Task = std::packaged_task<void() noexcept>;
  #else
    using Task = std::packaged_task<void()>;
+ #endif
++#else
++  // GCC's std::packaged_task does not support noexcept function types.
++  using Task = std::packaged_task<void()>;
++#endif
+ 
+   virtual ~TaskRunner() = default;
+ 
 diff --git a/platform/impl/network_interface.cc b/platform/impl/network_interface.cc
 index 00809f3..82a1a99 100644
 --- a/platform/impl/network_interface.cc
