@@ -225,12 +225,17 @@ The AOSP source tree and local build output are deliberately excluded from norma
 
 A complete from-scratch install on any aarch64 Linux with glibc (Termux + PRoot Debian on an ARM64 phone is the validated target; Asahi/RPi/ARM64 servers follow the same path).
 
-**Fastest path — one command.** `bootstrap` checks the device automatically, installs missing host dependencies (as root, or via sudo — otherwise it prints the exact root command), installs the SDK tools artifact-first, creates shims, installs sdkmanager + platform, writes the shell environment, verifies with `doctor`, and prints a usage guide:
+**Two full-setup modes:**
+
+- **Guided (default):** `./setup.sh` or `./setup.sh bootstrap` — checks the device first, then asks your permission before each step (host packages, tools, network downloads, shell config).
+- **Automatic:** `./setup.sh bootstrap --auto` — start-to-finish unattended: device check, host dependency install, artifact-preferred tools, shims, sdkmanager + platform, environment, verification, final guide. Zero prompts.
+
+Both detect root/sudo automatically for system packages; with neither, the exact root command is printed and the run stops loudly instead of half-failing.
 
 ```bash
 git clone --depth 1 https://github.com/soobujmiah/adt.git
 cd adt
-./setup.sh bootstrap
+./setup.sh bootstrap --auto    # or guided: ./setup.sh
 source ~/.bashrc
 ```
 

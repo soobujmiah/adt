@@ -63,6 +63,7 @@ header()  { echo ""; echo -e "${BOLD}$*${NC}"; echo -e "${DIM}$(printf '%.0s─'
 
 SDK_ROOT=""
 SCRIPT_DIR=""
+INTERACTIVE=1   # 0 = unattended (bootstrap --auto)
 
 # ── Helper functions ───────────────────────────────────────────────────────────
 
@@ -71,6 +72,15 @@ require_command() {
     if ! check_command "$1"; then
         die "Required command '$1' not found. Please install it."
     fi
+}
+
+# Interactive confirmation; always yes in --auto mode
+confirm() {
+    [[ "$INTERACTIVE" == "0" ]] && return 0
+    local answer
+    read -rp "  $1 [Y/n] " answer
+    [[ "$answer" =~ ^[Nn]$ ]] && return 1
+    return 0
 }
 
 check_arch() {
@@ -114,16 +124,20 @@ detect_sdk_root() {
         info "SDK root: ${BOLD}${SDK_ROOT}${NC} (found ~/android-sdk)"
     else
         SDK_ROOT="$HOME/android-sdk"
-        echo ""
-        echo -e "  No Android SDK found. Default: ${BOLD}$SDK_ROOT${NC}"
-        read -rp "  Use this path? [Y/n] or enter a custom path: " answer
-        case "$answer" in
-            ""|[Yy]*) ;;
-            [Nn]*)   read -rp "  Enter SDK path: " SDK_ROOT ;;
-            *)       SDK_ROOT="$answer" ;;
-        esac
-        SDK_ROOT="${SDK_ROOT/#\~/$HOME}"
-        info "SDK root: ${BOLD}${SDK_ROOT}${NC} (new)"
+        if [[ "$INTERACTIVE" == "0" ]]; then
+            info "SDK root: ${BOLD}${SDK_ROOT}${NC} (default, auto mode)"
+        else
+            echo ""
+            echo -e "  No Android SDK found. Default: ${BOLD}$SDK_ROOT${NC}"
+            read -rp "  Use this path? [Y/n] or enter a custom path: " answer
+            case "$answer" in
+                ""|[Yy]*) ;;
+                [Nn]*)   read -rp "  Enter SDK path: " SDK_ROOT ;;
+                *)       SDK_ROOT="$answer" ;;
+            esac
+            SDK_ROOT="${SDK_ROOT/#\~/$HOME}"
+            info "SDK root: ${BOLD}${SDK_ROOT}${NC} (new)"
+        fi
     fi
 
     mkdir -p "$SDK_ROOT"
@@ -256,6 +270,47 @@ ensure_commands() {
     for c in "${missing[@]}"; do check_command "$c" || still+=("$c"); done
     [[ ${#still[@]} -gt 0 ]] && die "Still missing after install attempt: ${still[*]}"
     ok "Installed host tools: ${missing[*]}"
+}
+
+# Ensure the full AOSP build dependency set (commands + dev libraries).
+# Auto-installs via the distro package manager when permitted; otherwise prints
+# the exact root command and stops.
+ensure_build_deps() {
+    info "Checking build dependencies..."
+    local missing=()
+    local cmd
+    for cmd in gcc g++ cmake ninja git python3 go bison flex; do
+        check_command "$cmd" || missing+=("$cmd")
+    done
+    if [[ ${#missing[@]} -eq 0 ]]; then
+        ok "Dependencies OK."
+        return 0
+    fi
+
+    warn "Missing build tools: ${missing[*]} — installing the full build dependency set..."
+    local installed=1
+    if [[ -f /etc/fedora-release ]] || [[ -f /etc/redhat-release ]]; then
+        as_root dnf install -y $DEPS_FEDORA && installed=0
+    elif [[ -f /etc/debian_version ]]; then
+        as_root apt-get update -qq && as_root apt-get install -y $DEPS_DEBIAN && installed=0
+    fi
+
+    if [[ "$installed" -ne 0 ]]; then
+        err "Automatic install needs root or sudo."
+        echo ""
+        if [[ -f /etc/fedora-release ]] || [[ -f /etc/redhat-release ]]; then
+            echo "      dnf install -y $DEPS_FEDORA"
+        else
+            echo "      apt-get update && apt-get install -y $DEPS_DEBIAN"
+        fi
+        echo ""
+        die "Run the command above as root, then retry."
+    fi
+
+    local still=()
+    for cmd in "${missing[@]}"; do check_command "$cmd" || still+=("$cmd"); done
+    [[ ${#still[@]} -gt 0 ]] && die "Build dependencies still missing after install: ${still[*]}"
+    ok "Build dependencies installed."
 }
 
 # Phase 0 check: what is this device/environment?
@@ -1559,23 +1614,8 @@ build_tools_from_source() {
 
     header "Building ${component} ${version} from source"
 
-    # Check build dependencies
-    info "Checking build dependencies..."
-    local missing=()
-    for cmd in gcc g++ cmake ninja git python3 go bison flex; do
-        check_command "$cmd" || missing+=("$cmd")
-    done
-    if [[ ${#missing[@]} -gt 0 ]]; then
-        err "Missing: ${missing[*]}"
-        echo ""
-        if [[ -f /etc/fedora-release ]] || [[ -f /etc/redhat-release ]]; then
-            echo "  sudo dnf install $DEPS_FEDORA"
-        elif [[ -f /etc/debian_version ]]; then
-            echo "  sudo apt install $DEPS_DEBIAN"
-        fi
-        die "Install dependencies and retry."
-    fi
-    ok "Dependencies OK."
+    # Check + auto-install build dependencies
+    ensure_build_deps
 
     # Find AOSP tag
     local aosp_tag
@@ -1698,17 +1738,28 @@ cmd_setup_env() {
 cmd_bootstrap() {
     while [[ $# -gt 0 ]]; do
         case "$1" in
-            --sdk-root) SDK_ROOT="$2"; shift 2 ;;
+            --sdk-root)   SDK_ROOT="$2"; shift 2 ;;
+            --auto|-y)    INTERACTIVE=0; shift ;;
             *) die "Unknown option: $1" ;;
         esac
     done
 
-    # Phase 0 — automatic device/environment check
+    if [[ "$INTERACTIVE" == "1" ]]; then
+        echo ""
+        echo "  ADT guided setup. I will check this device, then ask your permission"
+        echo "  before each step. Unattended mode: ./setup.sh bootstrap --auto"
+    fi
+
+    # Phase 0 — automatic device/environment check (always read-only)
     detect_environment
 
-    # Phase 1 — host dependencies (auto-install when privilege allows)
+    # Phase 1 — host dependencies
     header "1/6  Host dependencies"
-    ensure_commands git curl tar unzip python3 java cmake ninja llvm-strip
+    if confirm "Install missing host packages automatically (apt/dnf, needs root or sudo)?"; then
+        ensure_commands git curl tar unzip python3 java cmake ninja llvm-strip
+    else
+        warn "Skipped — later steps will stop on any missing tool"
+    fi
 
     # Phase 2 — SDK location
     detect_sdk_root
@@ -1718,28 +1769,54 @@ cmd_bootstrap() {
     local bt_version pt_version
     bt_version="$(get_bootstrap_version build-tools)"    || die "No verified build-tools version in versions.json"
     pt_version="$(get_bootstrap_version platform-tools)" || die "No verified platform-tools version in versions.json"
-    info "Selected: build-tools ${bt_version}, platform-tools ${pt_version} (artifact-preferred)"
-    cmd_install_build_tools "$bt_version"
-    cmd_install_platform_tools "$pt_version"
+    if confirm "Install build-tools ${bt_version} and platform-tools ${pt_version} (offline, validated artifacts)?"; then
+        cmd_install_build_tools "$bt_version"
+        cmd_install_platform_tools "$pt_version"
+    else
+        warn "Skipped native tools — SDK will be incomplete"
+    fi
 
     # Phase 4 — shims (device-tested NDK version preferred)
     header "3/6  NDK + CMake shims"
-    local ndk_version
-    ndk_version="$(get_bootstrap_ndk)" || ndk_version=""
-    if [[ -n "$ndk_version" ]]; then
-        cmd_install_ndk "$ndk_version"
+    local ndk_default ndk_version=""
+    ndk_default="$(get_bootstrap_ndk)" || ndk_default=""
+    if [[ -n "$ndk_default" ]]; then
+        if [[ "$INTERACTIVE" == "1" ]]; then
+            local answer
+            read -rp "  Create NDK shim for ${ndk_default} (device-tested)? [Y/n, or type another version] " answer
+            case "$answer" in
+                ""|[Yy]*) ndk_version="$ndk_default" ;;
+                [Nn]*)    ndk_version="" ;;
+                *)        ndk_version="$answer" ;;
+            esac
+        else
+            ndk_version="$ndk_default"
+        fi
+        if [[ -n "$ndk_version" ]]; then
+            cmd_install_ndk "$ndk_version"
+        else
+            warn "Skipped NDK/CMake shims"
+        fi
     else
         warn "No NDK shim version registered — skipping"
     fi
 
     # Phase 5 — Google packages (network)
     header "4/6  sdkmanager + Android platform"
-    cmd_install_cmd_tools
-    cmd_install_platforms android-35
+    if confirm "Download Android cmdline-tools + platform android-35 from Google (network needed)?"; then
+        cmd_install_cmd_tools
+        cmd_install_platforms android-35
+    else
+        warn "Skipped Google packages — add later with: $0 install-cmd-tools && $0 install-platforms android-35"
+    fi
 
     # Phase 6 — persistent shell environment
     header "5/6  Shell environment"
-    write_env_block
+    if confirm "Write ANDROID_HOME/PATH into ~/.bashrc (small marked block, easy to remove)?"; then
+        write_env_block
+    else
+        info "Skipped — run '$0 setup-env' any time"
+    fi
 
     # Verification + final guide
     header "6/6  Verification"
@@ -1801,8 +1878,10 @@ BANNER
 
     echo -e "  ${BOLD}FRESH DEVICE${NC}"
     echo ""
-    echo "    bootstrap                         Automatic full setup: device check, host deps,"
-    echo "                                      tools, shims, sdkmanager, platform, env, verify"
+    echo "    bootstrap [--auto]              Full setup, start to finish. Default: guided"
+    echo "                                    (device check first, asks permission per step)."
+    echo "                                    --auto: unattended, sane defaults, no prompts."
+    echo "    (no command)                    Same as guided bootstrap"
     echo ""
     echo -e "  ${BOLD}INSTALL COMMANDS${NC}"
     echo ""
@@ -1857,7 +1936,9 @@ BANNER
 
 main() {
     if [[ $# -eq 0 ]]; then
-        cmd_help
+        # Bare invocation = guided full setup (per-device check first, permission
+        # before every change). For pure documentation: ./setup.sh help
+        cmd_bootstrap
         exit 0
     fi
 

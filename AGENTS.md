@@ -170,6 +170,8 @@ python3 build.py --protoc=$(pwd)/src/protobuf/build/protoc \
 
 ## Dependencies (Build Host)
 
+`setup.sh` source builds (`build-build-tools` / `build-platform-tools` / `build-all`) auto-install the full set below when they detect missing tools and root/sudo is available; otherwise they print the exact root command and stop. The manual commands remain:
+
 ### Required Packages
 
 | Package | Purpose |
@@ -313,7 +315,7 @@ deployagent.inc, deployagentscript.inc, etc:
 
 | Command | Description |
 |---------|-------------|
-| `bootstrap` | Fresh-device full setup: automatic device check → host dependency auto-install (root/sudo aware) → artifact-preferred tool install → shims → sdkmanager + platform → persistent env → `doctor` + final guide |
+| `bootstrap` | Fresh-device full setup: `./setup.sh`/`bootstrap` = **guided** (device check first, permission per step); `bootstrap --auto` = **unattended** (defaults, no prompts). Host dependencies auto-install via apt/dnf with root or sudo; otherwise the exact root command is printed and the run stops. Phases: device/environment check → host deps → artifact-preferred tools → shims → sdkmanager + android-35 → persistent env → `doctor` → final guide |
 | `setup-env` | Write/update the `ANDROID_HOME` + `PATH` block in `~/.bashrc` (idempotent) |
 | `list-versions` | Show all available versions with status |
 | `install-build-tools <ver>` | Download pre-built (verified) or error with guidance |
