@@ -1,5 +1,12 @@
 # ARM64 Linux Android Build Pipeline Validation
 
+> **Status: HISTORICAL SESSION RECORD — superseded.** This record documents the pipeline
+> *before* signing and device installation were completed ("has not yet completed
+> signing/install/smoke-test validation"). Those gates were subsequently completed:
+> canonical, current evidence is [`../REAL_DEVICE_BUILD_VALIDATION.md`](../REAL_DEVICE_BUILD_VALIDATION.md),
+> and the reproducible procedure is [`../ANDROID_ARM64_NATIVE_BUILD_GUIDE.md`](../ANDROID_ARM64_NATIVE_BUILD_GUIDE.md).
+> This file is preserved unchanged as the dated evidence trail.
+
 **Date:** 2026-08-31 → 2026-09-01 (Dhaka local time)
 **Environment:** Termux + PRoot Debian ARM64
 **Project:** ADT (`soobujmiah/adt`)

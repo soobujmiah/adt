@@ -2,9 +2,9 @@
 
 ## Project Overview
 
-**android-sdk-linux-arm64** builds Android SDK tools (aapt2, aapt, aidl, zipalign, adb, fastboot, etc.) as native Linux ARM64 binaries from official AOSP source code.
+**ADT** (`soobujmiah/adt`) builds Android SDK tools (aapt2, aapt, aidl, zipalign, adb, fastboot, etc.) as native Linux ARM64 binaries from official AOSP source code.
 
-This project adapts [lzhiyong/android-sdk-tools](https://github.com/lzhiyong/android-sdk-tools) (which targets Android/Bionic via NDK) to target Linux/glibc using the system compiler.
+This project adapts [lzhiyong/android-sdk-tools](https://github.com/lzhiyong/android-sdk-tools) (which targets Android/Bionic via NDK) to target Linux/glibc using the system compiler. The Linux/glibc adaptation lineage, including the version-registry entries verified on Fedora Asahi 43, comes from `hamza72x/android-sdk-linux-arm64`; ADT continues that work with on-device Termux/PRoot ARM64 validation and is self-hosted: `setup.sh` downloads/clones only from `soobujmiah/adt`, and releases (when tagged) are published by `.github/workflows/build.yml` on this repository.
 
 ## Repository Layout
 
@@ -251,6 +251,13 @@ Project versions track Android build-tools versions:
 - Current target: **35.0.2** (matching `platform-tools-35.0.2` AOSP tag)
 - The `TOOLS_VERSION` variable in `CMakeLists.txt` controls this
 - `versions.json` is the central registry of all known versions, their verification status (`verified`/`unverified`/`shim`), AOSP tags, and release availability
+
+### Registry and artifact rules
+
+- A `release` field in `versions.json` means the tag **actually exists** on `soobujmiah/adt` with downloadable assets. Never register a release that has not been published — `install-*` trusts the field and downloads will otherwise 404.
+- Asset naming convention, shared by `artifacts/` and release uploads: `build-tools-<version>-linux-arm64.tar.gz` and `platform-tools-<version>-linux-arm64.tar.gz`.
+- Installer order for a verified version: (1) checked-in `artifacts/` tarball, SHA256-verified against `artifacts/SHA256SUMS`; (2) GitHub Release download if a `release` field exists; (3) source build.
+- When adding a new validated artifact, commit the tarball under `artifacts/` and append its SHA256 line to `artifacts/SHA256SUMS` in the same commit.
 
 ### Patch Resolution Order
 

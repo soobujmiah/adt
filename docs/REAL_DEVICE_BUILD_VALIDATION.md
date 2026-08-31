@@ -178,6 +178,8 @@ ADB reported the connected device as:
 - Android release: `16`
 - ABI: `arm64-v8a`
 
+**ADB serial note.** `adb devices` reported the target with the serial `emulator-5554`. The serial label is an artifact of the on-device ADB connection path in use (a loopback-style connection to the phone's own adbd through a TCP port in adb's emulator serial range), not an emulator. The device properties read through that same connection — model `25053RT47C`, product `onyx`, Android `16`, ABI `arm64-v8a`, SM8735 (Snapdragon 8s Gen 4) hardware — identify the physical Redmi Turbo 4 Pro. This note is recorded so the serial label is not misread in either direction: neither as emulator evidence, nor silently glossed over when the physical-device claim is evaluated.
+
 Installation succeeded:
 
 `adb install -r out/fresh-native-signed.apk`

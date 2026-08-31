@@ -1,5 +1,12 @@
 # ARM64 APK pipeline validation — 2026-08-31 session
 
+> **Status: HISTORICAL SESSION RECORD — superseded.** The items this record lists as
+> "NOT YET VALIDATED" or "Next validation gate" were completed in the following session
+> (signing via Debian `apksigner`, `zipalign`, physical-device install, JNI execution).
+> Canonical, current evidence: [`../REAL_DEVICE_BUILD_VALIDATION.md`](../REAL_DEVICE_BUILD_VALIDATION.md).
+> Reproducible procedure: [`../ANDROID_ARM64_NATIVE_BUILD_GUIDE.md`](../ANDROID_ARM64_NATIVE_BUILD_GUIDE.md).
+> This file is preserved unchanged as the dated evidence trail for 2026-08-31.
+
 ## Purpose
 
 Record the source/build/runtime evidence collected while validating the ADT goal: a usable Android build toolchain on Linux ARM64, with guided and eventually automated installation for other users.

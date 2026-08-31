@@ -6,6 +6,10 @@ My goal is simple: I want an ARM64 machine to be able to prepare, build, sign, i
 
 The CLI toolchain is the canonical path. GUI/X11 support is optional.
 
+## Project Lineage
+
+The build system adapts [lzhiyong/android-sdk-tools](https://github.com/lzhiyong/android-sdk-tools) (which targets Android/Bionic via the NDK) to native Linux ARM64/glibc. The Linux/glibc adaptation lineage, including the earlier version-registry entries verified on Fedora Asahi 43, comes from `hamza72x/android-sdk-linux-arm64`; ADT (`soobujmiah/adt`) is the continuation of that work, extended with on-device Termux/PRoot ARM64 validation, checked-in offline-installable artifacts, and self-hosted release plumbing. All release downloads and source-build clones now resolve to this repository.
+
 ## What ADT Provides
 
 ADT brings together the pieces I need for Android development on Linux ARM64:
@@ -202,15 +206,17 @@ ADT/
 ├── build.py
 ├── setup.sh
 ├── CMakeLists.txt
+├── .github/workflows/    # ci.yml (push/PR sanity build) · build.yml (tag → release)
 ├── build-tools/
 ├── platform-tools/
 ├── lib/
 ├── others/
 ├── patches/
 ├── docs/
-│   ├── REAL_DEVICE_BUILD_VALIDATION.md
-│   └── validation/
-└── artifacts/
+│   ├── REAL_DEVICE_BUILD_VALIDATION.md      # canonical evidence record
+│   ├── ANDROID_ARM64_NATIVE_BUILD_GUIDE.md  # reproducible native build/install procedure
+│   └── validation/                          # dated session records (historical)
+└── artifacts/            # validated, SHA256-recorded ARM64 tarballs for offline install
 ```
 
 The AOSP source tree and local build output are deliberately excluded from normal Git tracking. I keep the repository focused on the reproducible build definition, patches, documentation, validation evidence, and selected reusable artifacts.
@@ -225,12 +231,15 @@ The AOSP source tree and local build output are deliberately excluded from norma
 ./setup.sh doctor
 ./setup.sh install-build-tools 35.0.2
 ./setup.sh install-platform-tools 35.0.2
+./setup.sh install-ndk 27.2.12479018       # NDK shim (validated version; see versions.json for others)
+./setup.sh install-cmake                   # CMake shim (default 3.22.1)
 ./setup.sh install-platforms android-35
 ./setup.sh install-cmd-tools
 ./setup.sh setup-gradle
+./setup.sh build-all                       # build + install everything from AOSP source
 ```
 
-When a verified artifact exists, installation should prefer the artifact rather than rebuilding from source.
+Installation order for a verified version is: checked-in `artifacts/` tarball first (SHA256-verified against `artifacts/SHA256SUMS`), then a GitHub Release on this repository when one is registered in `versions.json`, otherwise a source build. When a verified artifact exists, installation should prefer the artifact rather than rebuilding from source.
 
 Source builds remain available when I need to reproduce or extend a toolchain version:
 

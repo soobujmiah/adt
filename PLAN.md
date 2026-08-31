@@ -201,9 +201,10 @@ For a Flutter project to build APKs on Linux ARM64, after running `setup.sh`:
 
 ## Release Strategy
 
-- GitHub Releases with pre-built aarch64 Linux binaries
+- GitHub Releases with pre-built aarch64 Linux binaries on `soobujmiah/adt` (assets use the same naming as the checked-in artifacts: `build-tools-<version>-linux-arm64.tar.gz`, `platform-tools-<version>-linux-arm64.tar.gz`)
+- Validated, expensive-to-rebuild builds are also committed under `artifacts/` with SHA256 sums for offline installation; `setup.sh` prefers them before any network path
 - Versioned to match Android build-tools versions (e.g., `35.0.2`)
-- `versions.json` tracks verification status (`verified`/`unverified`/`shim`)
+- `versions.json` tracks verification status (`verified`/`unverified`/`shim`); a `release` field is registered only once the tagged release actually exists
 - `setup.sh` provides SDK-manager-like CLI:
   - `install-build-tools <ver>` / `install-platform-tools <ver>` — download pre-built
   - `build-build-tools <ver>` / `build-platform-tools <ver>` — build from AOSP source
