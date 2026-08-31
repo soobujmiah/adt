@@ -1,106 +1,27 @@
 {
   "build-tools": {
-    "37.0.0": {
-      "status": "verified",
-      "aosp_tag": "platform-tools-35.0.2",
-      "release": "v37.0.0",
-      "tested_on": "Fedora Asahi 43, GCC 15.2.1",
-      "notes": "Uses same AOSP source as 35.0.2 (no platform-tools-37.0.0 tag in AOSP)"
-    },
-    "35.0.2": {
-      "status": "verified",
-      "aosp_tag": "platform-tools-35.0.2",
-      "release": "v35.0.2",
-      "tested_on": "Fedora Asahi 43, GCC 15.2.1; ARM64 PRoot Debian real-device fixture",
-      "notes": "Native ARM64 aapt/aapt2/aidl/zipalign toolchain is installed and validated in the ARM64 PRoot environment. D8 8.2.33 JVM path and signed APK verification are validated. Real Android 16 arm64-v8a APK install, JNI loading, native execution, log output, and process survival are validated."
-    },
-    "35.0.1": {
-      "status": "unverified",
-      "aosp_tag": "platform-tools-35.0.1",
-      "notes": "Should work with base patches, not yet tested"
-    },
-    "35.0.0": {
-      "status": "unverified",
-      "aosp_tag": "platform-tools-35.0.0",
-      "notes": "Should work with base patches, not yet tested"
-    },
-    "34.0.0": {
-      "status": "unverified",
-      "aosp_tag": "platform-tools-34.0.4",
-      "notes": "Older AOSP, may need additional patches"
-    }
+    "37.0.0": {"status": "verified", "aosp_tag": "platform-tools-35.0.2", "release": "v37.0.0", "tested_on": "Fedora Asahi 43, GCC 15.2.1", "notes": "Uses same AOSP source as 35.0.2 (no platform-tools-37.0.0 tag in AOSP)"},
+    "35.0.2": {"status": "verified", "aosp_tag": "platform-tools-35.0.2", "release": "v35.0.2", "tested_on": "Fedora Asahi 43, GCC 15.2.1; ARM64 PRoot Debian real-device fixture", "notes": "Native ARM64 aapt/aapt2/aidl/zipalign toolchain is installed and validated in the ARM64 PRoot environment. D8 8.2.33 JVM path and signed APK verification are validated. Real Android 16 arm64-v8a APK install, JNI loading, native execution, log output, and process survival are validated."},
+    "35.0.1": {"status": "unverified", "aosp_tag": "platform-tools-35.0.1", "notes": "Should work with base patches, not yet tested"},
+    "35.0.0": {"status": "unverified", "aosp_tag": "platform-tools-35.0.0", "notes": "Should work with base patches, not yet tested"},
+    "34.0.0": {"status": "unverified", "aosp_tag": "platform-tools-34.0.4", "notes": "Older AOSP, may need additional patches"}
   },
   "platform-tools": {
-    "37.0.0": {
-      "status": "verified",
-      "aosp_tag": "platform-tools-35.0.2",
-      "release": "v37.0.0",
-      "tested_on": "Fedora Asahi 43, GCC 15.2.1",
-      "notes": "Uses same AOSP source as 35.0.2 (no platform-tools-37.0.0 tag in AOSP)"
-    },
-    "35.0.2": {
-      "status": "verified",
-      "aosp_tag": "platform-tools-35.0.2",
-      "release": "v35.0.2",
-      "tested_on": "Fedora Asahi 43, GCC 15.2.1; ARM64 PRoot Debian real-device fixture",
-      "release": "v35.0.2",
-      "notes": "adb and fastboot are installed and working. adb was used to install, launch, inspect, and collect logs from the physical Android 16 arm64-v8a device during native APK validation."
-    },
-    "35.0.1": {
-      "status": "unverified",
-      "aosp_tag": "platform-tools-35.0.1",
-      "notes": "Should work with base patches, not yet tested"
-    },
-    "34.0.4": {
-      "status": "unverified",
-      "aosp_tag": "platform-tools-34.0.4",
-      "notes": "Older AOSP, not yet tested"
-    }
+    "37.0.0": {"status": "verified", "aosp_tag": "platform-tools-35.0.2", "release": "v37.0.0", "tested_on": "Fedora Asahi 43, GCC 15.2.1", "notes": "Uses same AOSP source as 35.0.2 (no platform-tools-37.0.0 tag in AOSP)"},
+    "35.0.2": {"status": "verified", "aosp_tag": "platform-tools-35.0.2", "release": "v35.0.2", "tested_on": "Fedora Asahi 43, GCC 15.2.1; ARM64 PRoot Debian real-device fixture", "notes": "adb and fastboot are installed and working. adb was used to install, launch, inspect, and collect logs from the physical Android 16 arm64-v8a device during native APK validation."},
+    "35.0.1": {"status": "unverified", "aosp_tag": "platform-tools-35.0.1", "notes": "Should work with base patches, not yet tested"},
+    "34.0.4": {"status": "unverified", "aosp_tag": "platform-tools-34.0.4", "notes": "Older AOSP, not yet tested"}
   },
-  "cmake": {
-    "3.22.1": {
-      "status": "shim",
-      "notes": "Shim that delegates to system cmake. Created automatically."
-    }
-  },
+  "cmake": {"3.22.1": {"status": "shim", "notes": "Shim that delegates to system cmake. Created automatically."}},
   "ndk": {
-    "28.2.13676358": {
-      "status": "shim",
-      "notes": "Shim for llvm-strip. Used by Flutter 3.43+."
-    },
-    "27.2.12479018": {
-      "status": "shim",
-      "tested_on": "ARM64 PRoot Debian",
-      "notes": "Validated by setup.sh install-ndk. Shim delegates llvm-strip to the working Termux llvm-strip. The bundled x86_64 NDK host compiler is not used in the PRoot environment."
-    },
-    "27.0.12077973": {
-      "status": "shim",
-      "notes": "Shim for llvm-strip. Used by older Flutter versions."
-    },
-    "26.1.10909125": {
-      "status": "shim",
-      "notes": "Shim for llvm-strip. Used by older Flutter versions."
-    }
+    "28.2.13676358": {"status": "shim", "notes": "Shim for llvm-strip. Used by Flutter 3.43+."},
+    "27.2.12479018": {"status": "shim", "tested_on": "ARM64 PRoot Debian", "notes": "Validated by setup.sh install-ndk. Shim delegates llvm-strip to the working Termux llvm-strip. The bundled x86_64 NDK host compiler is not used in the PRoot environment."},
+    "27.0.12077973": {"status": "shim", "notes": "Shim for llvm-strip. Used by older Flutter versions."},
+    "26.1.10909125": {"status": "shim", "notes": "Shim for llvm-strip. Used by older Flutter versions."}
   },
-  "cmdline-tools": {
-    "latest": {
-      "status": "verified",
-      "url": "https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip",
-      "notes": "Java-based, runs on any architecture."
-    }
-  },
+  "cmdline-tools": {"latest": {"status": "verified", "url": "https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip", "notes": "Java-based, runs on any architecture."}},
   "java-tools": {
-    "d8": {
-      "status": "verified",
-      "source": "cmdline-tools/latest/lib/r8.jar",
-      "version_observed": "8.2.33",
-      "execution": "JVM"
-    },
-    "apksigner": {
-      "status": "verified-runtime-dependency",
-      "package": "Debian apksigner 35.0.2-1 + libapksig-java 35.0.2-1",
-      "execution": "JVM",
-      "notes": "Used successfully for controlled APK signing and verification on ARM64 PRoot Debian; not yet packaged by ADT itself."
-    }
+    "d8": {"status": "verified", "source": "cmdline-tools/latest/lib/r8.jar", "version_observed": "8.2.33", "execution": "JVM"},
+    "apksigner": {"status": "verified-runtime-dependency", "package": "Debian apksigner 35.0.2-1 + libapksig-java 35.0.2-1", "execution": "JVM", "notes": "Used successfully for controlled APK signing and verification on ARM64 PRoot Debian; not yet packaged by ADT itself."}
   }
 }
