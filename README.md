@@ -221,6 +221,47 @@ ADT/
 
 The AOSP source tree and local build output are deliberately excluded from normal Git tracking. I keep the repository focused on the reproducible build definition, patches, documentation, validation evidence, and selected reusable artifacts.
 
+## Installing on a New ARM64 Device
+
+A complete from-scratch install on any aarch64 Linux with glibc (Termux + PRoot Debian on an ARM64 phone is the validated target; Asahi/RPi/ARM64 servers follow the same path):
+
+```bash
+# Host prerequisites (Debian/Ubuntu names)
+apt update && apt install -y git curl tar python3 \
+    openjdk-21-jdk-headless cmake ninja-build llvm binutils
+
+git clone --depth 1 https://github.com/soobujmiah/adt.git
+cd adt
+
+# build-tools + platform-tools 35.0.2 — fully offline from the checked-in,
+# SHA256-verified artifacts (these binaries are byte-identical to the ones
+# validated on the physical device)
+./setup.sh install-build-tools 35.0.2
+./setup.sh install-platform-tools 35.0.2
+
+# NDK + CMake shims (delegate to system llvm-strip/cmake)
+./setup.sh install-ndk 27.2.12479018
+./setup.sh install-cmake
+
+# sdkmanager + Android platform (these two download from Google — network needed)
+./setup.sh install-cmd-tools
+./setup.sh install-platforms android-35
+
+# Environment + final verification
+export ANDROID_HOME=$HOME/android-sdk
+export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin:$PATH"
+./setup.sh doctor
+```
+
+For APK signing, install the JVM-based signer: `apt install apksigner` (works natively on ARM64; does not need a native rebuild).
+
+What needs network vs what works offline:
+
+- **Offline:** build-tools and platform-tools `35.0.2` (from `artifacts/`, SHA256-verified), NDK/CMake shims.
+- **Network needed:** cmdline-tools (Google zip), `platforms;android-35`, and any other version — e.g. `35.0.1` builds from AOSP source via `build-build-tools <version>` (~2–4 GB source, ~15–30 min compile).
+
+Honesty boundary: the full chain up to signed, installed, executing native APKs is physically validated on Redmi Turbo 4 Pro PRoot Debian only. On any other host, treat `./setup.sh doctor` output as the first evidence check — the scripts are identical, but "should work" is not "verified".
+
 ## Installation and Management
 
 `setup.sh` provides an SDK-manager-like interface:
