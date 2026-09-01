@@ -38,7 +38,7 @@ jobs:
       fail-fast: false
       matrix:
         # Only verified versions — update this list when new versions are verified
-        version: ["37.0.0", "35.0.2"]
+        version: ["37.0.0", "36.0.0", "35.0.2"]
 
     steps:
       - name: Checkout

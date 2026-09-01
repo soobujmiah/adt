@@ -60,6 +60,8 @@ The current real-device validation was completed on:
 - Android Platform: `android-35`
 - NDK installed: `27.2.12479018`
 
+(ARM64-native build-tools `36.0.0` for `platforms;android-36` was added afterward — see `versions.json` and `docs/ANDROID_ARM64_BUILD_HANDOFF.md` — replacing Google's x86_64 sdkmanager download for that version. It has not been re-run through the full end-to-end pipeline below; that gate remains validated on the `35.0.2` / `android-35` configuration described here.)
+
 The ARM64 native APK pipeline has been validated end-to-end:
 
 `native source → ARM64 shared library → APK packaging → signing → ADB installation → Android ARM64 ABI selection → JNI loading → native execution → log output → process remains alive`
@@ -187,6 +189,7 @@ Current artifact examples include:
 
 - `artifacts/build-tools-35.0.2-linux-arm64.tar.gz`
 - `artifacts/platform-tools-35.0.2-linux-arm64.tar.gz`
+- `artifacts/build-tools-36.0.0-linux-arm64.tar.gz` (built from the same AOSP source as 35.0.2 — see `versions.json`; there is no separate platform-tools-36.0.0 AOSP tag)
 
 Checksums are maintained in `artifacts/SHA256SUMS`.
 
@@ -282,8 +285,8 @@ For APK signing, install the JVM-based signer: `apt install apksigner` (works na
 
 What needs network vs what works offline:
 
-- **Offline:** build-tools and platform-tools `35.0.2` (from `artifacts/`, SHA256-verified), NDK/CMake shims.
-- **Network needed:** cmdline-tools (Google zip), `platforms;android-35`, and any other version — e.g. `35.0.1` builds from AOSP source via `build-build-tools <version>` (~2–4 GB source, ~15–30 min compile).
+- **Offline:** build-tools and platform-tools `35.0.2`, build-tools `36.0.0` (from `artifacts/`, SHA256-verified), NDK/CMake shims.
+- **Network needed:** cmdline-tools (Google zip), `platforms;android-35`/`android-36`, and any other version — e.g. `35.0.1` builds from AOSP source via `build-build-tools <version>` (~2–4 GB source, ~15–30 min compile).
 
 Honesty boundary: the full chain up to signed, installed, executing native APKs is physically validated on Redmi Turbo 4 Pro PRoot Debian only. On any other host, treat `./setup.sh doctor` output as the first evidence check — the scripts are identical, but "should work" is not "verified".
 

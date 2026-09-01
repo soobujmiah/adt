@@ -259,6 +259,47 @@ ELF, x86_64 ELF, script shims, symlinks (to both cases), and missing
 paths/targets are in `tests/test_arch_detection.sh`, run by CI's new
 `unit-tests` job.
 
+## Follow-up: ARM64 build-tools 36.0.0 (2026-09-01)
+
+The `doctor` follow-up above flagged build-tools 36.0.0 (Google's sdkmanager
+download for `platforms;android-36`) as an x86_64 trap. There is no
+`platform-tools-36.0.0` AOSP tag to build a genuinely newer 36.0.0 from
+(confirmed via `git ls-remote --tags
+https://android.googlesource.com/platform/manifest` — the highest
+`platform-tools-X.Y.Z` tag is 35.0.2), so — matching the existing 37.0.0
+precedent — ADT now also ships build-tools 36.0.0 built from the same
+35.0.2 AOSP source, registered in `versions.json` as `verified`.
+
+Built via GitHub Actions `workflow_dispatch` on `build.yml` (run
+33532721357, `ubuntu-24.04-arm`, AOSP tag `platform-tools-35.0.2`). CI's
+own ARM64 check passed; independently re-verified on this device:
+
+```text
+$ file build-tools/36.0.0/{aapt,aapt2,aidl,zipalign,dexdump,split-select}
+ELF 64-bit LSB pie executable, ARM aarch64 ... (all six)
+
+$ aapt2 compile res/values/strings.xml -o .
+-> values_strings.arsc.flat produced successfully
+```
+
+Installed on the live device at `~/android-sdk/build-tools/36.0.0/`
+(Google's original x86_64 copy backed up to
+`~/sdk-backups/build-tools-36.0.0.google-x86_64-bak`, not deleted).
+`./setup.sh doctor` now reports build-tools 36.0.0 as native ARM64.
+
+The global `~/.gradle/gradle.properties`
+`android.aapt2FromMavenOverride` was deliberately left/restored pointing
+at build-tools 35.0.2 — the already-validated Flutter/Gradle gate above
+uses that exact override and was not changed. build-tools 36.0.0 is
+available for use (e.g. a project can point its own override or
+`buildToolsVersion` at it) but is not the device-wide default.
+
+platform-tools 36.0.0 was a side effect of the same build but was
+deliberately **not** registered or shipped — adb/fastboot are already
+covered by verified platform-tools 35.0.2, and adding a second verified
+platform-tools version with no distinct purpose would just be
+duplication.
+
 ## Handoff completion condition
 
 The agent's documentation task is complete when the repository contains:
