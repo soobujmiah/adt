@@ -1721,6 +1721,23 @@ build_tools_from_source() {
         done
         ok "platform-tools installed to ${dest}"
     fi
+
+    # Source builds download ~2-4 GB (AOSP source tree + build output).
+    # The binaries are now installed in the SDK — offer to reclaim the space.
+    # (On failure, 'die' aborts before this point and the trees stay put for
+    # debugging; './setup.sh cleanup' removes them later either way.)
+    local total_size
+    total_size="$(du -shc "${build_dir}/src" "$versioned_build" 2>/dev/null | tail -1 | cut -f1)" || true
+    if confirm "Build finished — delete AOSP source + build trees (${total_size:-unknown size})? Installed binaries stay in the SDK."; then
+        sweep_item "${build_dir}/src" "AOSP source tree"
+        sweep_item "$versioned_build" "build output tree"
+        # If the build system itself was a temp clone, remove it whole
+        if [[ "$build_dir" == "${TMPDIR:-/tmp}"/adt-install.??????/* ]]; then
+            sweep_item "${build_dir%/*}" "temp build-system clone"
+        fi
+    else
+        info "Kept for inspection — remove later with: $0 cleanup"
+    fi
 }
 
 # ── setup-env ────────────────────────────────────────────────────────────────
@@ -1752,6 +1769,13 @@ cmd_cleanup() {
     detect_sdk_root
     header "Temporary cleanup"
     sweep_item "$SDK_ROOT/.temp" "sdkmanager temp"
+    # Source-build trees (~2-4 GB each) when the build system lives in this
+    # checkout and a build kept them for inspection
+    resolve_script_dir
+    if [[ -f "$SCRIPT_DIR/repos.json" && -f "$SCRIPT_DIR/build.py" ]]; then
+        sweep_item "$SCRIPT_DIR/src" "AOSP source tree"
+        sweep_item "$SCRIPT_DIR/build" "build output tree"
+    fi
     # Only our own mktemp dirs: prefix 'adt-install.' + exactly 6 random chars.
     local d
     for d in "${TMPDIR:-/tmp}"/adt-install.??????; do
