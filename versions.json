@@ -14,8 +14,8 @@
   },
   "cmake": {"3.22.1": {"status": "shim", "notes": "Shim that delegates to system cmake. Created automatically."}},
   "ndk": {
-    "28.2.13676358": {"status": "shim", "notes": "Shim for llvm-strip. Used by Flutter 3.43+."},
-    "27.2.12479018": {"status": "shim", "tested_on": "ARM64 PRoot Debian", "notes": "Validated by setup.sh install-ndk. Shim delegates llvm-strip to the working Termux llvm-strip. The bundled x86_64 NDK host compiler is not used in the PRoot environment."},
+    "28.2.13676358": {"status": "shim", "tested_on": "ARM64 PRoot Debian", "notes": "Direct Flutter/Gradle selection was tested on the ARM64 PRoot environment and failed at stripDebugDebugSymbols because the bundled linux-x86_64 llvm-strip host executable could not be started. This is an environment-specific host-tool execution limitation, not a universal NDK 28/Android ARM64 incompatibility. Do not use this direct bundled host-tool path for the validated PRoot configuration."},
+    "27.2.12479018": {"status": "shim", "tested_on": "ARM64 PRoot Debian real physical Android 16 device", "notes": "Validated Flutter/Gradle configuration. Project pinned ndkVersion=27.2.12479018; clean assembleDebug succeeds, APK installs through ADB, Android selects primaryCpuAbi=arm64-v8a, app launches and survives repeated interaction, and final crash/ANR scan is clean. Shim delegates llvm-strip to the working compatible path. This is the canonical NDK configuration for the validated PRoot Flutter build path."},
     "27.0.12077973": {"status": "shim", "notes": "Shim for llvm-strip. Used by older Flutter versions."},
     "26.1.10909125": {"status": "shim", "notes": "Shim for llvm-strip. Used by older Flutter versions."}
   },
