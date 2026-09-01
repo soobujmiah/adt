@@ -142,4 +142,4 @@ Only after those checks pass should the ADT documentation mark the complete buil
 
 ## Repository/source boundary
 
-The upstream/reference repositories used for research are **not** the destination for ADT's project history. Findings, adaptations, validation results, and documentation belong in the user's own ADT repository (`soobujmiah/adt`). Upstream sources remain references unless explicitly incorporated under their applicable licenses.
+The upstream/reference repositories used for research are **not** the destination for ADT's project history. Findings, adaptations, validation results, and documentation belong in my own ADT repository (`soobujmiah/adt`). Upstream sources remain references unless explicitly incorporated under their applicable licenses.

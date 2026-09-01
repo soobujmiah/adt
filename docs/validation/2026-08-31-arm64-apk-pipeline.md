@@ -15,7 +15,7 @@ This document records **observed test evidence**, not assumptions about upstream
 
 ## Environment
 
-- Host: Linux ARM64 (aarch64) inside the user's Termux + PRoot Debian workflow
+- Host: Linux ARM64 (aarch64) inside my Termux + PRoot Debian workflow
 - SDK root used by tests: `$HOME/android-sdk`
 - Android platform: `android-35/android.jar`
 - Build-tools under test: `35.0.2`

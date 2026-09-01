@@ -7,7 +7,7 @@
 
 ## Executive result
 
-The Flutter/Gradle Android ARM64 APK pipeline was successfully built and validated on the user's real physical ARM64 Android device from Termux + PRoot Debian.
+I built and validated the Flutter/Gradle Android ARM64 APK pipeline end to end on my real physical ARM64 Android device, from Termux + PRoot Debian.
 
 Final build:
 
@@ -49,13 +49,13 @@ Runtime PID: 24373
 Crash/ANR scan: no matching output
 ```
 
-The user manually exercised the app with 50 presses of the `+` button and reported normal operation. The app remained alive after returning to Termux.
+I manually exercised the app with 50 presses of the `+` button and observed normal operation. The app remained alive after I returned to Termux.
 
 **This validation gate is CLOSED. Do not repeat the same test loop unless a material configuration/environment change occurs.**
 
 ## Actual device topology
 
-The ADB target is the user's **real physical Android device**, not a desktop emulator:
+The ADB target is my **real physical Android device**, not a desktop emulator:
 
 ```text
 Physical Android phone
@@ -67,7 +67,7 @@ Physical Android phone
             └── physical Android host/device
 ```
 
-ADB reported the serial `emulator-5554`, but that serial is an artifact of the on-device ADB connection path. Device properties identify the physical device as model `25053RT47C`, product `onyx`, Android 16, ABI `arm64-v8a`.
+ADB reported the serial `emulator-5554`, but that serial is an artifact of the on-device ADB connection path. Device properties identify my physical device as model `25053RT47C`, product `onyx`, Android 16, ABI `arm64-v8a`.
 
 ## Environment
 
@@ -81,9 +81,9 @@ ADB reported the serial `emulator-5554`, but that serial is an artifact of the o
 - Installed NDKs: `27.2.12479018`, `28.2.13676358`
 - Gradle observed: `9.3.1`
 
-## Failure discovered today
+## Failure I discovered
 
-The project initially used:
+My project initially used:
 
 ```kotlin
 ndkVersion = flutter.ndkVersion
@@ -102,17 +102,17 @@ Cannot run program "/home/sbj/android-sdk/ndk/28.2.13676358/toolchains/llvm/preb
 Exec failed, error: 2 (No such file or directory)
 ```
 
-This is a **host-tool execution limitation**: the ARM64 PRoot Linux environment cannot directly start the downloaded Linux-x86_64 NDK host executable. It is not evidence that Android ARM64 target compilation or NDK 28 is universally broken.
+This is a **host-tool execution limitation**: my ARM64 PRoot environment can't directly start the downloaded Linux-x86_64 NDK host executable. It isn't evidence that Android ARM64 target compilation or NDK 28 is universally broken. (I later fixed this specific trap for NDK 28 too — see `docs/ANDROID_ARM64_BUILD_HANDOFF.md`.)
 
 ## Resolution
 
-The project was pinned to the already validated NDK:
+I pinned the project to the already-validated NDK:
 
 ```kotlin
 ndkVersion = "27.2.12479018"
 ```
 
-A backup was made before the edit:
+I created a backup before the edit:
 
 ```text
 app/build.gradle.kts.before-ndk-pin
@@ -124,19 +124,19 @@ NDK 27's `llvm-strip` was present and resolved as:
 llvm-strip: symbolic link to llvm-objcopy
 ```
 
-Using the validated native-tool PATH:
+I used the validated native-tool PATH:
 
 ```bash
 export PATH="$HOME/android-sdk/platform-tools:$HOME/.native-android-bin:/usr/lib/llvm-19/bin:/usr/bin:/bin"
 ```
 
-and:
+and ran:
 
 ```bash
 ./gradlew clean assembleDebug --no-daemon
 ```
 
-produced the successful APK.
+which produced the successful APK.
 
 ## Canonical fast build method for this environment
 
@@ -154,7 +154,7 @@ Prerequisite project configuration:
 ndkVersion = "27.2.12479018"
 ```
 
-This is the **currently validated Flutter/Gradle ARM64 APK path** for the Termux + PRoot environment.
+This is the **currently validated Flutter/Gradle ARM64 APK path** for my Termux + PRoot environment.
 
 ## APK ABI evidence
 
@@ -167,14 +167,14 @@ This is the **currently validated Flutter/Gradle ARM64 APK path** for the Termux
 /lib/x86_64/libflutter.so
 ```
 
-The physical device reported `arm64-v8a` and the installed package reported:
+My physical device reported `arm64-v8a`, and the installed package reported:
 
 ```text
 primaryCpuAbi=arm64-v8a
 secondaryCpuAbi=null
 ```
 
-Therefore Android selected the ARM64 native ABI on the physical device.
+So Android selected the ARM64 native ABI on my physical device.
 
 ## Runtime evidence
 
@@ -197,9 +197,9 @@ Activity:
 com.example.android_arm64_build_test/.MainActivity
 ```
 
-After repeated manual interaction and returning to Termux, the process remained alive. The activity being paused/backgrounded is normal Android lifecycle behavior.
+After I repeatedly interacted with the app and returned to Termux, the process remained alive. The activity being paused/backgrounded is normal Android lifecycle behavior.
 
-Final log scan checked for:
+I ran a final log scan checking for:
 
 ```text
 FATAL EXCEPTION
@@ -210,11 +210,11 @@ ANR in
 am_anr
 ```
 
-No matching output was returned.
+No matching output appeared.
 
 ## Earlier lower-level native evidence
 
-ADT also previously validated the controlled JNI path on the same physical device:
+I had also previously validated the controlled JNI path on the same physical device:
 
 ```text
 Termux Clang
@@ -235,11 +235,11 @@ Observed native message:
 ARM64NativeTest: ARM64 native code executed successfully
 ```
 
-This provides lower-level native execution evidence; the current record adds the higher-level Flutter/Gradle APK validation.
+That gave me lower-level native execution evidence; this record adds the higher-level Flutter/Gradle APK validation I completed here.
 
 ## Non-blocking warnings
 
-The successful Gradle build emitted deprecation/experimental warnings concerning built-in Kotlin settings, the old Android DSL, `aapt2FromMavenOverride`, deprecated Kotlin plugin usage under AGP 9.0, and an inconsistent `platform-tools-2` SDK location. None prevented the validated build/install/runtime flow.
+The successful Gradle build emitted deprecation/experimental warnings concerning built-in Kotlin settings, the old Android DSL, `aapt2FromMavenOverride`, deprecated Kotlin plugin usage under AGP 9.0, and an inconsistent `platform-tools-2` SDK location. None of them prevented the validated build/install/runtime flow.
 
 These are future cleanup items and **must not reopen this completed validation gate**.
 
@@ -265,6 +265,6 @@ These are future cleanup items and **must not reopen this completed validation g
 
 **ANDROID ARM64 DEVICE BUILD VALIDATION: CLOSED.**
 
-Reopen validation only after a material change to the project, Gradle/AGP configuration, NDK version, SDK tools, Flutter toolchain, Android OS, or execution environment.
+I'll reopen this validation only after a material change to the project, Gradle/AGP configuration, NDK version, SDK tools, Flutter toolchain, Android OS, or execution environment.
 
-See `docs/ANDROID_ARM64_BUILD_HANDOFF.md` for the agent handoff and remaining documentation/registry actions.
+See `docs/ANDROID_ARM64_BUILD_HANDOFF.md` for my engineering handoff notes and the follow-up work (NDK 28 fix, build-tools 36.0.0) completed after this gate closed.

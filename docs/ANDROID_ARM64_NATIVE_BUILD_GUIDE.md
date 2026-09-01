@@ -18,7 +18,7 @@ The canonical project for this work is ADT. Temporary source, APKs, keystores, a
 
 ## Validated Environment
 
-The current validation was performed on:
+I performed the current validation on:
 
 - Linux host architecture: `aarch64`
 - Android device model: `25053RT47C`

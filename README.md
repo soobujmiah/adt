@@ -45,7 +45,7 @@ A tool becomes part of my supported environment only after its actual execution 
 
 ## Current Validated Environment
 
-The current real-device validation was completed on:
+I completed the current real-device validation on:
 
 - Device model: `25053RT47C`
 - Product: `onyx`
@@ -60,9 +60,9 @@ The current real-device validation was completed on:
 - Android Platform: `android-35`
 - NDK installed: `27.2.12479018`
 
-(ARM64-native build-tools `36.0.0` for `platforms;android-36` was added afterward — see `versions.json` and `docs/ANDROID_ARM64_BUILD_HANDOFF.md` — replacing Google's x86_64 sdkmanager download for that version. It has not been re-run through the full end-to-end pipeline below; that gate remains validated on the `35.0.2` / `android-35` configuration described here.)
+(I added ARM64-native build-tools `36.0.0` for `platforms;android-36` afterward — see `versions.json` and `docs/ANDROID_ARM64_BUILD_HANDOFF.md` — replacing Google's x86_64 sdkmanager download for that version. I haven't re-run it through the full end-to-end pipeline below; I keep that gate validated on the `35.0.2` / `android-35` configuration described here.)
 
-The ARM64 native APK pipeline has been validated end-to-end:
+I've validated the ARM64 native APK pipeline end-to-end:
 
 `native source → ARM64 shared library → APK packaging → signing → ADB installation → Android ARM64 ABI selection → JNI loading → native execution → log output → process remains alive`
 
