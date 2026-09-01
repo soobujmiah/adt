@@ -1422,7 +1422,7 @@ ensure_cmdline_tools() {
     ensure_commands curl unzip java
 
     local tmpdir
-    tmpdir="$(mktemp -d)"
+    tmpdir="$(mktemp -d "${TMPDIR:-/tmp}/adt-install.XXXXXX")"
 
     curl -fSL -o "${tmpdir}/cmdline-tools.zip" "$CMDLINE_TOOLS_URL" 2>/dev/null \
         || die "Failed to download command-line tools."
@@ -1474,7 +1474,7 @@ install_local_artifact() {
     require_command tar
 
     local tmpdir
-    tmpdir="$(mktemp -d)"
+    tmpdir="$(mktemp -d "${TMPDIR:-/tmp}/adt-install.XXXXXX")"
     tar -xzf "$artifact" -C "$tmpdir" || { rm -rf "$tmpdir"; die "Could not extract ${artifact}"; }
 
     local bins_ref
@@ -1549,7 +1549,7 @@ download_and_install_release() {
     )
 
     local tmpdir
-    tmpdir="$(mktemp -d)"
+    tmpdir="$(mktemp -d "${TMPDIR:-/tmp}/adt-install.XXXXXX")"
     local downloaded=""
 
     for tarball in "${tarballs[@]}"; do
@@ -1632,7 +1632,7 @@ build_tools_from_source() {
 
     if [[ ! -f "${build_dir}/repos.json" ]] || [[ ! -f "${build_dir}/build.py" ]]; then
         # Clone the repo
-        build_dir="$(mktemp -d)/${REPO_NAME}"
+        build_dir="$(mktemp -d "${TMPDIR:-/tmp}/adt-install.XXXXXX")/${REPO_NAME}"
         info "Cloning build system..."
         git clone --depth 1 "$REPO_URL" "$build_dir" \
             || die "Failed to clone repository."
@@ -1731,6 +1731,38 @@ cmd_setup_env() {
     ok "Environment configured."
 }
 
+# ── cleanup ──────────────────────────────────────────────────────────────────
+# Remove installer leftovers: our prefixed temp dirs (including failed-download
+# remnants), sdkmanager's temp dir, and the apt cache when privilege allows.
+# ADT temp dirs always use the ${TMPDIR:-/tmp}/adt-install.XXXXXX prefix so this sweep
+# is safe — it can never match unrelated files.
+
+sweep_item() {
+    local path="$1" label="$2" size=""
+    [[ -e "$path" ]] || return 0
+    size="$(du -sh "$path" 2>/dev/null | cut -f1)" || true
+    if rm -rf "$path" 2>/dev/null; then
+        ok "Removed ${label}: ${path}${size:+ (freed ${size})}"
+    else
+        warn "Could not remove ${path} — remove it manually"
+    fi
+}
+
+cmd_cleanup() {
+    detect_sdk_root
+    header "Temporary cleanup"
+    sweep_item "$SDK_ROOT/.temp" "sdkmanager temp"
+    # Only our own mktemp dirs: prefix 'adt-install.' + exactly 6 random chars.
+    local d
+    for d in "${TMPDIR:-/tmp}"/adt-install.??????; do
+        sweep_item "$d" "installer temp"
+    done
+    if command -v apt-get >/dev/null 2>&1 && as_root apt-get clean >/dev/null 2>&1; then
+        ok "Package cache cleaned (apt-get clean)"
+    fi
+    ok "Cleanup done — nothing else to optimize: ADT has no daemons, caches, or background state"
+}
+
 # ── bootstrap ────────────────────────────────────────────────────────────────
 
 # Full automatic setup for a fresh ARM64 device:
@@ -1754,7 +1786,7 @@ cmd_bootstrap() {
     detect_environment
 
     # Phase 1 — host dependencies
-    header "1/6  Host dependencies"
+    header "1/7  Host dependencies"
     if confirm "Install missing host packages automatically (apt/dnf, needs root or sudo)?"; then
         ensure_commands git curl tar unzip python3 java cmake ninja llvm-strip
     else
@@ -1765,7 +1797,7 @@ cmd_bootstrap() {
     detect_sdk_root
 
     # Phase 3 — native tools (prefers checked-in, SHA256-verified artifacts; offline)
-    header "2/6  build-tools + platform-tools"
+    header "2/7  build-tools + platform-tools"
     local bt_version pt_version
     bt_version="$(get_bootstrap_version build-tools)"    || die "No verified build-tools version in versions.json"
     pt_version="$(get_bootstrap_version platform-tools)" || die "No verified platform-tools version in versions.json"
@@ -1777,7 +1809,7 @@ cmd_bootstrap() {
     fi
 
     # Phase 4 — shims (device-tested NDK version preferred)
-    header "3/6  NDK + CMake shims"
+    header "3/7  NDK + CMake shims"
     local ndk_default ndk_version=""
     ndk_default="$(get_bootstrap_ndk)" || ndk_default=""
     if [[ -n "$ndk_default" ]]; then
@@ -1802,7 +1834,7 @@ cmd_bootstrap() {
     fi
 
     # Phase 5 — Google packages (network)
-    header "4/6  sdkmanager + Android platform"
+    header "4/7  sdkmanager + Android platform"
     if confirm "Download Android cmdline-tools + platform android-35 from Google (network needed)?"; then
         cmd_install_cmd_tools
         cmd_install_platforms android-35
@@ -1811,7 +1843,7 @@ cmd_bootstrap() {
     fi
 
     # Phase 6 — persistent shell environment
-    header "5/6  Shell environment"
+    header "5/7  Shell environment"
     if confirm "Write ANDROID_HOME/PATH into ~/.bashrc (small marked block, easy to remove)?"; then
         write_env_block
     else
@@ -1819,8 +1851,16 @@ cmd_bootstrap() {
     fi
 
     # Verification + final guide
-    header "6/6  Verification"
+    header "6/7  Verification"
     cmd_doctor
+
+    # Final — temporary cleanup (temp dirs, sdkmanager temp, apt cache)
+    header "7/7  Cleanup"
+    if confirm "Remove temporary files and package-cache leftovers?"; then
+        cmd_cleanup
+    else
+        info "Skipped — run '$0 cleanup' any time"
+    fi
     print_post_install_guide
 }
 
@@ -1882,6 +1922,7 @@ BANNER
     echo "                                    (device check first, asks permission per step)."
     echo "                                    --auto: unattended, sane defaults, no prompts."
     echo "    (no command)                    Same as guided bootstrap"
+    echo "    cleanup                         Remove temp dirs, sdkmanager temp, apt cache"
     echo ""
     echo -e "  ${BOLD}INSTALL COMMANDS${NC}"
     echo ""
@@ -1948,6 +1989,7 @@ main() {
     case "$command" in
         bootstrap)              cmd_bootstrap "$@" ;;
         setup-env)              cmd_setup_env "$@" ;;
+        cleanup)                cmd_cleanup "$@" ;;
         list-versions)          cmd_list_versions "$@" ;;
         install-build-tools)    cmd_install_build_tools "$@" ;;
         install-platform-tools) cmd_install_platform_tools "$@" ;;

@@ -316,8 +316,9 @@ deployagent.inc, deployagentscript.inc, etc:
 | Command | Description |
 |---------|-------------|
 | `install.sh` | One-line auto installer, not part of `setup.sh`: `curl -fsSL https://raw.githubusercontent.com/soobujmiah/adt/main/install.sh \| bash` — fetches the repo into `$ADT_DIR` (default `~/adt`; git clone, tarball fallback when git is missing) and runs `setup.sh bootstrap --auto`. Always unattended (piped stdin cannot prompt); idempotent; honors `ADT_DIR`/`ADT_REF` |
-| `bootstrap` | Fresh-device full setup: `./setup.sh`/`bootstrap` = **guided** (device check first, permission per step); `bootstrap --auto` = **unattended** (defaults, no prompts). Host dependencies auto-install via apt/dnf with root or sudo; otherwise the exact root command is printed and the run stops. Phases: device/environment check → host deps → artifact-preferred tools → shims → sdkmanager + android-35 → persistent env → `doctor` → final guide |
+| `bootstrap` | Fresh-device full setup: `./setup.sh`/`bootstrap` = **guided** (device check first, permission per step); `bootstrap --auto` = **unattended** (defaults, no prompts). Host dependencies auto-install via apt/dnf with root or sudo; otherwise the exact root command is printed and the run stops. Phases: device/environment check → host deps → artifact-preferred tools → shims → sdkmanager + android-35 → persistent env → `doctor` → cleanup → final guide (verification always precedes the guide; cleanup is last) |
 | `setup-env` | Write/update the `ANDROID_HOME` + `PATH` block in `~/.bashrc` (idempotent) |
+| `cleanup` | Remove installer leftovers: own temp dirs (only `${TMPDIR:-/tmp}/adt-install.??????` — prefixed + exactly 6-char suffix, so unrelated files are never matched), `$SDK_ROOT/.temp`, and `apt-get clean` when privileged. ADT keeps no daemons/caches/background state, so this is the entire "optimization" surface; also runs as bootstrap phase 7/7 |
 | `list-versions` | Show all available versions with status |
 | `install-build-tools <ver>` | Download pre-built (verified) or error with guidance |
 | `install-platform-tools <ver>` | Same for platform-tools |
