@@ -14,6 +14,7 @@
 #   ./setup.sh install-cmake 3.22.1          # Create CMake shim
 #   ./setup.sh install-cmd-tools             # Install sdkmanager
 #   ./setup.sh install-platforms android-35   # Install Android platform
+#   ./setup.sh install-profile validated     # Install the validated NDK27+BT35.0.2+API36 bundle
 #   ./setup.sh build-all                     # Build + install everything
 #   ./setup.sh build-build-tools 35.0.2      # Build from AOSP source
 #   ./setup.sh build-platform-tools 35.0.2   # Build from AOSP source
@@ -823,6 +824,57 @@ cmd_install_platforms() {
             run_sdkmanager "${packages[@]}"
         fi
     fi
+}
+
+# ── install-profile ────────────────────────────────────────────────────────────
+#
+# A "profile" is just a named bundle of already-verified component versions
+# recorded in versions.json (see the "profiles" key) — nothing here builds or
+# verifies anything new. It exists so a fresh device can reproduce my
+# validated configuration (docs/REAL_DEVICE_BUILD_VALIDATION.md) with one
+# command instead of three, entirely by delegating to the existing
+# install-build-tools / install-ndk / install-platforms commands.
+
+# Look up profile "$1"'s component versions. Echoes
+# "<build-tools>|<ndk>|<platforms>" and returns 0, or returns 1 (no output)
+# if the profile isn't in versions.json.
+profile_versions() {
+    local name="$1" bt ndk platform
+    bt="$(versions_query ".[\"profiles\"][\"${name}\"][\"components\"][\"build-tools\"]")"
+    [[ -z "$bt" ]] && return 1
+    ndk="$(versions_query ".[\"profiles\"][\"${name}\"][\"components\"][\"ndk\"]")"
+    platform="$(versions_query ".[\"profiles\"][\"${name}\"][\"components\"][\"platforms\"]")"
+    echo "${bt}|${ndk}|${platform}"
+}
+
+cmd_install_profile() {
+    local name="${1:-validated}"
+    detect_sdk_root
+
+    local resolved
+    resolved="$(profile_versions "$name")" \
+        || die "Unknown profile: ${name}\n  Profiles are listed in versions.json under \"profiles\". Currently available: validated"
+
+    local bt_version="${resolved%%|*}"
+    local rest="${resolved#*|}"
+    local ndk_version="${rest%%|*}"
+    local platform="${rest#*|}"
+
+    header "ADT profile: ${name}"
+    echo "  build-tools: ${bt_version}"
+    echo "  NDK:         ${ndk_version}"
+    echo "  Platform:    platforms;${platform}"
+    echo ""
+    info "Installing the exact configuration I validated end-to-end on a real ARM64 Android device (docs/REAL_DEVICE_BUILD_VALIDATION.md)."
+    echo ""
+
+    cmd_install_build_tools "$bt_version"
+    cmd_install_ndk "$ndk_version"
+    cmd_install_platforms "$platform"
+
+    echo ""
+    ok "Profile '${name}' installed: build-tools ${bt_version}, NDK ${ndk_version}, platforms;${platform}"
+    echo -e "  ${DIM}Verify with: $0 doctor${NC}"
 }
 
 # ── build-build-tools ──────────────────────────────────────────────────────────
@@ -2045,6 +2097,7 @@ BANNER
     echo "    install-cmake [version]           Create CMake shim (default: 3.22.1)"
     echo "    install-cmd-tools                 Install sdkmanager"
     echo "    install-platforms [packages]      Install Android platforms"
+    echo "    install-profile [name]            Install a named bundle of verified versions (default: validated)"
     echo ""
     echo -e "  ${BOLD}BUILD COMMANDS${NC} ${DIM}(from AOSP source)${NC}"
     echo ""
@@ -2110,6 +2163,7 @@ main() {
         install-cmake)          cmd_install_cmake "$@" ;;
         install-cmd-tools)      cmd_install_cmd_tools "$@" ;;
         install-platforms)      cmd_install_platforms "$@" ;;
+        install-profile)        cmd_install_profile "$@" ;;
         build-build-tools)      cmd_build_build_tools "$@" ;;
         build-platform-tools)   cmd_build_platform_tools "$@" ;;
         build-all)              cmd_build_all "$@" ;;

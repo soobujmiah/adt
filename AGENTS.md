@@ -327,6 +327,7 @@ deployagent.inc, deployagentscript.inc, etc:
 | `install-cmake [ver]` | Create CMake shim (filters Android flags) |
 | `install-cmd-tools` | Install sdkmanager |
 | `install-platforms [pkgs]` | Install Android platforms via sdkmanager |
+| `install-profile [name]` | Install a named bundle of already-verified versions from `versions.json`'s `profiles` key by calling `install-build-tools`/`install-ndk`/`install-platforms` in sequence — builds/verifies nothing new. Default/only profile: `validated` (build-tools 35.0.2 + NDK 27.2.12479018 + platforms;android-36 — see `docs/REAL_DEVICE_BUILD_VALIDATION.md`) |
 | `build-build-tools <ver>` | Build from AOSP source |
 | `build-platform-tools <ver>` | Build from AOSP source |
 | `doctor` | Diagnose setup (checks arch per build-tools version) |

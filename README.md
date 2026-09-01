@@ -304,8 +304,19 @@ Honesty boundary: the full chain up to signed, installed, executing native APKs 
 ./setup.sh install-cmake                   # CMake shim (default 3.22.1)
 ./setup.sh install-platforms android-35
 ./setup.sh install-cmd-tools
+./setup.sh install-profile validated       # one command for the exact validated bundle below
 ./setup.sh setup-gradle
 ./setup.sh build-all                       # build + install everything from AOSP source
+```
+
+### Profiles
+
+A profile is just a named bundle of already-verified component versions, recorded in `versions.json`'s `profiles` key. Installing one doesn't build or verify anything new — it calls the same `install-build-tools`/`install-ndk`/`install-platforms` commands above with the bundle's versions.
+
+The only profile right now is `validated`: build-tools `35.0.2` + NDK `27.2.12479018` + `platforms;android-36` — the exact configuration I validated end-to-end on my real device (see `docs/REAL_DEVICE_BUILD_VALIDATION.md`). It doesn't change my device-wide Gradle `aapt2FromMavenOverride` default beyond what it already is (35.0.2), since that's what the profile installs anyway.
+
+```bash
+./setup.sh install-profile validated
 ```
 
 Installation order for a verified version is: checked-in `artifacts/` tarball first (SHA256-verified against `artifacts/SHA256SUMS`), then a GitHub Release on this repository when one is registered in `versions.json`, otherwise a source build. When a verified artifact exists, installation should prefer the artifact rather than rebuilding from source.

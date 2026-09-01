@@ -206,7 +206,7 @@ These are future engineering capabilities I haven't built yet — not reasons to
 3. Ensure setup/doctor scripts encode the NDK 27 compatibility rule for the validated PRoot case. — **done**
 4. Add a short capability check that detects an unusable x86_64 NDK host tool before Gradle wastes time. — **done** (see Follow-up below)
 5. Add deterministic validation commands to ADT documentation/scripts. — **partially done** (doctor's own remediation commands, plus the `COMMANDS.md` troubleshooting row for this exact failure)
-6. Optionally package the validated configuration as an explicit ADT profile, without breaking existing users. — **still open**, optional
+6. Optionally package the validated configuration as an explicit ADT profile, without breaking existing users. — **done** (see Follow-up below)
 7. Commit documentation changes. — **done**
 
 ## Follow-up: automated host-tool architecture detection (2026-09-01)
@@ -286,6 +286,15 @@ I rebuilt the canonical NDK 27 configuration afterward to confirm I hadn't distu
 ### Unrelated regression I found and fixed along the way
 
 While re-testing, I hit a `compileDebugJavaWithJavac` failure: "Installed Build Tools revision 36.0.0 is corrupted." AGP auto-selects the highest installed build-tools version (36.0.0, which I'd added earlier) for that JVM-only dependency check, unrelated to `aapt2FromMavenOverride`. My earlier build-tools 36.0.0 install had replaced Google's whole directory with just the 6 ARM64 binaries, silently dropping other files Google ships there (`core-lambda-stubs.jar`, `apksigner`, `d8`, `lib/`, `lib64/`, etc.) that have nothing to do with architecture but are still required. I fixed it by merging the preserved backup (`~/sdk-backups/build-tools-36.0.0.google-x86_64-bak`) back in without overwriting the already-verified ARM64 binaries (`cp -rn`, no-clobber). `setup.sh`'s `install_local_artifact` function has this same whole-directory-replacement gap for any future component whose artifact tarball only carries a subset of files a real install needs — worth revisiting if it recurs, but out of scope to fix generically here.
+
+## Follow-up: explicit "validated" profile (2026-09-01)
+
+I've completed recommended-next-phase item 6. `versions.json` gained a `profiles` key with one entry, `validated`, naming exactly the three already-verified component versions above (build-tools 35.0.2, NDK 27.2.12479018, platforms;android-36) — nothing new built or verified, just named as a bundle. `setup.sh` gained `install-profile [name]` (default `validated`), which reads that entry and calls the existing `install-build-tools`/`install-ndk`/`install-platforms` commands in sequence — no new install logic.
+
+I tested this two ways:
+
+- `tests/test_profile.sh` (4 cases, run by CI): the profile resolves to the right three versions, an unknown profile name resolves to nothing, and — so a future edit to `versions.json` can't silently point `validated` at something unverified — the profile's own components are checked against the registry's own verified/shim status.
+- A real run on my device: `./setup.sh install-profile validated` completed cleanly. Since all three components were already installed, this was idempotent — it re-installed build-tools 35.0.2 from the checked-in artifact (no build), recreated the NDK 27 shim (same target as before), and confirmed platforms;android-36 was already present (no download). `./setup.sh doctor` still reports all checks passing afterward, and `android.aapt2FromMavenOverride` is still `35.0.2` — installing the profile didn't change my validated default, because the profile *is* that default.
 
 ## Completion condition
 

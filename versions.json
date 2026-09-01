@@ -21,6 +21,9 @@
     "26.1.10909125": {"status": "shim", "notes": "I use this as a shim for llvm-strip for older Flutter versions."}
   },
   "cmdline-tools": {"latest": {"status": "verified", "url": "https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip", "notes": "Java-based, runs on any architecture."}},
+  "profiles": {
+    "validated": {"status": "verified", "components": {"build-tools": "35.0.2", "ndk": "27.2.12479018", "platforms": "android-36"}, "tested_on": "ARM64 PRoot Debian real physical Android 16 device (Redmi Turbo 4 Pro, 25053RT47C)", "notes": "This bundles only already-verified component versions — it doesn't build or verify anything new. It's the exact configuration I validated end-to-end: clean Flutter/Gradle assembleDebug, APK install via ADB, primaryCpuAbi=arm64-v8a, app launch, and a clean crash/ANR scan (see docs/REAL_DEVICE_BUILD_VALIDATION.md). Install with `./setup.sh install-profile validated`."}
+  },
   "java-tools": {
     "d8": {"status": "verified", "source": "cmdline-tools/latest/lib/r8.jar", "version_observed": "8.2.33", "execution": "JVM"},
     "apksigner": {"status": "verified-runtime-dependency", "package": "Debian apksigner 35.0.2-1 + libapksig-java 35.0.2-1", "execution": "JVM", "notes": "I used this successfully for controlled APK signing and verification on my ARM64 PRoot Debian environment; I haven't packaged it via ADT itself yet."}
