@@ -300,6 +300,78 @@ covered by verified platform-tools 35.0.2, and adding a second verified
 platform-tools version with no distinct purpose would just be
 duplication.
 
+## Follow-up: NDK 28 llvm-strip trap fixed (2026-09-01)
+
+The "What the agent should NOT do" list above says "do not retry NDK 28
+merely to see the same failure again" — that guidance predates this fix
+and no longer applies verbatim; see `versions.json`'s `ndk` →
+`28.2.13676358` entry, which now says the same thing this section does
+and explicitly notes it supersedes the original "do not use" note.
+
+Root cause (from the earlier `doctor` follow-up above): NDK 28's bundled
+`llvm-strip` resolves (via a `llvm-strip -> llvm-objcopy` symlink, present
+in both NDK 27 and 28 as shipped by Google) to a real x86_64 ELF
+`llvm-objcopy` that cannot execute under this ARM64 PRoot. NDK 27 already
+had a working fix — its `llvm-objcopy` had been replaced with a shim
+script delegating to a real ARM64 tool — but NDK 28 never got the same
+treatment.
+
+Fix: `./setup.sh install-ndk 28.2.13676358` — ADT's own existing
+`create_ndk_shim` (unchanged, no new code needed) writes a shim script to
+the `llvm-strip` path; since it's a symlink to `llvm-objcopy`, this write
+lands on `llvm-objcopy` itself, exactly mirroring NDK 27's structure. The
+shim delegates to `llvm-strip` resolved from `$PATH` at shim-creation time
+(`/usr/lib/llvm-19/bin/llvm-strip`, Debian's real ARM64-native LLVM 19).
+
+Verified, not assumed:
+
+```text
+$ file .../ndk/28.2.13676358/.../bin/llvm-strip
+symbolic link to llvm-objcopy          # unchanged structure
+$ .../llvm-strip --version
+llvm-strip, compatible with GNU strip
+Debian LLVM version 19.1.7             # real execution, not just present
+
+$ ./setup.sh doctor
+NDK 28.2.13676358: llvm-strip OK (script)   # was ERROR before the fix
+```
+
+Real end-to-end re-test (project temporarily pinned to
+`ndkVersion = "28.2.13676358"`, then reverted back to the canonical
+`27.2.12479018` afterward — this does not change the canonical default):
+
+```text
+> Task :app:stripDebugDebugSymbols        # previously FAILED here
+> Task :app:packageDebug
+> Task :app:assembleDebug
+BUILD SUCCESSFUL in 1m 40s
+
+adb install -r app-debug.apk  -> Success
+primaryCpuAbi=arm64-v8a
+App launched, PID observed, logcat crash/ANR scan clean
+```
+
+The canonical NDK 27 configuration was re-built afterward to confirm it
+was not disturbed by any of this — also `BUILD SUCCESSFUL`.
+
+### Unrelated regression found and fixed along the way
+
+While re-testing, `compileDebugJavaWithJavac` failed with "Installed
+Build Tools revision 36.0.0 is corrupted" — AGP auto-selects the highest
+installed build-tools version (36.0.0, added in the previous session) for
+that JVM-only dependency check, unrelated to `aapt2FromMavenOverride`.
+The earlier build-tools 36.0.0 install had replaced Google's whole
+directory with just the 6 ARM64 binaries, silently dropping other files
+Google ships there (`core-lambda-stubs.jar`, `apksigner`, `d8`,
+`lib/`, `lib64/`, etc.) that have nothing to do with architecture but are
+still required. Fixed by merging the preserved backup
+(`~/sdk-backups/build-tools-36.0.0.google-x86_64-bak`) back in without
+overwriting the already-verified ARM64 binaries (`cp -rn`, no-clobber).
+`setup.sh`'s `install_local_artifact` function has this same
+whole-directory-replacement gap for any future component whose artifact
+tarball only carries a subset of files a real install needs — worth
+revisiting if it recurs, but out of scope to fix generically here.
+
 ## Handoff completion condition
 
 The agent's documentation task is complete when the repository contains:
