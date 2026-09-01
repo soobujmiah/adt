@@ -225,7 +225,16 @@ The AOSP source tree and local build output are deliberately excluded from norma
 
 A complete from-scratch install on any aarch64 Linux with glibc (Termux + PRoot Debian on an ARM64 phone is the validated target; Asahi/RPi/ARM64 servers follow the same path).
 
-**Two full-setup modes:**
+**One-liner (fully automatic):**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/soobujmiah/adt/main/install.sh | bash
+source ~/.bashrc
+```
+
+It fetches the repo into `~/adt` (git clone when git exists, otherwise the GitHub tarball — only `curl` + `tar` + `gzip` are required) and runs the whole setup unattended. Re-running it updates an existing clone and skips what is already installed. Override the install location with `ADT_DIR=/some/path` before `bash`.
+
+**Two full-setup modes** (from a clone):
 
 - **Guided (default):** `./setup.sh` or `./setup.sh bootstrap` — checks the device first, then asks your permission before each step (host packages, tools, network downloads, shell config).
 - **Automatic:** `./setup.sh bootstrap --auto` — start-to-finish unattended: device check, host dependency install, artifact-preferred tools, shims, sdkmanager + platform, environment, verification, final guide. Zero prompts.
