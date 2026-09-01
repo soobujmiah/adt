@@ -333,7 +333,7 @@ This is the validation standard I use before calling the corresponding pipeline 
 
 ## Command Reference
 
-Everyday commands for every installed tool — how to connect a device with `adb` (USB and wireless pairing), `aapt2`/`zipalign`/`apksigner` APK pipeline, `sdkmanager`, NDK/CMake shims, troubleshooting table: **[COMMANDS.md](COMMANDS.md)** (বাংলা ব্যাখ্যা, ইংরেজি কমান্ড)। The post-install guide printed by `bootstrap` also points there.
+Everyday commands for every installed tool — how to connect a device with `adb` (USB and wireless pairing), `aapt2`/`zipalign`/`apksigner` APK pipeline, `sdkmanager`, NDK/CMake shims, troubleshooting table: **[COMMANDS.md](COMMANDS.md)**. The post-install guide printed by `bootstrap` also points there.
 
 ## Project Boundary
 

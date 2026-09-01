@@ -1,114 +1,114 @@
-# ADT কমান্ড রেফারেন্স — প্রতিটা টুল কিভাবে ব্যবহার করবে
+# ADT Command Reference — how to use every tool
 
-প্রতিটা টুলের নিচে: বাংলায় ব্যাখ্যা + ঠিক কোন কমান্ড কী করে। সব কমান্ড `source ~/.bashrc` করার পরে সরাসরি চলবে (PATH-এ থাকে)। কিছু কাজ না করলে আগে `./setup.sh doctor` চালাও — ওটাই বলে দেবে কোন অংশ ভাঙা।
+Each tool below: a short explanation, then the exact commands and what they do. After `source ~/.bashrc`, everything runs directly (all tools are on `PATH`). If something misbehaves, run `./setup.sh doctor` first — it pinpoints the broken piece.
 
 ---
 
-## ১. adb — ডিভাইসের সাথে কথা বলার প্রধান টুল
+## 1. adb — the main tool for talking to a device
 
-### ডিভাইস কানেক্ট করা
+### Connecting a device
 
-**USB/WiFi-ডিবাগিং দুটোতেই আগে ফোনে ডেভেলপার অপশন চালু করতে হবে:**
-Settings → About phone → **Build number**-এ ৭ বার ট্যাপ → তারপর Settings → Additional settings → **Developer options** → **USB debugging** চালু।
+**First, on the phone, enable Developer options (required for both USB and wireless):**
+Settings → About phone → tap **Build number** 7 times → then Settings → Additional settings → **Developer options** → enable **USB debugging**.
 
-**USB দিয়ে (সরাসরি ক্যাবল):**
+**Over USB (direct cable):**
 ```bash
-adb devices -l          # কানেক্ট করা ডিভাইস দেখাবে; প্রথমবার ফোনে "Allow USB debugging?" আসবে — Allow চাপো
+adb devices -l          # lists connected devices; the first time, the phone asks "Allow USB debugging?" — tap Allow
 ```
 
-**WiFi/ওয়্যারলেস দিয়ে (Android 11+, যেমন Redmi Turbo 4 Pro / Android 16):**
+**Over Wi‑Fi (wireless debugging, Android 11+ — e.g. Redmi Turbo 4 Pro / Android 16):**
 
-একই WiFi-তে থাকতে হবে। ফোনে: Developer options → **Wireless debugging** চালু → "Pair device with pairing code"-এ ট্যাপ করলে IP:port + ৬ সংখ্যার কোড দেখাবে।
+Both devices must be on the same Wi‑Fi. On the phone: Developer options → **Wireless debugging** ON → tap "Pair device with pairing code" — it shows an IP:port and a 6‑digit code.
 
 ```bash
-adb pair 192.168.1.5:37199      # পেয়ারিং স্ক্রিনের IP:port + কোড চাইবে (port বদলায় প্রতিবার)
-adb connect 192.168.1.5:5555    # তারপর মূল ওয়্যারলেস আইপি:পোর্টে কানেক্ট (পেয়ারিং port ≠ connect port!)
-adb devices -l                  # যাচাই
+adb pair 192.168.1.5:37199      # the pairing screen's IP:port; it asks for the code (the port changes every time)
+adb connect 192.168.1.5:5555    # THEN connect to the main wireless IP:port (pairing port ≠ connect port!)
+adb devices -l                  # verify
 ```
-> মনে রাখো: `pair` আর `connect` আলাদা ধাপ, আলাদা পোর্ট ব্যবহার করে — পেয়ারিং পোর্ট দিয়ে connect করলে হবে না।
+> Remember: `pair` and `connect` are separate steps using different ports — connecting to the pairing port will not work.
 
-**ফোন থেকে-ফোনে / একই ডিভাইসে (Termux→নিজের ফোন):** ওয়্যারলেস ডিবাগিং চালু করে উপরের pair/connect একইভাবে।
+**Phone-to-phone or same-device (Termux → own phone):** enable wireless debugging and follow the same pair/connect steps.
 
-### প্রতিদিনের adb কাজ
+### Everyday adb work
 
 ```bash
-adb devices -l                          # ডিভাইস তালিকা (model, transport সহ)
-adb -s emulator-5554 shell              # একাধিক ডিভাইস থাকলে -s দিয়ে বেছে নিতে হয়
-adb shell                               # ফোনের শেলে ঢোকো (exit দিয়ে বের হও)
-adb shell getprop ro.product.model      # মডেল পড়ো (যেকোনো prop এভাবে)
+adb devices -l                          # device list (with model, transport)
+adb -s emulator-5554 shell              # with multiple devices, pick one with -s
+adb shell                               # enter the phone's shell (leave with exit)
+adb shell getprop ro.product.model      # read the model (any prop works this way)
 adb shell getprop ro.build.version.release   # Android version
 
-adb push file.txt /sdcard/Download/     # PC→ফোন
-adb pull /sdcard/Download/file.txt .    # ফোন→PC
-adb install app.apk                     # APK ইনস্টল
-adb install -r app.apk                  # পুনঃইনস্টল (ডেটা রেখে)
-adb uninstall com.example.app           # আনইনস্টল
+adb push file.txt /sdcard/Download/     # PC → phone
+adb pull /sdcard/Download/file.txt .    # phone → PC
+adb install app.apk                     # install an APK
+adb install -r app.apk                  # reinstall (keeps data)
+adb uninstall com.example.app           # uninstall
 
-adb logcat                              # লাইভ লগ (Ctrl+C বন্ধ)
-adb logcat -d > log.txt                 # বর্তমান লগ ফাইলে সংরক্ষণ
-adb logcat *:E                          # শুধু error লেভেল
+adb logcat                              # live log (Ctrl+C to stop)
+adb logcat -d > log.txt                 # save current log to a file
+adb logcat *:E                          # error level only
 
-adb shell pm list packages | grep name  # ইনস্টলড প্যাকেজ খোঁজো
-adb shell screencap /sdcard/s.png && adb pull /sdcard/s.png   # স্ক্রিনশট
-adb shell input tap 540 1200            # স্ক্রিনে ট্যাপ সিমুলেট (x y)
-adb shell input keyevent KEYCODE_HOME   # বাটন প্রেস
+adb shell pm list packages | grep name  # find an installed package
+adb shell screencap /sdcard/s.png && adb pull /sdcard/s.png   # screenshot
+adb shell input tap 540 1200            # simulate a screen tap (x y)
+adb shell input keyevent KEYCODE_HOME   # press a button
 
-adb reboot                              # রিবুট
-adb reboot bootloader                   # fastboot মোডে যাও
-adb kill-server && adb start-server     # adb আটকে গেলে রিস্টার্ট
+adb reboot                              # reboot
+adb reboot bootloader                   # enter fastboot mode
+adb kill-server && adb start-server     # restart adb if it is stuck
 ```
 
-**"unauthorized" দেখালে:** ফোনের স্ক্রিন unlock করে Allow দাও; না এলে Developer options → "Revoke USB debugging authorizations" করে আবার চেষ্টা।
+**If you see "unauthorized":** unlock the phone and tap Allow; if it never appears, use Developer options → "Revoke USB debugging authorizations" and try again.
 
 ---
 
-## ২. fastboot — বুটলোডার লেভেল কাজ (সাবধানে!)
+## 2. fastboot — bootloader-level work (careful!)
 
 ```bash
-adb reboot bootloader       # প্রথমে ফোন bootloader মোডে নাও
-fastboot devices            # fastboot-এ ডিভাইস দেখা যাচ্ছে কিনা
-fastboot flashing unlock    # ⚠️ বুটলোডার আনলক — সব ডেটা মুছে যাবে!
-fastboot reboot             # স্বাভাবিক বুটে ফিরো
+adb reboot bootloader       # first put the phone into bootloader mode
+fastboot devices            # is the device visible to fastboot?
+fastboot flashing unlock    # ⚠️ unlocks the bootloader — erases ALL data!
+fastboot reboot             # boot back to normal
 ```
-ফ্ল্যাশিং ভুল ইমেজে **ফোন ব্রিক** করতে পারে — যা করছো নিশ্চিত না হলে fastboot-এ কিছু লিখো না।
+Flashing a wrong image can **brick the phone** — do not write anything in fastboot unless you are sure.
 
 ---
 
-## ৩. aapt2 — APK রিসোর্স টুল (APK বিল্ড/বিশ্লেষণ)
+## 3. aapt2 — APK resource tool (build / inspect APKs)
 
 ```bash
-aapt2 version                          # সংস্করণ
-aapt2 dump badging app.apk             # প্যাকেজ নাম, versionCode, minSdk, permissions
-aapt2 dump permissions app.apk         # শুধু পারমিশন তালিকা
-aapt2 list app.apk                     # APK-র ভেতরের ফাইল তালিকা
+aapt2 version                          # version
+aapt2 dump badging app.apk             # package name, versionCode, minSdk, permissions
+aapt2 dump permissions app.apk         # permission list only
+aapt2 list app.apk                     # files inside the APK
 ```
 
-APK **বিল্ড** পাইপলাইন (রিসোর্স compile → link → zipalign → apksigner সাইন):
+APK **build** pipeline (compile resources → link → zipalign → apksigner sign):
 ```bash
-aapt2 compile --dir res/ -o compiled.zip             # রিসোর্স compile
+aapt2 compile --dir res/ -o compiled.zip             # compile resources
 aapt2 link -o app-unsigned.apk -I $ANDROID_HOME/platforms/android-35/android.jar \
-    compiled.zip --manifest AndroidManifest.xml -A assets --java gen/    # link + R.java জেনারেট
-zipalign -f 4 app-unsigned.apk app-aligned.apk        # 4-বাইট অ্যালাইন (আবশ্যক)
+    compiled.zip --manifest AndroidManifest.xml -A assets --java gen/    # link + generate R.java
+zipalign -f 4 app-unsigned.apk app-aligned.apk        # 4-byte alignment (required)
 ```
 
-Gradle প্রজেক্টে ADT-র aapt2 ব্যবহার করাতে:
+To make Gradle projects use ADT's aapt2:
 ```bash
-./setup.sh setup-gradle       # gradle.properties-এ android.aapt2FromMavenOverride বসায়
+./setup.sh setup-gradle       # writes android.aapt2FromMavenOverride into gradle.properties
 ```
 
 ---
 
-## ৪. বাকি platform-tools / build-tools
+## 4. Remaining platform-tools / build-tools
 
 ```bash
-fastboot, sqlite3, etc1tool, hprof-conv     # platform-tools-এ
-aapt dump badging app.apk                   # aapt (legacy) — দ্রুত package info
-aidl in.aidl                                # AIDL ইন্টারফেস → Java স্টাব
-dexdump classes.dex                         # dex বিশ্লেষণ
-split-select                                # APK split বাছাই টুল
+fastboot, sqlite3, etc1tool, hprof-conv     # in platform-tools
+aapt dump badging app.apk                   # aapt (legacy) — quick package info
+aidl in.aidl                                # AIDL interface → Java stub
+dexdump classes.dex                         # dex analysis
+split-select                                # APK split selection tool
 ```
 
-**APK সাইন করা (JVM টুল, আলাদা ইনস্টল):**
+**APK signing (JVM tool, installed separately):**
 ```bash
 sudo apt install apksigner
 apksigner sign --ks my.keystore app-aligned.apk
@@ -117,61 +117,61 @@ apksigner verify --print-certs app.apk
 
 ---
 
-## ৫. sdkmanager — সরকারি প্যাকেজ ম্যানেজার (Java টুল)
+## 5. sdkmanager — the official package manager (Java tool)
 
 ```bash
-sdkmanager --list_installed                    # কী কী ইনস্টলড
-sdkmanager --list | head -30                   # কী কী পাওয়া যায়
-sdkmanager "platforms;android-35"              # প্ল্যাটফর্ম ইনস্টল
-sdkmanager "build-tools;35.0.0"                # (মনে রাখো: ARM64-এ ADT-র আর্টিফ্যাক্টই ব্যবহার করো; এরা x86)
-sdkmanager --uninstall "platforms;android-34"  # পুরনো প্যাকেজ সরাও (স্টোরেজ বাঁচায়)
-yes | sdkmanager --licenses                    # লাইসেন্স অটো-গ্রহণ
+sdkmanager --list_installed                    # what is installed
+sdkmanager --list | head -30                   # what is available
+sdkmanager "platforms;android-35"              # install a platform
+sdkmanager "build-tools;35.0.0"                # (note: on ARM64, prefer ADT's artifacts; these are x86)
+sdkmanager --uninstall "platforms;android-34"  # remove old packages (saves storage)
+yes | sdkmanager --licenses                    # accept licenses automatically
 ```
-**ইন্টারনেট লাগে** — একমাত্র এটাই অনলাইন-নির্ভর অংশ।
+**Requires internet** — the only online-dependent part of the SDK.
 
 ---
 
-## ৬. NDK / CMake শিম — C/C++ কম্পাইল
+## 6. NDK / CMake shims — C/C++ compilation
 
-ADT-র NDK "শিম" = build system যখন NDK খোঁজে, তখন ডিভাইসের **Termux clang/system টুলে** পাঠিয়ে দেয় (x86 NDK বাইনারি PRoot-এ চলে না — এজন্যেই শিম)।
+ADT's NDK "shim" means: when a build system looks for the NDK, requests are redirected to the **device's Termux clang / system tools** (x86 NDK binaries cannot run under PRoot — that is exactly why the shims exist).
 
-**সাধারণ C/C++ ফাইল Android-এর জন্য কম্পাইল (ডিভাইসে ভ্যালিডেটেড পদ্ধতি):**
+**Compiling a plain C/C++ file for Android (validated on-device recipe):**
 ```bash
-clang --target=aarch64-linux-android24 hello.c -o hello   # Termux clang দিয়ে native বাইনারি
-./hello                                                    # সরাসরি চলে
+clang --target=aarch64-linux-android24 hello.c -o hello   # native binary via Termux clang
+./hello                                                    # runs directly
 ```
 
-**CMake প্রজেক্ট:** `cmake` আর `ninja` ইনস্টলড থাকে (shim প্রজেক্টের `find_package`-সামঞ্জস্য ঠিক করে দেয়) — সাধারণভাবে `cmake -B build -GNinja && ninja -C build` চলে।
+**CMake projects:** `cmake` and `ninja` are installed (the shim handles the project's `find_package` compatibility) — the usual `cmake -B build -GNinja && ninja -C build` works.
 
-llvm-strip শিম auto-বসে — নিজে কিছু করতে হয় না।
+The llvm-strip shim is installed automatically — nothing to do manually.
 
 ---
 
-## ৭. এনভায়রনমেন্ট / রক্ষণাবেক্ষণ
+## 7. Environment / maintenance
 
 ```bash
-echo $ANDROID_HOME                # SDK কোথায় (bootstrap নিজে ~/.bashrc-এ লিখে দেয়)
-./setup.sh setup-env              # env ব্লক নষ্ট হলে আবার লিখে দাও
-./setup.sh status                 # কী ইনস্টলড, কোন সংস্করণ
-./setup.sh doctor                 # সমস্যা ধরো (সব চেক একসাথে)
-./setup.sh cleanup                # temp/ডাউনলোড/AOSP ট্রি ক্লিন (স্টোরেজ ফেরত)
-./setup.sh list-versions          # কোন কোন সংস্করণ পাওয়া যায়/ইনস্টল করা যায়
+echo $ANDROID_HOME                # where the SDK lives (bootstrap writes it to ~/.bashrc itself)
+./setup.sh setup-env              # rewrite the env block if it got lost
+./setup.sh status                 # what is installed, which versions
+./setup.sh doctor                 # diagnose problems (all checks at once)
+./setup.sh cleanup                # clean temp/downloads/AOSP trees (reclaims storage)
+./setup.sh list-versions          # which versions exist / can be installed
 ```
 
-`ANDROID_HOME` মুছে ফেললে বা নতুন শেলে না এলে: `source ~/.bashrc`।
+If `ANDROID_HOME` was deleted or a new shell does not see it: `source ~/.bashrc`.
 
 ---
 
-## ৮. সমস্যা → দ্রুত সমাধান টেবিল
+## 8. Symptom → quick fix table
 
-| লক্ষণ | সমাধান |
+| Symptom | Fix |
 |---|---|
-| `adb: command not found` | `source ~/.bashrc`; না হলে `./setup.sh doctor` |
-| `unauthorized` | ফোন unlock → Allow; না হলে revoke authorizations |
-| `no devices/emulators found` (ওয়্যারলেস) | `adb connect IP:PORT` আবার; দুটো একই WiFi-তে কিনা দেখো |
-| sdkmanager-এ Java error | Java নেই — `./setup.sh bootstrap --auto` চালাও (স্বয়ংক্রিয় বসবে) |
-| স্টোরেজ ফুল | `./setup.sh cleanup` + `sdkmanager --uninstall` পুরনো platform |
-| সব অদ্ভুত আচরণ | `./setup.sh doctor` আউটপুট পড়ো — কোন চেক লাল সেটাই সমস্যা |
+| `adb: command not found` | `source ~/.bashrc`; otherwise run `./setup.sh doctor` |
+| `unauthorized` | Unlock the phone → Allow; otherwise revoke authorizations and retry |
+| `no devices/emulators found` (wireless) | re-run `adb connect IP:PORT`; check both devices are on the same Wi‑Fi |
+| Java error from sdkmanager | Java is missing — run `./setup.sh bootstrap --auto` (installs it automatically) |
+| Storage full | `./setup.sh cleanup` + `sdkmanager --uninstall` for old platforms |
+| Generally odd behaviour | read `./setup.sh doctor` output — whichever check is red is the problem |
 
 ---
-*পুরো সেটআপ এক লাইনে:* `curl -fsSL https://raw.githubusercontent.com/soobujmiah/adt/main/install.sh | bash`
+*Full setup in one line:* `curl -fsSL https://raw.githubusercontent.com/soobujmiah/adt/main/install.sh | bash`
