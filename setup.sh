@@ -458,6 +458,9 @@ print_post_install_guide() {
     ./setup.sh status                 # what is installed
     ./setup.sh doctor                 # re-verify any time
 
+  Full per-tool command reference (adb connect, aapt2, sdkmanager, ...):
+    COMMANDS.md  (in this repo)
+
   APK signing (JVM tool, runs on ARM64):
     apt install apksigner
 

@@ -13,6 +13,7 @@ This project adapts [lzhiyong/android-sdk-tools](https://github.com/lzhiyong/and
 ├── PLAN.md              # Detailed build plan and architecture
 ├── AGENTS.md            # This file - project knowledge for agents/contributors
 ├── README.md            # User-facing documentation
+├── COMMANDS.md          # Per-tool usage reference (Bangla explanations + English commands); printed-link at end of bootstrap
 ├── .gitignore           # Ignores src/ (AOSP clones) and build/ (output)
 ├── .github/workflows/   # CI/CD
 │   ├── ci.yml           # Sanity check on push to main (verified versions only)
