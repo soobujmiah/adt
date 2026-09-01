@@ -355,6 +355,10 @@ ADT is the canonical project for this ARM64 Android development-tooling work.
 
 This documentation does not belong in LAI, Self AI, SKB, or unrelated application repositories. Higher-level projects may consume ADT's resulting capabilities, but ADT remains responsible for the underlying ARM64 development tooling.
 
+## License
+
+Apache License 2.0 — see [`LICENSE`](LICENSE). ADT's build system is adapted from [lzhiyong/android-sdk-tools](https://github.com/lzhiyong/android-sdk-tools) (Apache 2.0); the built tools themselves compile official AOSP source (`repos.json`), predominantly Apache 2.0 with some permissively-licensed (BSD/MIT-family) third-party components under `external/`, as AOSP itself aggregates.
+
 ## Next Evolution
 
 When I add another tool or version, I will follow the same sequence:

@@ -43,6 +43,11 @@ jobs:
     name: Build (Linux ARM64)
     runs-on: ubuntu-24.04-arm
     timeout-minutes: 60
+    # The repo's default workflow token permission is read-only, and the
+    # "Create GitHub Release" step below needs to write a release. Scoped to
+    # just this job — ci.yml never writes anything and stays read-only.
+    permissions:
+      contents: write
 
     steps:
       - name: Checkout
