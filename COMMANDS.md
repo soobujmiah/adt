@@ -172,6 +172,7 @@ If `ANDROID_HOME` was deleted or a new shell does not see it: `source ~/.bashrc`
 | Java error from sdkmanager | Java is missing — run `./setup.sh bootstrap --auto` (installs it automatically) |
 | Storage full | `./setup.sh cleanup` + `sdkmanager --uninstall` for old platforms |
 | Generally odd behaviour | read `./setup.sh doctor` output — whichever check is red is the problem |
+| Gradle native build fails with `Cannot run program ".../llvm-strip"` / `Exec failed, error: 2` | An NDK version's bundled host tool is x86_64 and cannot run here — run `./setup.sh doctor` to confirm which NDK version, then `./setup.sh install-ndk <version>` to install the ARM64-compatible shim, or pin `ndkVersion` in `app/build.gradle.kts` to a version `doctor` reports OK |
 
 ---
 *Full setup in one line:* `curl -fsSL https://raw.githubusercontent.com/soobujmiah/adt/main/install.sh | bash`

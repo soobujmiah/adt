@@ -219,6 +219,46 @@ These are future engineering capabilities, not reasons to reopen the completed t
 6. Optionally package the validated configuration as an explicit ADT profile, without breaking existing users.
 7. Commit documentation changes.
 
+## Follow-up: automated host-tool architecture detection (2026-09-01)
+
+Recommended-next-phase item 4 ("Add a short capability check that detects
+an unusable x86_64 NDK host tool before Gradle wastes time") is done.
+
+`setup.sh` gained a generic `detect_binary_arch()` primitive (resolves
+symlinks, distinguishes a delegating shim script from a real ELF, and
+classifies the ELF's machine type) plus `NDK_HOST_TOOL_BINS`, a small,
+extensible list of NDK host-tool entry points the Android Gradle Plugin is
+known to invoke by a fixed path regardless of `$PATH`. `./setup.sh doctor`
+now checks each of those paths' actual architecture instead of only
+checking `-x`, so an NDK version whose bundled host tool is a real x86_64
+ELF is now reported explicitly, instead of silently passing as "OK" the
+way NDK 28's llvm-strip previously did. The same primitive replaced the
+duplicated `file -b`/case-statement arch-sniffing that already existed for
+build-tools and platform-tools in `doctor`/`status`/`setup-gradle`, so
+there is now one tested code path for this instead of several copies.
+
+Live re-verification on the same validated device/environment this
+handoff describes, run non-destructively (`doctor`/`status` only, no
+installs/removals):
+
+```text
+:: NDK 27.2.12479018: llvm-strip OK (script)
+:: ERROR:   NDK 28.2.13676358: llvm-strip is x86_64 — cannot execute under ARM64 PRoot
+    Gradle/AGP call this exact path directly, bypassing $PATH.
+    Path: /home/sbj/android-sdk/ndk/28.2.13676358/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip
+    Fix:  ./setup.sh install-ndk 28.2.13676358   (recreates the ARM64-compatible shim)
+```
+
+NDK 27 and build-tools 35.0.2 (the validated configuration) still report
+OK with no change in verdict — this closed validation gate was not
+reopened or altered. build-tools 36.0.0's x86_64 aapt2 continues to be
+reported (this was already detected before this change; it now shares the
+same underlying primitive as everything else instead of separate
+duplicated logic). Unit tests for `detect_binary_arch()` covering native
+ELF, x86_64 ELF, script shims, symlinks (to both cases), and missing
+paths/targets are in `tests/test_arch_detection.sh`, run by CI's new
+`unit-tests` job.
+
 ## Handoff completion condition
 
 The agent's documentation task is complete when the repository contains:

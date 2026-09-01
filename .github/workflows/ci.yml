@@ -17,6 +17,17 @@ env:
   PLATFORM_TOOLS_BINS: "adb fastboot sqlite3 etc1tool hprof-conv mke2fs e2fsdroid make_f2fs make_f2fs_casefold sload_f2fs"
 
 jobs:
+  unit-tests:
+    name: setup.sh unit tests
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run detect_binary_arch tests
+        run: ./tests/test_arch_detection.sh
+
   build:
     name: Build (Linux ARM64)
     runs-on: ubuntu-24.04-arm

@@ -37,6 +37,14 @@ BUILD_TOOLS_BINS=(aapt aapt2 aidl zipalign dexdump split-select)
 # Platform-tools binaries (native, need ARM64 builds)
 PLATFORM_TOOLS_BINS=(adb fastboot sqlite3 etc1tool hprof-conv mke2fs e2fsdroid make_f2fs make_f2fs_casefold sload_f2fs)
 
+# NDK "host tools" that the Android Gradle Plugin invokes by a fixed path
+# under toolchains/llvm/prebuilt/<host-tag>/bin/ regardless of $PATH — this
+# is the entry point that tripped the documented NDK 28 x86_64 llvm-strip
+# trap (see docs/ANDROID_ARM64_BUILD_HANDOFF.md). Add a name here if a
+# future AGP/Gradle version is found to invoke another NDK host tool the
+# same way; detect_binary_arch() itself is generic and needs no changes.
+NDK_HOST_TOOL_BINS=(llvm-strip)
+
 # Build dependencies by distro family
 DEPS_FEDORA="gcc gcc-c++ cmake ninja-build git python3 golang bison flex zlib-devel openssl-devel libusb1-devel pcre2-devel expat-devel libpng-devel"
 DEPS_DEBIAN="gcc g++ cmake ninja-build git python3 golang bison flex zlib1g-dev libssl-dev libusb-1.0-0-dev libpcre2-dev libexpat1-dev libpng-dev"
@@ -89,6 +97,59 @@ check_arch() {
     if [[ "$arch" != "aarch64" && "$arch" != "arm64" ]]; then
         die "This tool only supports Linux ARM64 (aarch64), but you are on: $arch"
     fi
+}
+
+# ── Host-tool architecture trap detection ───────────────────────────────────
+#
+# Google's Android SDK/NDK distributions bundle host tools (aapt2, adb,
+# llvm-strip, ...) built for whatever the packager targeted — usually
+# linux-x86_64. Under this project's ARM64 host, an x86_64 binary is
+# present, executable-bit set, and passes any plain `-x` check, yet fails
+# at actual exec time with "No such file or directory" because the x86_64
+# ELF interpreter (/lib64/ld-linux-x86-64.so.2) does not exist here. That
+# silent gap between "looks installed" and "actually runs" is what caused
+# the confusing build-tools 36.0.0/aapt2 and NDK 28/llvm-strip failures.
+#
+# detect_binary_arch is the single, generic primitive that closes that gap:
+# it resolves symlinks (a shim is judged by what it points at, not its
+# name) and classifies what would actually execute. It knows nothing about
+# aapt2, adb, or llvm-strip by name, so it applies unchanged to any current
+# or future SDK/NDK host tool — callers decide which paths to check.
+#
+# Prints exactly one of:
+#   arm64        - native ELF for this host, safe to execute
+#   x86_64       - x86_64 ELF, cannot execute under ARM64 PRoot (the trap)
+#   script       - text shim (#!/...), delegates elsewhere, assumed safe
+#   other:<desc> - some other file(1) description (unreadable, other ELF
+#                  machine type, etc.) — informational, not a known-safe
+#                  or known-broken case
+#   missing      - path (or, for a symlink, its target) does not exist
+detect_binary_arch() {
+    local path="$1" resolved ftype
+
+    [[ -e "$path" ]] || { echo "missing"; return; }
+
+    resolved="$path"
+    if [[ -L "$path" ]]; then
+        resolved="$(readlink -f "$path" 2>/dev/null || true)"
+        [[ -n "$resolved" && -e "$resolved" ]] || { echo "missing"; return; }
+    fi
+
+    [[ -r "$resolved" ]] || { echo "other:unreadable"; return; }
+
+    # A text shim (`#!/bin/sh`, `#!/usr/bin/env python3`, ...) delegates to
+    # whatever it execs and is not itself an architecture trap.
+    if head -c 2 "$resolved" 2>/dev/null | grep -q '^#!'; then
+        echo "script"
+        return
+    fi
+
+    ftype="$(file -b "$resolved" 2>/dev/null || true)"
+    case "$ftype" in
+        *aarch64*|*"ARM aarch64"*) echo "arm64" ;;
+        *"x86-64"*|*x86_64*)       echo "x86_64" ;;
+        *)                          echo "other:${ftype}" ;;
+    esac
 }
 
 # Resolve the directory where this script lives (for finding versions.json, etc.)
@@ -958,13 +1019,9 @@ cmd_setup_gradle() {
     local latest=""
     if [[ -d "$bt_dir" ]]; then
         for d in $(ls -d "$bt_dir"/*/ 2>/dev/null | sort -V -r); do
-            if [[ -x "${d}aapt2" ]]; then
-                local ftype
-                ftype=$(file -b "${d}aapt2" 2>/dev/null)
-                if [[ "$ftype" == *"aarch64"* || "$ftype" == *"ARM aarch64"* ]]; then
-                    latest="${d}aapt2"
-                    break
-                fi
+            if [[ -x "${d}aapt2" && "$(detect_binary_arch "${d}aapt2")" == "arm64" ]]; then
+                latest="${d}aapt2"
+                break
             fi
         done
     fi
@@ -1025,13 +1082,10 @@ cmd_doctor() {
                 fi
             done
             if [[ -n "$probe_bin" ]]; then
-                local ftype
-                ftype=$(file -b "$probe_bin" 2>/dev/null)
-                if [[ "$ftype" == *"aarch64"* || "$ftype" == *"ARM aarch64"* ]]; then
-                    arch_label="arm64"
-                elif [[ "$ftype" == *"x86-64"* || "$ftype" == *"x86_64"* ]]; then
-                    arch_label="x86_64"
-                fi
+                case "$(detect_binary_arch "$probe_bin")" in
+                    arm64)  arch_label="arm64" ;;
+                    x86_64) arch_label="x86_64" ;;
+                esac
             fi
 
             if [[ "$arch_label" == "arm64" ]]; then
@@ -1068,16 +1122,18 @@ cmd_doctor() {
         for bin in adb fastboot; do
             local path="$pt_dir/$bin"
             if [[ -x "$path" ]]; then
-                local ftype
-                ftype=$(file -b "$path" 2>/dev/null)
-                if [[ "$ftype" == *"aarch64"* || "$ftype" == *"ARM aarch64"* ]]; then
-                    ok "  $bin: native ARM64"
-                elif [[ "$ftype" == *"x86_64"* ]]; then
-                    err "  $bin: x86_64 (won't run!)"
-                    issues=$((issues+1))
-                else
-                    ok "  $bin: present"
-                fi
+                case "$(detect_binary_arch "$path")" in
+                    arm64)
+                        ok "  $bin: native ARM64"
+                        ;;
+                    x86_64)
+                        err "  $bin: x86_64 (won't run!)"
+                        issues=$((issues+1))
+                        ;;
+                    *)
+                        ok "  $bin: present"
+                        ;;
+                esac
             else
                 warn "  $bin: missing"
                 issues=$((issues+1))
@@ -1104,7 +1160,14 @@ cmd_doctor() {
         issues=$((issues+1))
     fi
 
-    # NDK shims
+    # NDK host-tool architecture check.
+    #
+    # Existence (`-x`) is not enough here: NDK 28's bundled llvm-strip is
+    # executable and present, but it is a real x86_64 ELF that fails at
+    # exec time under this ARM64 PRoot. Each name in NDK_HOST_TOOL_BINS is
+    # checked with detect_binary_arch so this catches that class of
+    # failure — a "present but wrong architecture" host tool — instead of
+    # only noticing it is missing.
     local ndk_dir="$SDK_ROOT/ndk"
     if [[ -d "$ndk_dir" ]]; then
         local ndk_versions
@@ -1112,13 +1175,38 @@ cmd_doctor() {
         if [[ -n "$ndk_versions" ]]; then
             ok "NDK shims: ${ndk_versions}"
             for ver in $ndk_versions; do
-                local strip_shim="$ndk_dir/$ver/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip"
-                if [[ -x "$strip_shim" ]]; then
-                    ok "  NDK ${ver}: llvm-strip OK"
-                else
-                    warn "  NDK ${ver}: llvm-strip missing"
+                local host_bin_dir
+                host_bin_dir=$(ls -d "$ndk_dir/$ver"/toolchains/llvm/prebuilt/*/bin 2>/dev/null | head -1)
+                if [[ -z "$host_bin_dir" ]]; then
+                    warn "  NDK ${ver}: no LLVM prebuilt host-tool directory found"
                     issues=$((issues+1))
+                    continue
                 fi
+                local tool
+                for tool in "${NDK_HOST_TOOL_BINS[@]}"; do
+                    local tool_path="$host_bin_dir/$tool" tool_arch
+                    tool_arch="$(detect_binary_arch "$tool_path")"
+                    case "$tool_arch" in
+                        arm64|script)
+                            ok "  NDK ${ver}: ${tool} OK (${tool_arch})"
+                            ;;
+                        x86_64)
+                            err "  NDK ${ver}: ${tool} is x86_64 — cannot execute under ARM64 PRoot"
+                            echo -e "    ${DIM}Gradle/AGP call this exact path directly, bypassing \$PATH.${NC}"
+                            echo -e "    ${DIM}Path: ${tool_path}${NC}"
+                            echo -e "    ${DIM}Fix:  $0 install-ndk ${ver}   (recreates the ARM64-compatible shim)${NC}"
+                            issues=$((issues+1))
+                            ;;
+                        missing)
+                            warn "  NDK ${ver}: ${tool} missing"
+                            issues=$((issues+1))
+                            ;;
+                        *)
+                            warn "  NDK ${ver}: ${tool} unexpected type (${tool_arch})"
+                            issues=$((issues+1))
+                            ;;
+                    esac
+                done
             done
         fi
     else
@@ -1129,18 +1217,19 @@ cmd_doctor() {
     # CMake shim
     local cmake_shim="$SDK_ROOT/cmake/3.22.1/bin/cmake"
     if [[ -x "$cmake_shim" ]]; then
-        if head -1 "$cmake_shim" 2>/dev/null | grep -q "^#!/bin/sh"; then
-            ok "CMake shim: OK"
-        else
-            local ftype
-            ftype=$(file -b "$cmake_shim" 2>/dev/null)
-            if [[ "$ftype" == *"x86-64"* ]]; then
+        case "$(detect_binary_arch "$cmake_shim")" in
+            script|arm64)
+                ok "CMake shim: OK"
+                ;;
+            x86_64)
                 err "CMake 3.22.1: x86_64 binary (needs shim!)"
+                echo -e "    ${DIM}Fix:  $0 install-cmake${NC}"
                 issues=$((issues+1))
-            else
+                ;;
+            *)
                 ok "CMake: present"
-            fi
-        fi
+                ;;
+        esac
     else
         info "CMake shim: not installed (only needed if project uses NDK)"
     fi
@@ -1208,13 +1297,10 @@ cmd_status() {
             local aapt2="$d/aapt2"
             local arch_label="?"
             if [[ -x "$aapt2" ]]; then
-                local ftype
-                ftype=$(file -b "$aapt2" 2>/dev/null)
-                if [[ "$ftype" == *"aarch64"* ]]; then
-                    arch_label="arm64"
-                elif [[ "$ftype" == *"x86-64"* ]]; then
-                    arch_label="x86_64"
-                fi
+                case "$(detect_binary_arch "$aapt2")" in
+                    arm64)  arch_label="arm64" ;;
+                    x86_64) arch_label="x86_64" ;;
+                esac
             fi
             echo -e "    ${GREEN}+${NC} build-tools;${ver}  ${DIM}(${arch_label})${NC}"
         done
@@ -1223,11 +1309,11 @@ cmd_status() {
     # Platform-tools
     local pt_dir="$SDK_ROOT/platform-tools"
     if [[ -d "$pt_dir" ]] && [[ -x "$pt_dir/adb" ]]; then
-        local ftype
-        ftype=$(file -b "$pt_dir/adb" 2>/dev/null)
         local arch_label="?"
-        [[ "$ftype" == *"aarch64"* ]] && arch_label="arm64"
-        [[ "$ftype" == *"x86-64"* ]] && arch_label="x86_64"
+        case "$(detect_binary_arch "$pt_dir/adb")" in
+            arm64)  arch_label="arm64" ;;
+            x86_64) arch_label="x86_64" ;;
+        esac
         echo -e "    ${GREEN}+${NC} platform-tools  ${DIM}(${arch_label})${NC}"
     fi
 
@@ -2039,4 +2125,9 @@ main() {
     esac
 }
 
-main "$@"
+# ADT_SOURCE_ONLY=1 lets tests `source` this file to reuse its functions
+# (e.g. detect_binary_arch) without triggering a real command. Unset/empty
+# is the normal case for every existing invocation of this script.
+if [[ "${ADT_SOURCE_ONLY:-0}" != "1" ]]; then
+    main "$@"
+fi
