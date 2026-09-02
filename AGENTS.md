@@ -6,6 +6,18 @@
 
 This project adapts [lzhiyong/android-sdk-tools](https://github.com/lzhiyong/android-sdk-tools) (which targets Android/Bionic via NDK) to target Linux/glibc using the system compiler. The Linux/glibc adaptation lineage, including the version-registry entries verified on Fedora Asahi 43, comes from `hamza72x/android-sdk-linux-arm64`; ADT continues that work with on-device Termux/PRoot ARM64 validation and is self-hosted: `setup.sh` downloads/clones only from `soobujmiah/adt`, and releases (when tagged) are published by `.github/workflows/build.yml` on this repository.
 
+## Agent Operating Rules
+
+**SKB continuity:** this repository follows `SKB_KNOWLEDGE_RETURN.md` for knowledge return. For the cross-project engineering baseline (cloud-first build policy, authorization boundaries, session-close discipline), consult `soobujmiah/skb` → `AGENT_NAVIGATION.md`, `engineering/HEAVY_BUILD_AND_ARTIFACT_WORKFLOW.md`, and `standards/human-authority-gate.md`. This file states only what is specific to ADT; it does not restate the SKB baseline.
+
+**Source of truth, in order:** `versions.json` (per-version verified/unverified/shim status and release fields) → this file and `README.md`/`COMMANDS.md` → live CI (`.github/workflows/ci.yml`, `build.yml`) → `docs/REAL_DEVICE_BUILD_VALIDATION.md` and `docs/ANDROID_ARM64_BUILD_HANDOFF.md` for physical-device evidence. Source code and recent commits are authoritative over any of the above when they disagree.
+
+**Local vs. cloud execution (ADT-specific):** AOSP source cloning and native compilation (`get_source.py`, `build.py`) are heavy and belong on GitHub Actions (`ubuntu-24.04-arm`), which is what `ci.yml`/`build.yml` already do for every verified version on every push/tag — do not re-run a full AOSP build locally merely to confirm it works. The local Termux/PRoot phone environment is for: running `setup.sh` (install/doctor/status), installing artifacts (checked-in tarball → GitHub Release → source build, in that order per the registry rule below), ADB/device work, and real-device validation (`docs/REAL_DEVICE_BUILD_VALIDATION.md`). A local source build is appropriate only to diagnose a build/environment failure that CI cannot reproduce (e.g. a Termux/PRoot-only toolchain quirk), or when explicitly asked to validate the local build path itself — not as the default way to add or verify a version.
+
+**Evidence vocabulary:** a version's `status` in `versions.json` (`verified`/`unverified`/`shim`) is a build-verification claim backed by a green CI run for that version, checked with `file`/ELF-arch verification — it is not a device-execution claim. A `release` field means a GitHub Release actually exists with downloadable assets, not that a release is merely planned. Device-execution or performance claims require `docs/REAL_DEVICE_BUILD_VALIDATION.md`-style evidence, not CI success alone.
+
+**Session close:** review `git diff`/`git status`, confirm CI status for any touched version (from the raw run log, not just the checkmark), update `versions.json`/`docs/` when status changed, and run the SKB knowledge-return review from `SKB_KNOWLEDGE_RETURN.md` before committing.
+
 ## Repository Layout
 
 ```
