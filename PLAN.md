@@ -146,7 +146,7 @@ The `setup.sh` script automates this:
 ```
 android-sdk-linux-arm64/
   PLAN.md                       # This file
-  AGENTS.md                     # Agent/contributor guide
+  AI_ASSISTANT.md               # Agent/contributor guide
   README.md                     # User-facing documentation
   .gitignore                    # Ignore src/, build/
   .github/workflows/            # CI/CD

@@ -183,7 +183,7 @@ AOSP code is written for Clang + Bionic (Android's libc). Building with GCC + gl
 - Missing `#include` headers — GCC 15 is stricter than Clang
 - Thread safety annotations — made no-op on non-Clang
 - `_Nonnull`/`_Nullable` — defined as empty for non-Clang
-- And ~15 more fixes (see `AGENTS.md` for the full list)
+- And ~15 more fixes (see `AI_ASSISTANT.md` for the full list)
 
 ### Patch Resolution Order
 

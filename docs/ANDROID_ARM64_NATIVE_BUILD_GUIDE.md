@@ -244,6 +244,6 @@ The complete evidence record is maintained in:
 The toolchain and project architecture are documented in:
 
 - `README.md`
-- `AGENTS.md`
+- `AI_ASSISTANT.md`
 - `PLAN.md`
 - `versions.json`

@@ -1,4 +1,4 @@
-# AGENTS.md - Project Knowledge Base
+# AI_ASSISTANT.md - Project Knowledge Base
 
 ## Project Overview
 
@@ -23,7 +23,7 @@ This project adapts [lzhiyong/android-sdk-tools](https://github.com/lzhiyong/and
 ```
 .
 ├── PLAN.md              # Detailed build plan and architecture
-├── AGENTS.md            # This file - project knowledge for agents/contributors
+├── AI_ASSISTANT.md      # This file - project knowledge for agents/contributors
 ├── README.md            # User-facing documentation
 ├── COMMANDS.md          # Per-tool usage reference (English docs + exact commands); printed-link at end of bootstrap
 ├── .gitignore           # Ignores src/ (AOSP clones) and build/ (output)

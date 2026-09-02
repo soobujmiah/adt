@@ -199,7 +199,7 @@ Source, build instructions, patches, and validation records remain the authorita
 
 ```text
 ADT/
-├── AGENTS.md
+├── AI_ASSISTANT.md
 ├── PLAN.md
 ├── README.md
 ├── CONTRIBUTING.md
