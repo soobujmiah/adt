@@ -138,6 +138,7 @@ ndkVersion = "27.2.12479018"
 - Don't revert the NDK pin without new evidence.
 - Don't retry NDK 28 merely to see the same failure again (this rule predates my later fix — see the Follow-up section; re-testing *to confirm a fix* is not the same thing).
 - Don't interpret `emulator-5554` as a separate virtual emulator; it's the physical device's on-device ADB connection path.
+- The on-device ADB relay depends on the custom Shizuku fork sustaining TCP :5555; see [`docs/ON_DEVICE_ADB_SHIZUKU_OPERATIONAL_DEPENDENCY.md`](./ON_DEVICE_ADB_SHIZUKU_OPERATIONAL_DEPENDENCY.md) for the full dependency audit.
 - Don't delete the negative NDK 28 evidence.
 - Don't mark NDK 28 as universally broken.
 - Don't claim the full ADT installer is validated solely from this Flutter test.

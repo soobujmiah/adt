@@ -69,6 +69,8 @@ Physical Android phone
 
 ADB reported the serial `emulator-5554`, but that serial is an artifact of the on-device ADB connection path. Device properties identify my physical device as model `25053RT47C`, product `onyx`, Android 16, ABI `arm64-v8a`.
 
+**Note:** This on-device ADB relay path (host adb → USB → on-device adb relay on :5037 → TCP :5555 → adbd) has a strong indirect operational dependency on the custom Shizuku fork's Wireless Debugging management. See [`docs/ON_DEVICE_ADB_SHIZUKU_OPERATIONAL_DEPENDENCY.md`](./ON_DEVICE_ADB_SHIZUKU_OPERATIONAL_DEPENDENCY.md) for the full audit.
+
 ## Environment
 
 - Linux architecture: `aarch64`
