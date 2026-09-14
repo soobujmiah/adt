@@ -1,0 +1,49 @@
+# adt — GitHub Pages / Jekyll configuration
+# https://github.com/soobujmiah/adt
+#
+# Token vocabulary and typography match the shared Sobuj Miah project
+# ecosystem (portfolio + ternux): same font families, same radius scale,
+# same easing, same emerald accent — so the three read as one system
+# while this site stays an ADT product site.
+
+title: ADT
+description: >-
+  ARM64 Android development toolchain — native aarch64 build-tools and
+  platform-tools built from AOSP source, validated on real devices and
+  installable offline.
+
+url: https://soobujmiah.github.io
+baseurl: /adt
+repository: soobujmiah/adt
+
+lang: en
+timezone: Asia/Dhaka
+copyright: 2026 Sobuj Miah
+version: 1.0.0
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  hard_wrap: false
+  syntax_highlighter: rouge
+highlighter: rouge
+strict_front_matter: true
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+
+exclude:
+  - "*.md"
+  - "**/*.md"
+  - Gemfile
+  - Gemfile.lock
+  - vendor
+  - tests
+  - artifacts
+  - build-tools
+  - platform-tools
+  - patches
+  - others

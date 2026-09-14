@@ -1,0 +1,99 @@
+---
+title: Documentation
+description: "ADT documentation — native build guide, real-device validation records, command reference and build internals."
+---
+<section class="hero" style="padding-bottom:8px">
+  <p class="eyebrow">Documentation</p>
+  <h1 style="font-size:clamp(1.7rem,4.6vw,2.4rem)">Guides and validation records</h1>
+  <p class="lede">
+    The repository is the source of truth. These documents live in
+    <a href="https://github.com/soobujmiah/adt">soobujmiah/adt</a> and are linked here
+    directly, so what you read matches what the toolchain actually does.
+  </p>
+</section>
+
+<section aria-labelledby="g">
+  <h2 id="g">Guides</h2>
+  <p class="section-note">Start here if you are setting ADT up or writing your own build.</p>
+  <div class="grid">
+    <article class="card">
+      <h3>README</h3>
+      <p>What ADT provides, the support discipline, the validated environment, and the
+         installation entry points.</p>
+      <p style="margin-top:10px"><a href="https://github.com/soobujmiah/adt/blob/main/README.md">Read the README →</a></p>
+    </article>
+    <article class="card">
+      <h3>Native build guide</h3>
+      <p>Proving that an Android ARM64 native library can be built, packaged, installed and
+         executed on a real device from an ARM64 Linux/PRoot environment.</p>
+      <p style="margin-top:10px"><a href="https://github.com/soobujmiah/adt/blob/main/docs/ANDROID_ARM64_NATIVE_BUILD_GUIDE.md">Open guide →</a></p>
+    </article>
+    <article class="card">
+      <h3>Command reference</h3>
+      <p>Each tool with a short explanation, then the exact commands and what they do.</p>
+      <p style="margin-top:10px"><a href="https://github.com/soobujmiah/adt/blob/main/COMMANDS.md">Open reference →</a></p>
+    </article>
+    <article class="card">
+      <h3>Build internals</h3>
+      <p>How the build system works under the hood — for adding AOSP versions or fixing
+         build issues.</p>
+      <p style="margin-top:10px"><a href="https://github.com/soobujmiah/adt/blob/main/CONTRIBUTING.md">Open internals →</a></p>
+    </article>
+  </div>
+</section>
+
+<section aria-labelledby="r">
+  <h2 id="r">Validation records</h2>
+  <p class="section-note">
+    Device work produces records, not claims. These are the real-device validation
+    documents, kept in the repository alongside the work they describe.
+  </p>
+  <ul class="facts">
+    <li>
+      <span class="k">real device</span>
+      <span class="v"><a href="https://github.com/soobujmiah/adt/blob/main/docs/REAL_DEVICE_BUILD_VALIDATION.md">ADT — Real-Device Android ARM64 Build Validation</a>
+        — status: VERIFIED / CLOSED for the validated project state</span>
+    </li>
+    <li>
+      <span class="k">build handoff</span>
+      <span class="v"><a href="https://github.com/soobujmiah/adt/blob/main/docs/ANDROID_ARM64_BUILD_HANDOFF.md">Android ARM64 build handoff</a>
+        — status: CLOSED, build/install/runtime gate validated</span>
+    </li>
+    <li>
+      <span class="k">adb / shizuku</span>
+      <span class="v"><a href="https://github.com/soobujmiah/adt/blob/main/docs/ON_DEVICE_ADB_SHIZUKU_OPERATIONAL_DEPENDENCY.md">Custom Shizuku operational dependency</a>
+        — on-device adb and its operational dependency</span>
+    </li>
+    <li>
+      <span class="k">session record</span>
+      <span class="v"><a href="https://github.com/soobujmiah/adt/blob/main/docs/validation/2026-08-31-arm64-build-pipeline.md">ARM64 Linux build pipeline validation, 2026-08-31</a>
+        — historical session record, superseded</span>
+    </li>
+    <li>
+      <span class="k">session record</span>
+      <span class="v"><a href="https://github.com/soobujmiah/adt/blob/main/docs/validation/2026-08-31-arm64-apk-pipeline.md">ARM64 APK pipeline validation, 2026-08-31</a>
+        — historical session record, superseded</span>
+    </li>
+    <li>
+      <span class="k">version registry</span>
+      <span class="v"><a href="https://github.com/soobujmiah/adt/blob/main/versions.json">versions.json</a>
+        and <a href="https://github.com/soobujmiah/adt/blob/main/repos.json">repos.json</a>
+        — per-version build status, AOSP tag and release mapping</span>
+    </li>
+  </ul>
+</section>
+
+<section aria-labelledby="s">
+  <h2 id="s">Source and releases</h2>
+  <div class="actions">
+    <a class="btn primary" href="https://github.com/soobujmiah/adt">Repository</a>
+    <a class="btn" href="https://github.com/soobujmiah/adt/releases">Releases</a>
+    <a class="btn" href="https://github.com/soobujmiah/adt/tree/main/docs">Documentation tree</a>
+    <a class="btn" href="{{ site.baseurl }}/">Back to overview</a>
+  </div>
+  <p class="section-note" style="margin-top:16px">
+    Typography: Space Grotesk and JetBrains Mono, self-hosted and used under the
+    SIL Open Font License — see
+    <a href="https://github.com/soobujmiah/adt/blob/main/assets/fonts/LICENSES.md">font licenses</a>.
+  </p>
+</section>

@@ -18,3 +18,5 @@ Thumbs.db
 # Python cache
 __pycache__/
 *.pyc
+_site/
+.jekyll-cache/

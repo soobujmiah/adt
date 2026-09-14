@@ -1,0 +1,66 @@
+#
+# Build the ADT site with Jekyll and deploy it to GitHub Pages.
+#
+# The site is plain HTML plus a small Jekyll layer (_config.yml, _layouts,
+# _includes), so the build is deterministic and dependency-light. Publishing
+# through Actions (rather than the branch build) means every deploy is an
+# observable workflow run with a real log.
+#
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build site
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7.0.1
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v6.0.0
+        with:
+          enablement: true
+
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1.0.13
+        with:
+          source: ./
+          destination: ./_site
+
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v5.0.0
+        with:
+          path: ./_site
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v5.0.1

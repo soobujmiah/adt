@@ -1,0 +1,341 @@
+/* ═══════════════════════════════════════════════════════════════
+   ADT — ARM64 Android Development Toolchain
+
+   Shared ecosystem design language (portfolio + ternux + adt).
+   Token names are deliberately the same across all three sites so the
+   vocabulary is portable; only the accents differ per project.
+   Reference specification: the portfolio's design-tokens.ts.
+   ═══════════════════════════════════════════════════════════════ */
+
+@font-face {
+  font-family: "Space Grotesk";
+  src: url("../fonts/space-grotesk-latin.woff2") format("woff2");
+  font-weight: 300 700;
+  font-display: swap;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  src: url("../fonts/jetbrains-mono-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-display: swap;
+  font-style: normal;
+}
+
+:root {
+  color-scheme: dark;
+
+  /* surfaces */
+  --bg: #060807;
+  --bg-deep: #030504;
+  --panel: #0a0e0c;
+  --panel-raised: #0e1411;
+  --line: #1b2a21;
+  --line-strong: #2a4433;
+  --card: rgb(6 7 6 / 66%);
+
+  /* text */
+  --text: #e4e2df;
+  --text-soft: #b9c4bd;
+  --muted: rgb(228 226 223 / 45%);
+
+  /* accent — the ecosystem emerald (matches the portfolio's --accent) */
+  --green: #22c55e;
+  --green-bright: #4ade80;
+  --green-dim: #133b22;
+  --signal: #10b981;
+
+  /* support */
+  --amber: #f2bd62;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 24%);
+  --shadow-md: 0 18px 55px rgb(0 0 0 / 28%);
+
+  --font-sans: "Space Grotesk", var(--font-bengali, "Noto Sans Bengali"), system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Consolas, monospace;
+
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 18px;
+  --header-height: 64px;
+  --content-width: 880px;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.7;
+  letter-spacing: -0.006em;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* the environment: one soft green wash, no grid, no particles */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(900px 520px at 12% -8%, rgb(34 197 94 / 9%), transparent 62%),
+    radial-gradient(760px 480px at 92% 4%, rgb(16 185 129 / 6%), transparent 60%);
+  pointer-events: none;
+}
+
+code { font-family: var(--font-mono); font-size: 0.92em; overflow-wrap: anywhere; }
+.cmd code { overflow-wrap: normal; }
+
+a { color: var(--green-bright); text-decoration: none; }
+a:hover { color: var(--text); }
+
+:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.wrap { width: 100%; max-width: var(--content-width); margin: 0 auto; padding: 0 20px; }
+
+/* ── header ── */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  height: var(--header-height);
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  background: rgb(6 8 7 / 82%);
+  backdrop-filter: blur(12px);
+}
+
+.site-header .wrap { display: flex; align-items: center; gap: 16px; }
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--text);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.brand svg { display: block; }
+.brand .tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 2px 7px;
+  letter-spacing: 0.04em;
+}
+
+.site-nav { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+
+.site-nav a {
+  color: var(--text-soft);
+  font-size: 13px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  transition: color 0.25s var(--ease-out-expo), background-color 0.25s var(--ease-out-expo);
+}
+.site-nav a:hover { color: var(--text); background: var(--panel-raised); }
+
+/* ── hero ── */
+.hero { padding: 72px 0 44px; }
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--green);
+  margin: 0 0 14px;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(2.1rem, 6.2vw, 3.4rem);
+  line-height: 1.06;
+  font-weight: 600;
+  letter-spacing: -0.035em;
+}
+
+.hero .lede {
+  margin: 18px 0 0;
+  max-width: 62ch;
+  color: var(--text-soft);
+  font-size: 1.02rem;
+}
+
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  font-weight: 500;
+  border: 1px solid var(--line-strong);
+  color: var(--text);
+  transition: border-color 0.25s var(--ease-out-expo), background-color 0.25s var(--ease-out-expo),
+    transform 0.25s var(--ease-out-expo);
+}
+.btn:hover { border-color: var(--green); background: var(--panel); color: var(--text); }
+.btn:active { transform: scale(0.985); }
+.btn.primary { border-color: rgb(34 197 94 / 45%); background: var(--green-dim); color: var(--green-bright); }
+.btn.primary:hover { border-color: var(--green); background: rgb(34 197 94 / 16%); }
+
+/* ── sections ── */
+section { padding: 38px 0; }
+section + section { border-top: 1px solid var(--line); }
+
+h2 {
+  margin: 0 0 6px;
+  font-size: 1.32rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.section-note { margin: 0 0 22px; color: var(--muted); font-size: 13.5px; max-width: 68ch; }
+
+.grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+.grid > * { min-width: 0; }
+
+.card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  padding: 16px 18px;
+  transition: border-color 0.25s var(--ease-out-expo), transform 0.25s var(--ease-out-expo);
+}
+.card:hover { border-color: var(--line-strong); transform: translateY(-2px); }
+
+.card h3 {
+  margin: 0 0 4px;
+  font-size: 15px;
+  font-weight: 600;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.card h3 .n { font-family: var(--font-mono); font-size: 10px; color: var(--muted); font-weight: 400; }
+.card p { margin: 0; font-size: 13.5px; color: var(--text-soft); }
+
+/* ── command block ── */
+.cmd {
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-deep);
+  padding: 16px 18px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.75;
+  color: var(--text-soft);
+}
+.cmd .c { color: var(--muted); }
+.cmd .g { color: var(--green-bright); }
+
+/* ── evidence list ── */
+.facts { list-style: none; margin: 0; padding: 0; display: grid; gap: 1px; }
+.facts li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13.5px;
+}
+.facts li:last-child { border-bottom: 0; }
+.facts .k { font-family: var(--font-mono); font-size: 11px; color: var(--muted); min-width: 172px; }
+.facts .v { color: var(--text-soft); }
+
+.pill {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid rgb(34 197 94 / 38%);
+  color: var(--green-bright);
+}
+
+/* ── footer ── */
+.site-footer {
+  border-top: 1px solid var(--line);
+  padding: 30px 0 44px;
+  margin-top: 30px;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+.site-footer .eco {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+}
+.site-footer .row { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; }
+.site-footer a { color: var(--text-soft); }
+.site-footer a:hover { color: var(--green-bright); }
+
+/* ── mobile ── */
+@media (max-width: 720px) {
+  .hero { padding: 46px 0 30px; }
+  section { padding: 30px 0; }
+  .brand .tag { display: none; }
+  .facts .k { min-width: 100%; }
+
+  /* two-row header: brand, then a horizontally scrollable nav. The nav is the
+     only thing that scrolls sideways — the page itself never does. */
+  .site-header { height: auto; }
+  .site-header .wrap {
+    flex-wrap: wrap;
+    row-gap: 2px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+  .site-nav {
+    width: 100%;
+    margin-left: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .site-nav::-webkit-scrollbar { display: none; }
+  .site-nav a { white-space: nowrap; padding: 6px 8px; font-size: 12.5px; }
+}
+
+@media (max-width: 380px) {
+  .wrap { padding: 0 16px; }
+  .site-nav { gap: 0; }
+  .site-nav a { padding: 6px 7px; }
+  .hero h1 { letter-spacing: -0.03em; }
+}
+
+/* ── motion ── */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .card:hover { transform: none; }
+  .btn:active { transform: none; }
+}
