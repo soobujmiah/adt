@@ -34,7 +34,12 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v7.0.1
 
+      # Deploy path only. Registering a Pages site needs repository admin,
+      # which the workflow token does not have: it answers
+      # "Resource not accessible by integration". Skipping it on pull
+      # requests keeps the build below as the thing a PR actually proves.
       - name: Configure Pages
+        if: github.event_name != 'pull_request'
         uses: actions/configure-pages@v6.0.0
         with:
           enablement: true
