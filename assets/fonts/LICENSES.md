@@ -198,3 +198,12 @@ INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
 DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
 OTHER DEALINGS IN THE FONT SOFTWARE.
+
+## Noto Sans Bengali
+
+Source: https://github.com/google/fonts/tree/main/ofl/notosansbengali
+
+Copyright 2022 The Noto Project Authors (https://github.com/notofonts/bengali)
+
+This Font Software is licensed under the SIL Open Font License, Version 1.1
+(full text above). Only the Bengali unicode-range subsets are redistributed.
