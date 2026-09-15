@@ -176,7 +176,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 /* ── hero ── */
 .hero {
   position: relative;
-  padding: 88px 0 40px;
+  padding: 72px 0 32px;
   overflow: hidden;
 }
 /* faint technical motif — pipeline rails, drawn once, never animated */
@@ -195,7 +195,7 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--accent);
-  margin: 0 0 18px;
+  margin: 0 0 14px;
 }
 .hero h1 {
   font-family: var(--font-display);
@@ -213,7 +213,7 @@ html[lang='bn'] .hero h1 {
 .lede {
   color: var(--muted);
   max-width: 68ch;
-  margin: 0 0 28px;
+  margin: 0 0 22px;
   font-size: 15.5px;
 }
 html[lang='bn'] .lede { max-width: 72ch; }
@@ -241,8 +241,8 @@ html[lang='bn'] .lede { max-width: 72ch; }
 /* quick facts strip */
 .facts {
   list-style: none;
-  margin: 34px 0 0;
-  padding: 16px 0 0;
+  margin: 26px 0 0;
+  padding: 12px 0 0;
   border-top: 1px solid var(--border);
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -269,7 +269,7 @@ html[lang='bn'] .lede { max-width: 72ch; }
 }
 
 /* ── sections ── */
-section { padding: 56px 0 8px; }
+section { padding: 44px 0 8px; }
 section h2 {
   font-family: var(--font-display);
   font-size: clamp(1.3rem, 3vw, 1.7rem);
@@ -290,7 +290,7 @@ section h2 .n {
   padding: 3px 8px;
   flex: none;
 }
-.section-note { color: var(--muted); max-width: 74ch; margin: 0 0 24px; }
+.section-note { color: var(--muted); max-width: 74ch; margin: 0 0 18px; }
 
 /* pipeline — the ADT identity motif */
 .pipeline {
@@ -298,14 +298,14 @@ section h2 .n {
   flex-wrap: wrap;
   gap: 8px;
   align-items: stretch;
-  margin: 26px 0 6px;
+  margin: 20px 0 6px;
 }
 .pipeline .stage {
   flex: 1 1 150px;
   border: 1px solid var(--border);
   border-radius: 12px;
   background: var(--card);
-  padding: 14px 16px;
+  padding: 12px 14px;
   position: relative;
 }
 .pipeline .stage .t {
@@ -335,19 +335,19 @@ html[lang='bn'] .pipeline .stage .t { font-family: var(--font-bengali); }
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 14px;
-  margin-bottom: 18px;
+  gap: 12px;
+  margin-bottom: 14px;
 }
 .card {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: var(--card);
-  padding: 20px;
+  padding: 16px;
 }
 .card h3 {
   font-family: var(--font-display);
   font-size: 15px;
-  margin: 0 0 8px;
+  margin: 0 0 6px;
   letter-spacing: 0.01em;
 }
 html[lang='bn'] .card h3 { font-family: var(--font-bengali); }
@@ -358,7 +358,7 @@ html[lang='bn'] .card h3 { font-family: var(--font-bengali); }
   margin-right: 8px;
 }
 .card p { margin: 0; color: var(--muted); font-size: 13.5px; }
-.card .more { display: inline-block; margin-top: 10px; font-size: 13px; }
+.card .more { display: inline-block; margin-top: 8px; font-size: 13px; }
 
 /* evidence chips — the shared ecosystem vocabulary */
 .ev {
@@ -383,7 +383,7 @@ html[lang='bn'] .card h3 { font-family: var(--font-bengali); }
 .ev-unsupported { color: #fda4af; border-color: rgba(253, 164, 175, 0.35); background: rgba(253, 164, 175, 0.05); }
 
 /* tables */
-.tbl-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 18px; }
+.tbl-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 14px; }
 table { border-collapse: collapse; width: 100%; font-size: 13.5px; min-width: 560px; }
 th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
 th {
@@ -402,12 +402,12 @@ pre.cmd {
   background: var(--code-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 18px 20px;
+  padding: 14px 16px;
   overflow-x: auto;
   font-family: var(--font-mono);
   font-size: 12.8px;
   line-height: 1.75;
-  margin: 0 0 18px;
+  margin: 0 0 14px;
 }
 pre.cmd code { color: #d1fae5; background: none; padding: 0; }
 pre.cmd .c { color: rgba(228, 226, 223, 0.35); }
@@ -418,10 +418,10 @@ pre.cmd .g { color: rgba(228, 226, 223, 0.55); }
   border: 1px solid rgba(245, 158, 11, 0.28);
   background: var(--amber-soft);
   border-radius: var(--radius);
-  padding: 16px 18px;
+  padding: 14px 16px;
   font-size: 13.5px;
   color: rgba(228, 226, 223, 0.8);
-  margin: 0 0 18px;
+  margin: 0 0 14px;
 }
 
 /* ternux diagram */
