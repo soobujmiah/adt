@@ -483,3 +483,159 @@ pre.cmd .g { color: rgba(228, 226, 223, 0.55); }
   section { padding: 44px 0 6px; }
   .site-header .wrap { gap: 10px; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   GEOGRAPHIC LAYER + TECHNICAL ATMOSPHERE
+
+   The same visual language the portfolio uses, implemented for this
+   site on ADT's own committed data (assets/geo/adt-geo.js) by
+   assets/js/adt-map.js. Nothing is fetched from another site at
+   runtime and no other repository is a dependency.
+
+   Layer order, back to front:
+     .geomap            fixed background geography (this block)
+     .site-header       z-index 20 (existing)
+     main / footer      z-index 1, so content always wins
+
+   Motion rules: geometry never animates in CSS — the camera flies by
+   rewriting the SVG viewBox, and the only moving parts are the signal
+   packets. Both stop under prefers-reduced-motion.
+   ═══════════════════════════════════════════════════════════════ */
+
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* content sits above the background geography */
+main, .site-footer { position: relative; z-index: 1; }
+
+.geomap {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* the deep-green ground the portfolio uses, re-composed for this page */
+  background:
+    radial-gradient(70% 55% at 78% 6%, rgba(34, 197, 94, 0.07), transparent 68%),
+    radial-gradient(60% 50% at 12% 88%, rgba(16, 185, 129, 0.05), transparent 70%),
+    linear-gradient(180deg, #050507 0%, #060807 55%, #050507 100%);
+}
+
+.geomap-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.9;
+  /* the layer is painted by script; it fades in once frames exist */
+  transition: opacity 1.4s var(--ease);
+}
+
+/* L1 — land and countries. Real 1:110m geometry: every coast keeps
+   its shape, and the origin country is the only territory that is
+   ever lit. Inactive countries stay subdued. */
+.geo-land {
+  fill: rgba(148, 163, 184, 0.035);
+  stroke: rgba(148, 163, 184, 0.06);
+  stroke-width: 0.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.geo-country {
+  fill: rgba(148, 163, 184, 0.03);
+  stroke: rgba(148, 163, 184, 0.09);
+  stroke-width: 0.5;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  transition: fill 0.8s var(--ease), stroke 0.8s var(--ease);
+}
+
+/* the origin country — the one place this site's evidence names */
+.geo-country-origin {
+  fill: rgba(34, 197, 94, 0.06);
+  stroke: rgba(74, 222, 128, 0.28);
+}
+
+.geomap[data-state='region'] .geo-country-origin,
+.geomap[data-state='device'] .geo-country-origin {
+  fill: rgba(34, 197, 94, 0.17);
+  stroke: rgba(74, 222, 128, 0.55);
+  stroke-width: 1.1;
+}
+
+.geo-focus { pointer-events: none; }
+
+/* origin marker: halo pulse is opacity-only, and it stops when the
+   map is off-screen or the tab is hidden */
+.geo-halo { fill: none; stroke: rgba(34, 197, 94, 0.55); stroke-width: 0.6; animation: adtOriginPulse 5.4s ease-in-out infinite; }
+.geo-ring { fill: none; stroke: rgba(74, 222, 128, 0.5); stroke-width: 0.8; }
+.geo-core { fill: var(--accent-bright); }
+
+@keyframes adtOriginPulse {
+  0%, 100% { opacity: 0.12; }
+  50%      { opacity: 0.44; }
+}
+
+.geomap[data-paused='true'] .geo-halo { animation-play-state: paused; }
+
+/* L3 — data flow. The arcs carry a signal away from the origin into
+   the page; they are directional, not destinations, and no place is
+   claimed at their far end. */
+.geo-arc {
+  fill: none;
+  stroke: rgba(234, 179, 8, 0.14);
+  stroke-width: 0.7;
+  stroke-dasharray: 3 7;
+  vector-effect: non-scaling-stroke;
+}
+.geo-arc--primary { stroke: rgba(34, 197, 94, 0.22); }
+.geo-packet { fill: rgba(74, 222, 128, 0.7); }
+
+/* L4 — technical vector motifs: screen-space, decorative, very low
+   ink. ADT's own set: a toolchain trace, a die with pins, a waveform
+   fragment, a device with signal, coordinate ticks, and the pipeline
+   rail (build → sign → install → verify). */
+.geomap-tech {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.85;
+}
+
+.geo-tech path, .geo-tech circle, .geo-tech rect {
+  fill: none;
+  stroke: rgba(148, 163, 184, 0.16);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.geo-tech .tech-dot { fill: rgba(74, 222, 128, 0.5); stroke: none; }
+.geo-tech .tech-accent { stroke: rgba(34, 197, 94, 0.32); }
+
+/* the pipeline rail: a quiet line under the content, with packets
+   travelling build → sign → install → verify */
+.geo-rail { stroke: rgba(148, 163, 184, 0.14); stroke-dasharray: 2 6; }
+.geo-rail-packet { fill: rgba(74, 222, 128, 0.55); }
+
+/* the map fades in once the script has frames to show, so a no-JS or
+   slow-JS visitor never sees a half-drawn layer */
+.geomap[data-cam=''] .geomap-svg { opacity: 0; }
+
+@media (max-width: 640px) {
+  .geomap-svg { opacity: 0.72; }
+  .geomap-tech { opacity: 0.6; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* no packets, no halo pulse, no camera flight (the script also
+     declines to animate) — the geography stays, static */
+  .geo-packet, .geo-rail-packet, .geo-halo { display: none; }
+  .geo-country { transition: none; }
+}
