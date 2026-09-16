@@ -1,6 +1,19 @@
+<div align="center">
+
 # ADT — ARM64 Android Development Toolchain
 
-**Android development on Linux ARM64 — prepare, build, sign, install, inspect, debug and validate Android applications without an x86_64-only Android Studio.**
+### Android development on Linux ARM64 — prepare, build, sign, install, inspect, debug and validate Android applications without an x86_64-only Android Studio
+
+[![Release](https://img.shields.io/badge/release-v37.0.0-22c55e?style=flat-square)](https://github.com/soobujmiah/adt/releases)
+[![Platform](https://img.shields.io/badge/platform-Linux%20ARM64-5bd8f5?style=flat-square)](https://soobujmiah.github.io/adt/)
+[![Device-verified](https://img.shields.io/badge/device--verified-Android%2016%20%2F%20API%2036-f2bd62?style=flat-square)](docs/REAL_DEVICE_BUILD_VALIDATION.md)
+[![License](https://img.shields.io/badge/license-Apache--2.0-a69bff?style=flat-square)](LICENSE)
+
+[Website](https://soobujmiah.github.io/adt/) · [Documentation](https://soobujmiah.github.io/adt/docs/) · [Quick start](#quick-start) · [Commands](COMMANDS.md) · [Evidence](docs/REAL_DEVICE_BUILD_VALIDATION.md) · [Releases](https://github.com/soobujmiah/adt/releases)
+
+</div>
+
+---
 
 ADT is a practical Android/Flutter toolchain for Linux ARM64 environments, including Termux + PRoot Debian on ARM64 Android devices. Google's Linux SDK host binaries are x86_64; ADT builds the native host tools from official AOSP source for aarch64/glibc, keeps offline-installable verified artifacts, and validates the whole pipeline on a real physical device.
 
@@ -14,7 +27,7 @@ The CLI toolchain is the canonical path. GUI/X11 support is optional.
 | **Why** | An ARM64 machine — including an Android phone running Termux + PRoot Debian — should be able to produce, sign, install and validate real APKs, with no x86_64 host in the loop. |
 | **Who for** | Developers working on ARM64 Linux (Android devices via Termux/PRoot, Asahi Linux, ARM64 servers/boards) who need a complete, honest Android toolchain. |
 | **Installs** | `aapt`/`aapt2`/`aidl`/`zipalign`/`dexdump`/`split-select`, `adb`/`fastboot` + platform-tools, JDK-based `apksigner`/`d8`/R8/`sdkmanager`, NDK/CMake shims, Android platforms. |
-| **Status** | End-to-end APK pipeline **verified on a real device** — see [Evidence](#evidence). |
+| **Status** | End-to-end APK pipeline **verified on a real device** — see [Evidence](#evidence--what-is-actually-tested). |
 
 ## Quick start
 
@@ -95,6 +108,7 @@ The full relationship — the two layers side by side, where they differ, what i
 
 | Document | Contents |
 |---|---|
+| [soobujmiah.github.io/adt](https://soobujmiah.github.io/adt/) · [docs site](https://soobujmiah.github.io/adt/docs/) | Hosted project site — overview, toolchain map, evidence and the documentation index |
 | [COMMANDS.md](COMMANDS.md) | Everyday commands for every installed tool, device pairing, troubleshooting |
 | [docs/TECHNICAL_REFERENCE.md](docs/TECHNICAL_REFERENCE.md) | Tool roles, native build strategy, NDK/PRoot reality, step-by-step install, `setup.sh` reference, profiles, repository structure |
 | [docs/REAL_DEVICE_BUILD_VALIDATION.md](docs/REAL_DEVICE_BUILD_VALIDATION.md) | Canonical real-device evidence record |
