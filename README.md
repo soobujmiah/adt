@@ -8,6 +8,7 @@
 [![Platform](https://img.shields.io/badge/platform-Linux%20ARM64-5bd8f5?style=flat-square)](https://soobujmiah.github.io/adt/)
 [![Device-verified](https://img.shields.io/badge/device--verified-Android%2016%20%2F%20API%2036-f2bd62?style=flat-square)](docs/REAL_DEVICE_BUILD_VALIDATION.md)
 [![License](https://img.shields.io/badge/license-Apache--2.0-a69bff?style=flat-square)](LICENSE)
+[![SEO audited](https://img.shields.io/badge/SEO-audited%202026--09--16-22c55e?style=flat-square)](docs/SEO.md)
 
 [Website](https://soobujmiah.github.io/adt/) · [Documentation](https://soobujmiah.github.io/adt/docs/) · [Quick start](#quick-start) · [Commands](COMMANDS.md) · [Evidence](docs/REAL_DEVICE_BUILD_VALIDATION.md) · [Releases](https://github.com/soobujmiah/adt/releases)
 
@@ -18,6 +19,12 @@
 ADT is a practical Android/Flutter toolchain for Linux ARM64 environments, including Termux + PRoot Debian on ARM64 Android devices. Google's Linux SDK host binaries are x86_64; ADT builds the native host tools from official AOSP source for aarch64/glibc, keeps offline-installable verified artifacts, and validates the whole pipeline on a real physical device.
 
 The CLI toolchain is the canonical path. GUI/X11 support is optional.
+
+In one sentence: ADT is a **native ARM64 Android development toolchain for Linux**, not a
+generic bundle of "Android tools". It is built and maintained by
+[Sobuj Miah](https://soobujmiah.github.io/) ([@soobujmiah](https://github.com/soobujmiah));
+its sibling project [Ternux](https://github.com/soobujmiah/ternux) provides the Debian-on-Android
+host that ADT was validated inside.
 
 ## What is ADT?
 
