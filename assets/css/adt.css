@@ -205,6 +205,19 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
   margin: 0 0 20px;
   max-width: 20ch;
 }
+/* ── the documentation hero ─────────────────────────────────────
+   One register below the landing's identity mark: the same eyebrow, a
+   smaller headline, the same lede. It lives here rather than in inline
+   styles so the docs pages and the landing cannot drift apart. */
+.hero--sub { padding-bottom: 8px; }
+
+.hero--sub h1 { font-size: clamp(1.7rem, 4.6vw, 2.4rem); }
+
+.section-note--spaced { margin-top: 16px; }
+
+/* the shared evidence vocabulary, as one row of chips */
+.ev-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+
 html[lang='bn'] .hero h1 {
   font-family: var(--font-bengali);
   letter-spacing: 0;
