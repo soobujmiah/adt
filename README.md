@@ -43,6 +43,9 @@ On any aarch64 Linux with glibc (validated target: Termux + PRoot Debian on an A
 ```bash
 # One-liner: fetches the repo and runs the whole bootstrap unattended.
 curl -fsSL https://raw.githubusercontent.com/soobujmiah/adt/main/install.sh | bash
+```
+
+```bash
 source ~/.bashrc
 ```
 

@@ -149,6 +149,9 @@ A complete from-scratch install on any aarch64 Linux with glibc (Termux + PRoot 
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/soobujmiah/adt/main/install.sh | bash
+```
+
+```bash
 source ~/.bashrc
 ```
 
@@ -162,9 +165,14 @@ It fetches the repo into `~/adt` (git clone when git exists, otherwise the GitHu
 Both detect root/sudo automatically for system packages; with neither, the exact root command is printed and the run stops loudly instead of half-failing.
 
 ```bash
-git clone --depth 1 https://github.com/soobujmiah/adt.git
-cd adt
+git clone --depth 1 https://github.com/soobujmiah/adt.git && cd adt
+```
+
+```bash
 ./setup.sh bootstrap --auto    # or guided: ./setup.sh
+```
+
+```bash
 source ~/.bashrc
 ```
 
