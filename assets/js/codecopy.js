@@ -34,17 +34,17 @@
     return ok;
   }
 
-  /* Commands only: drop `$ ` prompts and comment-only lines, normalise the
-     per-line indentation that HTML source layout introduces. */
+  /* Commands only: drop leading `$ ` or `> ` prompts, while preserving
+     comments, indentation, blank lines, and special characters. */
   function extract(node) {
-    return node.textContent
-      .replace(/\r\n/g, "\n")
-      .replace(/\n[ \t]+/g, "\n")
-      .replace(/^\s+|\s+$/g, "")
-      .split("\n")
-      .map(function (l) { return l.replace(/^\$\s+/, ""); })
-      .filter(function (l) { return !/^\s*#/.test(l) && l.trim() !== ""; })
-      .join("\n");
+    var text = (node.textContent || "").replace(/\r\n/g, "\n");
+    var lines = text.split("\n");
+    while (lines.length > 0 && /^\s*$/.test(lines[0])) lines.shift();
+    while (lines.length > 0 && /^\s*$/.test(lines[lines.length - 1])) lines.pop();
+
+    return lines.map(function (l) {
+      return l.replace(/^\s*[\$\>]\s+/, "");
+    }).join("\n");
   }
 
   function makeButton(label) {
