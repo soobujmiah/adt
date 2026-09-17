@@ -23,7 +23,7 @@ description: >-
   <meta property="og:url" content="https://soobujmiah.github.io/adt/">
   <meta property="og:locale" content="en_US">
   <meta property="og:locale:alternate" content="bn_BD">
-  <meta property="og:site_name" content="Sobuj Miah project ecosystem">
+  <meta property="og:site_name" content="ADT">
   <meta property="og:image" content="https://soobujmiah.github.io/adt/assets/img/og-card.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -256,7 +256,7 @@ description: >-
     <section id="install" aria-labelledby="install-h" class="reveal">
       <h2 id="install-h"><span class="n">04</span><span data-i18n="inst.title">Installation</span></h2>
       <p class="section-note" data-i18n="inst.note">Works on any aarch64 Linux with glibc — the validated target is Termux + PRoot Debian on an ARM64 phone; Asahi, Raspberry Pi and ARM64 servers follow the same path. Idempotent: re-running updates an existing clone and skips what is already installed.</p>
-      <pre class="cmd"><code><span class="c"># one-liner — fetches the repo and runs the whole bootstrap unattended</span>
+      <pre class="cmd" data-copy><code><span class="c"># one-liner — fetches the repo and runs the whole bootstrap unattended</span>
 curl -fsSL https<span class="g">:</span>//raw.githubusercontent.com/soobujmiah/adt/main/install.sh | bash
 source ~/.bashrc
 
@@ -340,7 +340,7 @@ log output → process remains alive
           <a class="more" href="https://github.com/soobujmiah/adt/blob/main/versions.json" data-i18n="evi.c3.l">Open registry →</a>
         </article>
       </div>
-      <p class="section-note" data-i18n="evi.vocab">Shared evidence vocabulary across this ecosystem — Verified · Measured · Observed · Experimental · Not yet tested · Not supported:</p>
+      <p class="section-note" data-i18n="evi.vocab">Shared evidence vocabulary — Verified · Measured · Observed · Experimental · Not yet tested · Not supported:</p>
       <p class="ev-row">
         <span class="ev ev-verified" data-i18n="ev.verified">Verified</span>
         <span class="ev ev-measured" data-i18n="ev.measured">Measured</span>
@@ -409,7 +409,6 @@ log output → process remains alive
       </ul>
       <div class="row">
         <span>© 2026 Sobuj Miah — ADT</span>
-        <span data-i18n="foot.eco">Part of the Sobuj Miah project ecosystem.</span>
       </div>
     </div>
   </footer>
@@ -425,14 +424,14 @@ log output → process remains alive
       'hero.eyebrow': 'এআরএম৬৪ অ্যান্ড্রয়েড ডেভেলপমেন্ট টুলচেইন',
       'hero.title': 'লিনাক্স এআরএম৬৪-এ অ্যান্ড্রয়েড ডেভেলপমেন্ট — এক্স৮৬৬৪-নির্ভর স্টুডিও ছাড়াই।',
       'hero.tagline': 'এওএসপি সোর্স · নেটিভ aarch64 · বাস্তব ডিভাইসে যাচাইকৃত',
-      'hero.lede': 'এডিটি হলো লিনাক্স এআরএম৬৪ পরিবেশের জন্য একটি বাস্তবমুখী অ্যান্ড্রয়েড ও ফ্লাটার টুলচেইন — টার্মাক্স + পিআরুট ডেবিয়ানসহ এআরএম৬৪ অ্যান্ড্রয়েড ডিভাইসেও। অ্যান্ড্রয়েড অ্যাপ্লিকেশন প্রস্তুত, বিল্ড, স্বাক্ষর, ইনস্টল, পরিদর্শন, ডিবাগ ও যাচাই করুন — সিএলআই টুলচেইনই মূল পথ; জিইউআই/এক্স১১ ঐচ্ছিক।',
+      'hero.lede': 'এডিটি হলো লিনাক্স এআরএম৬৪ পরিবেশের জন্য একটি বাস্তবমুখী অ্যান্ড্রয়েড ও ফ্লাটার টুলচেইন — টার্মাক্স + পি-রুট ডেবিয়ানসহ এআরএম৬৪ অ্যান্ড্রয়েড ডিভাইসেও। অ্যান্ড্রয়েড অ্যাপ্লিকেশন প্রস্তুত, বিল্ড, স্বাক্ষর, ইনস্টল, পরিদর্শন, ডিবাগ ও যাচাই করুন — সিএলআই টুলচেইনই মূল পথ; জিইউআই/এক্স১১ ঐচ্ছিক।',
       'hero.cta': 'শুরু করুন', 'hero.repo': 'রিপোজিটরি', 'hero.releases': 'রিলিজ',
       'facts.device': 'ডিভাইস', 'facts.android': 'অ্যান্ড্রয়েড', 'facts.soc': 'এসওসি / জিপিইউ', 'facts.host': 'হোস্ট',
       'what.title': 'এডিটি কী?',
       'what.note': 'গুগলের লিনাক্স এসডিকে হোস্ট বাইনারি এক্স৮৬৬৪। এডিটি অফিসিয়াল এওএসপি সোর্স থেকে aarch64/glibc-এর জন্য নেটিভ হোস্ট টুল বিল্ড করে, অফলাইন-ইনস্টলযোগ্য যাচাইকৃত আর্টিফ্যাক্ট রাখে এবং সম্পূর্ণ পাইপলাইন বাস্তব ফিজিক্যাল ডিভাইসে যাচাই করে।',
       'what.card1.t': 'এটি কী', 'what.card1.d': 'এওএসপি সোর্স থেকে বিল্ড করা নেটিভ এআরএম৬৪ অ্যান্ড্রয়েড এসডিকে বিল্ড-টুলস ও প্ল্যাটফর্ম-টুলস, সাথে হোস্ট টুলচেইন: জেডিকে, সিমেক, নিনজা, এনডিকে শিম ও ফ্লাটার/ডার্ট সহায়তা।',
-      'what.card2.t': 'কেন এটি আছে', 'what.card2.d': 'একটি এআরএম৬৪ মেশিন — টার্মাক্স + পিআরুট ডেবিয়ান চলা অ্যান্ড্রয়েড ফোনসহ — লুপে কোনো এক্স৮৬৬৪ হোস্ট ছাড়াই বাস্তব এপিকে তৈরি, স্বাক্ষর, ইনস্টল ও যাচাই করতে পারবে।',
-      'what.card3.t': 'কারা ব্যবহার করবেন', 'what.card3.d': 'এআরএম৬৪ লিনাক্সে কাজ করা ডেভেলপাররা — টার্মাক্স/পিআরুটে অ্যান্ড্রয়েড ডিভাইস, আসাহি লিনাক্স, এআরএম৬৪ সার্ভার ও বোর্ড — যাঁদের একটি সম্পূর্ণ ও সৎ অ্যান্ড্রয়েড টুলচেইন দরকার।',
+      'what.card2.t': 'কেন এটি আছে', 'what.card2.d': 'একটি এআরএম৬৪ মেশিন — টার্মাক্স + পি-রুট ডেবিয়ান চালানো অ্যান্ড্রয়েড ফোনসহ — কোনো এক্স৮৬৬৪ হোস্ট ছাড়াই বাস্তব এপিকে তৈরি, স্বাক্ষর, ইনস্টল ও যাচাই করতে পারবে।',
+      'what.card3.t': 'কারা ব্যবহার করবেন', 'what.card3.d': 'এআরএম৬৪ লিনাক্সে কাজ করা ডেভেলপাররা — টার্মাক্স/পি-রুটের মাধ্যমে অ্যান্ড্রয়েড ডিভাইস, আসাহি লিনাক্স, এআরএম৬৪ সার্ভার ও বোর্ড — যাঁদের একটি সম্পূর্ণ ও সৎ অ্যান্ড্রয়েড টুলচেইন দরকার।',
       'pipe.build.t': 'বিল্ড', 'pipe.build.d': 'aapt2 · aidl · গ্র্যাডল/ফ্লাটার এপিকে তৈরি করে',
       'pipe.sign.t': 'স্বাক্ষর', 'pipe.sign.d': 'zipalign · apksigner স্বাক্ষর ও যাচাই করে',
       'pipe.install.t': 'ইনস্টল', 'pipe.install.d': 'নেটিভ adb ফিজিক্যাল ডিভাইসে পাঠায়',
@@ -456,7 +455,7 @@ log output → process remains alive
       'tool.more': 'প্রতি-ভার্সন এওএসপি ট্যাগ, সিআই রান ও নোট versions.json-এ। প্রতিটি টুলের দৈনন্দিন কমান্ড COMMANDS.md-তে।',
       'tool.commands': 'কমান্ড রেফারেন্স',
       'inst.title': 'ইনস্টলেশন',
-      'inst.note': 'যেকোনো glibc সহ aarch64 লিনাক্সে চলে — যাচাইকৃত লক্ষ্য এআরএম৬৪ ফোনে টার্মাক্স + পিআরুট ডেবিয়ান; আসাহি, রাসবেরি পাই ও এআরএম৬৪ সার্ভারও একই পথ অনুসরণ করে। ইডেমপোটেন্ট: আবার চালালে বিদ্যমান ক্লোন আপডেট হয় এবং ইনস্টল করা অংশ বাদ যায়।',
+      'inst.note': 'যেকোনো glibc সহ aarch64 লিনাক্সে চলে — যাচাইকৃত লক্ষ্য এআরএম৬৪ ফোনে টার্মাক্স + পি-রুট ডেবিয়ান; আসাহি, রাসবেরি পাই ও এআরএম৬৪ সার্ভারও একই পথ অনুসরণ করে। ইডেমপোটেন্ট: আবার চালালে বিদ্যমান ক্লোন আপডেট হয় এবং ইনস্টল করা অংশ বাদ যায়।',
       'inst.off.t': 'সম্পূর্ণ অফলাইন', 'inst.off.d': 'build-tools ও platform-tools ৩৫.০.২, build-tools ৩৬.০.০ (চেক-ইন করা, SHA256-যাচাইকৃত আর্টিফ্যাক্ট), এনডিকে/সিমেক শিম।',
       'inst.net.t': 'নেটওয়ার্ক দরকার', 'inst.net.d': 'cmdline-tools (গুগল জিপ) এবং platforms;android-* — অন্য যেকোনো build-tools ভার্সন এওএসপি সোর্স থেকে বিল্ড হয় (~২–৪ জিবি, ~১৫–৩০ মিনিট)।',
       'inst.prof.t': 'যাচাইকৃত প্রোফাইল', 'inst.prof.d': 'এক কমান্ডে হুবহু যাচাইকৃত বান্ডিল: ./setup.sh install-profile validated — build-tools ৩৫.০.২ + এনডিকে ২৭.২ + android-36।',
@@ -478,25 +477,24 @@ log output → process remains alive
       'evi.c2.l': 'রিলিজ খুলুন →',
       'evi.c3.t': 'ভার্সন রেজিস্ট্রি', 'evi.c3.d': 'versions.json প্রতি-ভার্সন অবস্থা, এওএসপি ট্যাগ, সিআই রান ও সৎ নোট রাখে — কী ইচ্ছা করে বিল্ড করা হয়নি এবং কেন, তাও।',
       'evi.c3.l': 'রেজিস্ট্রি খুলুন →',
-      'evi.vocab': 'এই ইকোসিস্টেমে যৌথ প্রমাণ শব্দভাণ্ডার — যাচাইকৃত · পরিমাপকৃত · পর্যবেক্ষিত · পরীক্ষামূলক · এখনো পরীক্ষিত নয় · সমর্থিত নয়:',
+      'evi.vocab': 'যৌথ প্রমাণ শব্দভাণ্ডার — যাচাইকৃত · পরিমাপকৃত · পর্যবেক্ষিত · পরীক্ষামূলক · এখনো পরীক্ষিত নয় · সমর্থিত নয়:',
       'ev.verified': 'যাচাইকৃত', 'ev.measured': 'পরিমাপকৃত', 'ev.observed': 'পর্যবেক্ষিত',
       'ev.experimental': 'পরীক্ষামূলক', 'ev.untested': 'এখনো পরীক্ষিত নয়', 'ev.unsupported': 'সমর্থিত নয়',
-      'evi.honesty': 'সততার সীমানা: সম্পূর্ণ শৃঙ্খলটি একটি ডিভাইস পরিবারে (রেডমি টার্বো ৪ প্রো, পিআরুট ডেবিয়ান) ভৌতভাবে যাচাইকৃত। অন্য যেকোনো হোস্টে স্ক্রিপ্ট একই, কিন্তু "কাজ করার কথা" মানে "যাচাইকৃত" নয় — প্রথম প্রমাণ-পরীক্ষা হিসেবে ./setup.sh doctor চালান।',
+      'evi.honesty': 'সততার সীমানা: সম্পূর্ণ শৃঙ্খলটি একটি ডিভাইস পরিবারে (রেডমি টার্বো ৪ প্রো, পি-রুট ডেবিয়ান) ভৌতভাবে যাচাইকৃত। অন্য যেকোনো হোস্টে স্ক্রিপ্ট একই, কিন্তু "কাজ করার কথা" মানে "যাচাইকৃত" নয় — প্রথম প্রমাণ-পরীক্ষা হিসেবে ./setup.sh doctor চালান।',
       'tx.title': 'এডিটি ও টারনাক্স — একটি এআরএম৬৪ গল্পের দুটি স্তর',
       'tx.c1.t': 'এডিটি — এই রিপোজিটরি', 'tx.c1.d': 'ডেভেলপমেন্ট-টুলচেইন স্তর: লিনাক্স এআরএম৬৪-এর জন্য নেটিভ এসডিকে বিল্ড-টুলস, প্ল্যাটফর্ম-টুলস, স্বাক্ষর ও এডিবি ওয়ার্কফ্লো।',
-      'tx.c2.t': 'টারনাক্স — ডেস্কটপ স্তর', 'tx.c2.d': 'পিআরুট ও টার্মাক্স:এক্স১১-এর মাধ্যমে অ্যান্ড্রয়েডে নো-রুট ডেবিয়ান + এক্সএফসই৪ ডেস্কটপ, জিপিইউ ত্বরণসহ (মেসা/জিঙ্ক, অ্যাড্রিনোতে টার্নিপ)।',
+      'tx.c2.t': 'টারনাক্স — ডেস্কটপ স্তর', 'tx.c2.d': 'পি-রুট ও টার্মাক্স:এক্স১১-এর মাধ্যমে অ্যান্ড্রয়েডে নো-রুট ডেবিয়ান + এক্সএফসই৪ ডেস্কটপ, জিপিইউ ত্বরণসহ (মেসা/জিঙ্ক, অ্যাড্রিনোতে টার্নিপ)।',
       'tx.c2.l': 'টারনাক্স ওয়েবসাইট →',
-      'tx.c3.t': 'যাচাইকৃত বনাম পরীক্ষামূলক', 'tx.c3.d': 'এডিটির পাইপলাইন ভাগ করা টার্মাক্স + পিআরুট ডেবিয়ান হোস্টে যাচাইকৃত; টারনাক্স ডেস্কটপ ও জিপিইউ স্ট্যাক আলাদাভাবে যাচাই করে। সম্মিলিত ক্রস-প্রজেক্ট ওয়ার্কফ্লো একসাথে চলতে দেখা গেলেও আনুষ্ঠানিকভাবে পরীক্ষিত নয় — সেগুলো পরীক্ষামূলক থেকে যায়।',
+      'tx.c3.t': 'যাচাইকৃত বনাম পরীক্ষামূলক', 'tx.c3.d': 'এডিটির পাইপলাইন ভাগ করা টার্মাক্স + পি-রুট ডেবিয়ান হোস্টে যাচাইকৃত; টারনাক্স ডেস্কটপ ও জিপিইউ স্ট্যাক আলাদাভাবে যাচাই করে। সম্মিলিত ক্রস-প্রজেক্ট ওয়ার্কফ্লো একসাথে চলতে দেখা গেলেও আনুষ্ঠানিকভাবে পরীক্ষিত নয় — সেগুলো পরীক্ষামূলক থেকে যায়।',
       'tx.site': 'টারনাক্স ওয়েবসাইট', 'tx.repo': 'টারনাক্স রিপোজিটরি',
       'docs.title': 'ডকুমেন্টেশন',
       'docs.note': 'রিডমিতে আগে সহজ অংশ; কারিগরি গভীরতা রিপোজিটরিতে, এখান থেকে সরাসরি লিঙ্ক করা — যাতে আপনি যা পড়েন তা টুলচেইন আসলে যা করে তার সাথে মেলে।',
       'docs.c1': 'এডিটি কী, প্রমাণ, টারনাক্স সম্পর্ক ও সীমাবদ্ধতা — দ্রুত পথ।',
-      'docs.c2.t': 'টেকনিক্যাল রেফারেন্স', 'docs.c2.d': 'টুলের ভূমিকা, নেটিভ বিল্ড কৌশল, এনডিকে/পিআরুট বাস্তবতা, setup.sh সারফেস, প্রোফাইল।',
+      'docs.c2.t': 'টেকনিক্যাল রেফারেন্স', 'docs.c2.d': 'টুলের ভূমিকা, নেটিভ বিল্ড কৌশল, এনডিকে/পি-রুট বাস্তবতা, setup.sh সারফেস, প্রোফাইল।',
       'docs.c3.t': 'কমান্ড রেফারেন্স', 'docs.c3.d': 'প্রতিটি ইনস্টল করা টুলের দৈনন্দিন কমান্ড, ডিভাইস পেয়ারিং, ট্রাবলশুটিং।',
       'docs.c4.t': 'যাচাই রেকর্ড', 'docs.c4.d': 'বাস্তব-ডিভাইস প্রমাণ ও তারিখভিত্তিক সেশন রেকর্ড — যে কাজের বর্ণনা দেয় তার পাশেই রাখা।',
       'docs.open': 'পড়ুন →',
       'foot.portfolio': 'পোর্টফোলিও', 'foot.repo': 'রিপোজিটরি', 'foot.releases': 'রিলিজ', 'foot.docs': 'ডকুমেন্টেশন',
-      'foot.eco': 'সবুজ মিয়া প্রজেক্ট ইকোসিস্টেমের অংশ।'
     };
     var EN = null; /* captured lazily from the DOM */
     var enCache = {};
@@ -540,5 +538,6 @@ log output → process remains alive
   <!-- geographic data first (a generated file), then the tiny driver -->
   <script src="/adt/assets/geo/adt-geo.js" defer></script>
   <script src="/adt/assets/js/adt-map.js" defer></script>
+  <script src="/adt/assets/js/codecopy.js" defer></script>
 </body>
 </html>

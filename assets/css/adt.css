@@ -472,6 +472,56 @@ pre.cmd code { color: #d1fae5; background: none; padding: 0; }
 pre.cmd .c { color: rgba(228, 226, 223, 0.35); }
 pre.cmd .g { color: rgba(228, 226, 223, 0.55); }
 
+/* code-copy affordance — opt-in via [data-copy], so diagrams and prose never get one */
+.cb {
+  position: relative;
+  width: 100%;
+  margin: 0 0 14px;
+  overflow: hidden;
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius);
+  background: var(--code-bg);
+}
+.cb > pre.cmd { margin: 0; border: 0; border-radius: 0; }
+.cb-top {
+  height: 34px;
+  padding: 0 8px 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.02);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.cb-dots { display: flex; gap: 5px; }
+.cb-dots i { width: 6px; height: 6px; display: block; border-radius: 50%; background: #375049; }
+.cb-dots i:first-child { background: #d16c71; }
+.cb-dots i:nth-child(2) { background: #c99b50; }
+.cb-dots i:nth-child(3) { background: #4ca87f; }
+.cb-lang { margin-right: auto; }
+.cb-copy {
+  padding: 4px 8px;
+  color: var(--muted);
+  border: 1px solid transparent;
+  border-radius: 5px;
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  cursor: pointer;
+}
+.cb-copy:hover, .cb-copy:focus-visible {
+  color: var(--accent-bright);
+  border-color: var(--border-2);
+  background: var(--accent-soft);
+}
+.cb-copy.copied { color: var(--accent); }
+.cb-copy:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media print { .cb-top { display: none; } }
+
 /* honesty note */
 .note {
   border: 1px solid rgba(245, 158, 11, 0.28);
