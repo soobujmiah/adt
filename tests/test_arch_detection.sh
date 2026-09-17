@@ -41,10 +41,11 @@ assert_eq() {
 
 # ── Fixtures ─────────────────────────────────────────────────────────────
 
-# A real native binary for whatever host runs this test. This repo only
-# ever runs on aarch64 (ARM64 PRoot devices, and CI's ubuntu-24.04-arm
-# runner), so bash itself is the "known-good native tool" fixture.
+# A real native binary for whatever host runs this test. On aarch64 (ARM64
+# PRoot devices and CI's ubuntu-24.04-arm runner) it detects as arm64; on
+# x86_64 build hosts it detects as x86_64.
 NATIVE_ELF="$(command -v bash)"
+EXPECTED_NATIVE="$([[ $(uname -m) =~ ^(aarch64|arm64)$ ]] && echo "arm64" || echo "x86_64")"
 
 # Minimal ELF64 header — magic, class/data/version/osabi, e_type=ET_EXEC,
 # e_machine, e_version. file(1) only needs e_ident + e_machine to name an
@@ -83,8 +84,8 @@ ln -s "$WORKDIR/target-that-does-not-exist" "$BROKEN_SYMLINK"
 # detect_binary_arch is generic over the binary's identity, so these
 # synthetic fixtures are exactly as valid evidence as the real tools.
 
-assert_eq "native host ELF -> arm64" \
-    "arm64" "$(detect "$NATIVE_ELF")"
+assert_eq "native host ELF -> $EXPECTED_NATIVE" \
+    "$EXPECTED_NATIVE" "$(detect "$NATIVE_ELF")"
 
 assert_eq "synthetic x86_64 ELF -> x86_64 (the trap case)" \
     "x86_64" "$(detect "$FAKE_X86_64")"

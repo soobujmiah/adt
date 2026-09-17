@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 480" role="img" aria-labelledby="rel-title rel-desc">
+  <title id="rel-title">ADT and TERNUX Relationship</title>
+  <desc id="rel-desc">Two distinct layers sharing one ARM64 physical Android device: TERNUX provides the Linux desktop and GPU acceleration; ADT provides the native Android SDK build and deployment toolchain.</desc>
+  <rect width="1200" height="480" rx="16" fill="#050507" stroke="rgba(228,226,223,0.08)" stroke-width="1"/>
+  <text x="50" y="52" fill="#e4e2df" font-family="'Space Grotesk', system-ui, sans-serif" font-size="24" font-weight="700" letter-spacing="-0.02em">ADT &amp; TERNUX · Ecosystem Architecture</text>
+  <text x="50" y="78" fill="rgba(228,226,223,0.45)" font-family="'JetBrains Mono', monospace" font-size="12" letter-spacing="0.06em">TWO LAYERS OF ONE ARM64 STORY · COMMON HARDWARE FOUNDATION · INDEPENDENT PROJECTS</text>
+
+  <!-- Base Layer: Physical Android Hardware -->
+  <rect x="50" y="110" width="1100" height="85" rx="12" fill="rgba(6,7,6,0.66)" stroke="rgba(34,211,238,0.35)" stroke-width="1.2"/>
+  <text x="75" y="145" fill="#22d3ee" font-family="'Space Grotesk', sans-serif" font-size="17" font-weight="700">Physical Android Host Device (ARM64)</text>
+  <text x="75" y="172" fill="rgba(228,226,223,0.72)" font-size="13">Native CPU · Adreno GPU · Memory · Android Linux Kernel · Termux + PRoot Userspace (No root required)</text>
+  <rect x="990" y="130" width="135" height="24" rx="12" fill="rgba(34,211,238,0.12)" stroke="rgba(34,211,238,0.4)" stroke-width="1"/>
+  <text x="1057" y="146" fill="#22d3ee" font-family="'JetBrains Mono', monospace" font-size="10.5" font-weight="600" text-anchor="middle">PHYSICAL HOST</text>
+
+  <!-- Side-by-Side Layers -->
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <!-- Left: TERNUX -->
+    <rect x="50" y="235" width="530" height="185" rx="12" fill="rgba(6,7,6,0.66)" stroke="rgba(34,197,94,0.4)" stroke-width="1.2"/>
+    <text x="75" y="270" fill="#4ade80" font-family="'Space Grotesk', sans-serif" font-size="20" font-weight="700">TERNUX</text>
+    <text x="175" y="270" fill="rgba(228,226,223,0.45)" font-family="'JetBrains Mono', monospace" font-size="11.5">soobujmiah/ternux</text>
+    <text x="75" y="298" fill="#e4e2df" font-size="14" font-weight="600">The Linux Desktop &amp; Workstation Layer</text>
+    <path d="M75 312h480" stroke="rgba(228,226,223,0.08)" stroke-width="1"/>
+    <text x="75" y="336" fill="rgba(228,226,223,0.65)" font-size="12.5">• Debian userspace + Xfce4 desktop + Termux:X11 display</text>
+    <text x="75" y="358" fill="rgba(228,226,223,0.65)" font-size="12.5">• PulseAudio audio bridge for full multimedia support</text>
+    <text x="75" y="380" fill="rgba(228,226,223,0.65)" font-size="12.5">• GPU acceleration: Mesa/Zink Turnip on Adreno or VirGL fallback</text>
+    <text x="75" y="402" fill="rgba(34,197,94,0.75)" font-family="'JetBrains Mono', monospace" font-size="11">Goal: Run desktop productivity and Linux IDEs on phone</text>
+
+    <!-- Right: ADT -->
+    <rect x="620" y="235" width="530" height="185" rx="12" fill="rgba(6,7,6,0.66)" stroke="rgba(168,85,247,0.4)" stroke-width="1.2"/>
+    <text x="645" y="270" fill="#c084fc" font-family="'Space Grotesk', sans-serif" font-size="20" font-weight="700">ADT</text>
+    <text x="700" y="270" fill="rgba(228,226,223,0.45)" font-family="'JetBrains Mono', monospace" font-size="11.5">soobujmiah/adt (this project)</text>
+    <text x="645" y="298" fill="#e4e2df" font-size="14" font-weight="600">The Native Android Development Toolchain Layer</text>
+    <path d="M645 312h480" stroke="rgba(228,226,223,0.08)" stroke-width="1"/>
+    <text x="645" y="336" fill="rgba(228,226,223,0.65)" font-size="12.5">• AOSP-sourced aarch64 build-tools (aapt2, zipalign, apksigner)</text>
+    <text x="645" y="358" fill="rgba(228,226,223,0.65)" font-size="12.5">• Native platform-tools (adb, fastboot) with local device bridge</text>
+    <text x="645" y="380" fill="rgba(228,226,223,0.65)" font-size="12.5">• End-to-end on-device APK build, signing, install &amp; validation</text>
+    <text x="645" y="402" fill="rgba(192,132,252,0.85)" font-family="'JetBrains Mono', monospace" font-size="11">Goal: Android application development without x86_64 PC</text>
+  </g>
+
+  <!-- Connecting Arrows -->
+  <path d="M315 195v40M885 195v40" stroke="rgba(228,226,223,0.25)" stroke-width="1.5" fill="none"/>
+  <path d="M311 230l4 6 4-6zM881 230l4 6 4-6z" fill="rgba(228,226,223,0.45)"/>
+
+  <text x="50" y="455" fill="rgba(228,226,223,0.4)" font-family="'JetBrains Mono', monospace" font-size="11.5">Coexistence is verified on hardware; shared orchestration remains experimental · Both projects maintain independent repositories.</text>
+</svg>

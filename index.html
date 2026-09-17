@@ -210,6 +210,9 @@ description: >-
         <div class="stage" role="listitem"><div class="t" data-i18n="pipe.install.t">Install</div><div class="d" data-i18n="pipe.install.d">native adb pushes to a physical device</div></div>
         <div class="stage" role="listitem"><div class="t" data-i18n="pipe.verify.t">Verify</div><div class="d" data-i18n="pipe.verify.d">arm64-v8a selected · app alive · logs clean</div></div>
       </div>
+      <div style="margin-top: 24px;">
+        <img src="{{ site.baseurl }}/assets/img/adt-architecture.svg" alt="ADT Architecture Diagram" width="100%" style="border-radius: 12px; border: 1px solid var(--border);" loading="lazy">
+      </div>
     </section>
 
     <!-- ══ FEATURES ══ -->
@@ -286,7 +289,10 @@ git clone --depth 1 https<span class="g">:</span>//github.com/soobujmiah/adt.git
     <!-- ══ WORKFLOWS ══ -->
     <section id="workflows" aria-labelledby="workflows-h" class="reveal">
       <h2 id="workflows-h"><span class="n">05</span><span data-i18n="wf.title">Workflows</span></h2>
-      <p class="section-note" data-i18n="wf.note">The four everyday paths. Exact commands — including wireless adb pairing, which trips most people — are in COMMANDS.md.</p>
+      <p class="section-note" data-i18n="wf.note">The everyday developer paths. Exact commands — including wireless adb pairing, which trips most people — are in COMMANDS.md.</p>
+      <div style="margin: 20px 0;">
+        <img src="{{ site.baseurl }}/assets/img/adt-workflow.svg" alt="ADT Pipeline and Closed-Loop Automation Diagram" width="100%" style="border-radius: 12px; border: 1px solid var(--border);" loading="lazy">
+      </div>
       <div class="grid">
         <article class="card">
           <h3><span class="n">A</span><span data-i18n="wf.a.t">Build workflow</span></h3>
@@ -307,6 +313,11 @@ git clone --depth 1 https<span class="g">:</span>//github.com/soobujmiah/adt.git
           <h3><span class="n">D</span><span data-i18n="wf.d.t">ADB &amp; device</span></h3>
           <p data-i18n="wf.d.d">Native adb over USB or wireless debugging: install, launch, logcat, shell. Pairing and connect use different ports — COMMANDS.md documents the exact sequence.</p>
           <a class="more" href="https://github.com/soobujmiah/adt/blob/main/COMMANDS.md" data-i18n="wf.d.l">ADB commands →</a>
+        </article>
+        <article class="card">
+          <h3><span class="n">E</span><span data-i18n="wf.e.t">Closed-loop automation</span></h3>
+          <p data-i18n="wf.e.d">Current verified status: manual/scripted on-device execution. Potential future capability: authorized agent loops modifying code, building via ADT, deploying to the host device, and evaluating logcat for iterative fixes.</p>
+          <a class="more" href="https://github.com/soobujmiah/adt/blob/main/docs/ANDROID_ARM64_BUILD_HANDOFF.md" data-i18n="docs.open">Handoff doc →</a>
         </article>
       </div>
     </section>
@@ -355,14 +366,9 @@ log output → process remains alive
     <!-- ══ TERNUX ══ -->
     <section id="ternux" aria-labelledby="ternux-h" class="reveal">
       <h2 id="ternux-h"><span class="n">07</span><span data-i18n="tx.title">ADT and Ternux — two layers of one ARM64 story</span></h2>
-      <div class="eco-diagram" aria-hidden="true">                 <b>Android Device</b>
-                       │
-          ┌────────────┴────────────┐
-          │                         │
-         <b>ADT</b>                      <b>Ternux</b>
-          │                         │
- Android development        Linux ARM64 desktop
- Build / Sign / ADB         Debian / Xfce4 / GPU</div>
+      <div style="margin: 20px 0;">
+        <img src="{{ site.baseurl }}/assets/img/adt-ternux-relationship.svg" alt="ADT and TERNUX Relationship Diagram" width="100%" style="border-radius: 12px; border: 1px solid var(--border);" loading="lazy">
+      </div>
       <div class="grid">
         <article class="card">
           <h3 data-i18n="tx.c1.t">ADT — this repository</h3>
@@ -372,6 +378,10 @@ log output → process remains alive
           <h3 data-i18n="tx.c2.t">Ternux — the desktop layer</h3>
           <p data-i18n="tx.c2.d">A no-root Debian + Xfce4 desktop on Android via PRoot and Termux:X11, with GPU acceleration (Mesa/Zink, Turnip on Adreno).</p>
           <a class="more" href="https://soobujmiah.github.io/ternux/" data-i18n="tx.c2.l">Ternux website →</a>
+        </article>
+        <article class="card">
+          <h3 data-i18n="tx.c4.t">Physical host target</h3>
+          <p data-i18n="tx.c4.d">The host Android device is the actual physical target machine. PRoot/Termux serves as the user-space environment. Builds run on bare metal; execution and debugging target that physical phone, not an emulator or external PC.</p>
         </article>
         <article class="card">
           <h3 data-i18n="tx.c3.t">Verified vs experimental</h3>
@@ -469,6 +479,8 @@ log output → process remains alive
       'wf.c.l': 'স্বাক্ষর কমান্ড →',
       'wf.d.t': 'এডিবি ও ডিভাইস', 'wf.d.d': 'ইউএসবি বা ওয়্যারলেস ডিবাগিংয়ে নেটিভ adb: ইনস্টল, লঞ্চ, লগক্যাট, শেল। পেয়ারিং ও কানেক্ট ভিন্ন পোর্ট ব্যবহার করে — নির্দিষ্ট ধাপগুলো COMMANDS.md-তে।',
       'wf.d.l': 'এডিবি কমান্ড →',
+      'wf.e.t': 'ক্লোজড-লুপ অটোমেশন',
+      'wf.e.d': 'বর্তমান যাচাইকৃত অবস্থা: অন-ডিভাইস ম্যানুয়াল বা স্ক্রিপ্টেড এক্সিকিউশন। সম্ভাব্য ভবিষ্যতের সক্ষমতা: অনুমোদিত এজেন্ট কোড সংশোধন, এডিটির মাধ্যমে বিল্ড, হোস্ট ডিভাইসে ডিপ্লয় এবং পুনরাবৃত্তিমূলক সংশোধনের জন্য লগক্যাট মূল্যায়ন।',
       'evi.title': 'প্রমাণ — বাস্তব ফলাফল',
       'evi.note': 'সবচেয়ে শক্তিশালী পরীক্ষা বাইনারির উপস্থিতি নয়, সম্পূর্ণ পথ। ১ সেপ্টেম্বর ২০২৬-এ এই শৃঙ্খলটি একটি বাস্তব ফিজিক্যাল ডিভাইসে এন্ড-টু-এন্ড চলেছিল:',
       'evi.c1.t': 'যাচাই রেকর্ড', 'evi.c1.d': 'REAL_DEVICE_BUILD_VALIDATION.md — যাচাইকৃত প্রজেক্ট অবস্থার জন্য অবস্থা ভেরিফায়েড / ক্লোজড। ডিভাইস টপোলজি, কমান্ড ও আউটপুট রিপোতেই রেকর্ড করা।',
@@ -485,6 +497,8 @@ log output → process remains alive
       'tx.c1.t': 'এডিটি — এই রিপোজিটরি', 'tx.c1.d': 'ডেভেলপমেন্ট-টুলচেইন স্তর: লিনাক্স এআরএম৬৪-এর জন্য নেটিভ এসডিকে বিল্ড-টুলস, প্ল্যাটফর্ম-টুলস, স্বাক্ষর ও এডিবি ওয়ার্কফ্লো।',
       'tx.c2.t': 'টারনাক্স — ডেস্কটপ স্তর', 'tx.c2.d': 'পি-রুট ও টার্মাক্স:এক্স১১-এর মাধ্যমে অ্যান্ড্রয়েডে নো-রুট ডেবিয়ান + এক্সএফসই৪ ডেস্কটপ, জিপিইউ ত্বরণসহ (মেসা/জিঙ্ক, অ্যাড্রিনোতে টার্নিপ)।',
       'tx.c2.l': 'টারনাক্স ওয়েবসাইট →',
+      'tx.c4.t': 'ভৌত হোস্ট ডিভাইস লক্ষ্য',
+      'tx.c4.d': 'হোস্ট অ্যান্ড্রয়েড ডিভাইসটিই আসল ভৌত লক্ষ্য মেশিন। পি-রুট/টার্মাক্স ইউজার-স্পেস পরিবেশ হিসেবে কাজ করে। বেয়ার মেটালে বিল্ড চলে; এক্সিকিউশন ও ডিবাগিং কোনো এমুলেটর বা বাহ্যিক পিসি নয়, সরাসরি সেই ফোনকেই টার্গেট করে।',
       'tx.c3.t': 'যাচাইকৃত বনাম পরীক্ষামূলক', 'tx.c3.d': 'এডিটির পাইপলাইন ভাগ করা টার্মাক্স + পি-রুট ডেবিয়ান হোস্টে যাচাইকৃত; টারনাক্স ডেস্কটপ ও জিপিইউ স্ট্যাক আলাদাভাবে যাচাই করে। সম্মিলিত ক্রস-প্রজেক্ট ওয়ার্কফ্লো একসাথে চলতে দেখা গেলেও আনুষ্ঠানিকভাবে পরীক্ষিত নয় — সেগুলো পরীক্ষামূলক থেকে যায়।',
       'tx.site': 'টারনাক্স ওয়েবসাইট', 'tx.repo': 'টারনাক্স রিপোজিটরি',
       'docs.title': 'ডকুমেন্টেশন',

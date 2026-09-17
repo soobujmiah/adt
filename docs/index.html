@@ -1,59 +1,146 @@
 ---
+layout: default
 title: Documentation
-description: "ADT documentation — native build guide, real-device validation records, command reference and build internals."
+description: "Curated ADT documentation — architecture, native build workflows, real-device validation records, troubleshooting, and TERNUX relationship."
 ---
 <section class="hero hero--sub">
   <p class="eyebrow">Documentation</p>
-  <h1>Guides and validation records</h1>
+  <h1>Guides, architecture and validation records</h1>
   <p class="lede">
-    The repository is the source of truth. These documents live in
-    <a href="https://github.com/soobujmiah/adt">soobujmiah/adt</a> and are linked here
-    directly, so what you read matches what the toolchain actually does.
+    The repository is the technical source of truth. This curated guide organizes the essential
+    workflows, architecture, and diagnostics for developers building Android applications on Linux ARM64.
   </p>
+  <div class="actions">
+    <a class="btn primary" href="{{ site.baseurl }}/#install">Quick start</a>
+    <a class="btn" href="https://github.com/soobujmiah/adt">GitHub repository</a>
+    <a class="btn" href="{{ site.baseurl }}/">Overview</a>
+  </div>
 </section>
 
-<section aria-labelledby="g">
-  <h2 id="g">Guides</h2>
-  <p class="section-note">Start here if you are setting ADT up or writing your own build.</p>
+<!-- ══ SECTION 1: GETTING STARTED ══ -->
+<section aria-labelledby="start-h">
+  <h2 id="start-h"><span class="n">01</span>Getting Started</h2>
+  <p class="section-note">Everything needed to install and verify the native ARM64 Android toolchain.</p>
   <div class="grid">
     <article class="card">
-      <h3>README</h3>
-      <p>What ADT provides, the support discipline, the validated environment, and the
-         installation entry points.</p>
-      <p class="more"><a href="https://github.com/soobujmiah/adt/blob/main/README.md">Read the README →</a></p>
+      <h3><span class="n">A</span>What ADT is &amp; who it is for</h3>
+      <p>Native ARM64 Android SDK build-tools and platform-tools compiled from official AOSP source for Linux glibc, enabling phones, tablets, and ARM64 single-board computers to develop Android apps without an x86_64 host.</p>
+      <a class="more" href="https://github.com/soobujmiah/adt/blob/main/README.md">Read overview →</a>
     </article>
     <article class="card">
-      <h3>Native build guide</h3>
-      <p>Proving that an Android ARM64 native library can be built, packaged, installed and
-         executed on a real device from an ARM64 Linux/PRoot environment.</p>
-      <p class="more"><a href="https://github.com/soobujmiah/adt/blob/main/docs/ANDROID_ARM64_NATIVE_BUILD_GUIDE.md">Open guide →</a></p>
+      <h3><span class="n">B</span>Installation &amp; setup.sh</h3>
+      <p>Clone the repository and run <code>./setup.sh install-profile validated</code> to install the tested toolchain bundle (build-tools 35.0.2 + NDK 27.2 + android-36) into your environment.</p>
+      <a class="more" href="https://github.com/soobujmiah/adt/blob/main/COMMANDS.md">Installation reference →</a>
     </article>
     <article class="card">
-      <h3>Command reference</h3>
-      <p>Each tool with a short explanation, then the exact commands and what they do.</p>
-      <p class="more"><a href="https://github.com/soobujmiah/adt/blob/main/COMMANDS.md">Open reference →</a></p>
-    </article>
-    <article class="card">
-      <h3>Build internals</h3>
-      <p>How the build system works under the hood — for adding AOSP versions or fixing
-         build issues.</p>
-      <p class="more"><a href="https://github.com/soobujmiah/adt/blob/main/CONTRIBUTING.md">Open internals →</a></p>
-    </article>
-    <article class="card">
-      <h3>Ternux relationship</h3>
-      <p>ADT and Ternux as two layers of one ARM64 story — what each layer does, what is
-         verified between them, and what is not yet tested.</p>
-      <p class="more"><a href="https://github.com/soobujmiah/adt/blob/main/docs/TERNUX_RELATIONSHIP.md">Open document →</a>
-         · <a href="https://github.com/soobujmiah/ternux">Ternux repository →</a></p>
+      <h3><span class="n">C</span>Preflight verification</h3>
+      <p>Run <code>./setup.sh doctor</code> to verify architecture, paths, JDK availability, and tool integrity before starting builds.</p>
+      <a class="more" href="https://github.com/soobujmiah/adt/blob/main/docs/TECHNICAL_REFERENCE.md">Diagnostics guide →</a>
     </article>
   </div>
 </section>
 
+<!-- ══ SECTION 2: ARCHITECTURE ══ -->
+<section aria-labelledby="arch-h">
+  <h2 id="arch-h"><span class="n">02</span>Understanding ADT Architecture</h2>
+  <p class="section-note">How AOSP source code is adapted to native Linux ARM64 without binary emulation.</p>
+  <div style="margin: 20px 0;">
+    <img src="{{ site.baseurl }}/assets/img/adt-architecture.svg" alt="ADT Architecture Diagram" width="100%" style="border-radius: 12px; border: 1px solid var(--border);" loading="lazy">
+  </div>
+  <div class="grid">
+    <article class="card">
+      <h3>AOSP native build strategy</h3>
+      <p>Google distributes Linux SDK host tools only as x86_64 binaries. ADT adapts the source build scripts to compile directly with the host C/C++ compiler targeting Linux/glibc aarch64.</p>
+      <a class="more" href="https://github.com/soobujmiah/adt/blob/main/CONTRIBUTING.md">Build internals →</a>
+    </article>
+    <article class="card">
+      <h3>Physical host device vs emulator</h3>
+      <p><strong>Crucial distinction:</strong> ADT runs directly on the physical Android host hardware (via Termux + PRoot Debian). The execution target is the real bare-metal phone or tablet, not an external emulator or virtual machine.</p>
+      <a class="more" href="https://github.com/soobujmiah/adt/blob/main/docs/REAL_DEVICE_BUILD_VALIDATION.md">Validation topology →</a>
+    </article>
+    <article class="card">
+      <h3>Toolchain packaging</h3>
+      <p>Pre-compiled releases are verified with ELF architecture checks (<code>aarch64</code>) and distributed as self-contained offline-installable tarballs.</p>
+      <a class="more" href="https://github.com/soobujmiah/adt/blob/main/versions.json">Version registry →</a>
+    </article>
+  </div>
+</section>
+
+<!-- ══ SECTION 3: WORKFLOWS & PIPELINES ══ -->
+<section aria-labelledby="wf-h">
+  <h2 id="wf-h"><span class="n">03</span>Workflows &amp; Automation Architecture</h2>
+  <p class="section-note">From source compilation to on-device validation, distinguishing verified tools from future automation.</p>
+  <div style="margin: 20px 0;">
+    <img src="{{ site.baseurl }}/assets/img/adt-workflow.svg" alt="ADT Pipeline and Closed-Loop Automation Diagram" width="100%" style="border-radius: 12px; border: 1px solid var(--border);" loading="lazy">
+  </div>
+  <div class="grid">
+    <article class="card">
+      <h3>Build &amp; packaging pipeline</h3>
+      <p>Use <code>aapt2 compile</code> and <code>aapt2 link</code> to generate the binary resources and APK shell, align with <code>zipalign -p 4</code>, and sign cryptographically using <code>apksigner</code>.</p>
+      <a class="more" href="https://github.com/soobujmiah/adt/blob/main/docs/ANDROID_ARM64_NATIVE_BUILD_GUIDE.md">Native build guide →</a>
+    </article>
+    <article class="card">
+      <h3>On-device ADB &amp; debugging</h3>
+      <p>Connect to the host device via wireless debugging (<code>adb connect 127.0.0.1:&lt;port&gt;</code>) or local USB bridge, install packages, and stream live diagnostics with <code>adb logcat</code>.</p>
+      <a class="more" href="https://github.com/soobujmiah/adt/blob/main/COMMANDS.md">ADB command guide →</a>
+    </article>
+    <article class="card">
+      <h3>Closed-loop automation</h3>
+      <p><strong>Implemented today:</strong> Complete manual on-device build, signing, and test pipeline. <strong>Architectural potential:</strong> Authorized agents modifying code, triggering builds, deploying via ADT, and evaluating logcat feedback.</p>
+      <a class="more" href="https://github.com/soobujmiah/adt/blob/main/docs/ANDROID_ARM64_BUILD_HANDOFF.md">Handoff record →</a>
+    </article>
+  </div>
+</section>
+
+<!-- ══ SECTION 4: TERNUX RELATIONSHIP ══ -->
+<section aria-labelledby="tx-h">
+  <h2 id="tx-h"><span class="n">04</span>ADT &amp; TERNUX Relationship</h2>
+  <p class="section-note">Two independent layers of one physical ARM64 device story.</p>
+  <div style="margin: 20px 0;">
+    <img src="{{ site.baseurl }}/assets/img/adt-ternux-relationship.svg" alt="ADT and TERNUX Relationship Architecture" width="100%" style="border-radius: 12px; border: 1px solid var(--border);" loading="lazy">
+  </div>
+  <div class="grid">
+    <article class="card">
+      <h3>Distinct project roles</h3>
+      <p><strong>TERNUX</strong> delivers the Linux desktop workspace (Debian userspace, Xfce4, X11, Turnip GPU acceleration). <strong>ADT</strong> delivers the Android development toolchain (AOSP SDK tools, signing, ADB).</p>
+      <a class="more" href="https://soobujmiah.github.io/ternux/">TERNUX website →</a>
+    </article>
+    <article class="card">
+      <h3>Verified vs. experimental</h3>
+      <p>Both projects are verified independently on the same physical device foundation (Redmi Turbo 4 Pro, Termux + PRoot Debian). Cross-project workflows coexist in practice but are not tested as a unified package.</p>
+      <a class="more" href="https://github.com/soobujmiah/adt/blob/main/docs/TERNUX_RELATIONSHIP.md">Full relationship document →</a>
+    </article>
+  </div>
+</section>
+
+<!-- ══ SECTION 5: TROUBLESHOOTING ══ -->
+<section aria-labelledby="trouble-h">
+  <h2 id="trouble-h"><span class="n">05</span>Troubleshooting &amp; Diagnostics</h2>
+  <p class="section-note">Direct guidance for common connection, tool architecture, and permission issues.</p>
+  <div class="grid">
+    <article class="card">
+      <h3>Architecture mismatch traps</h3>
+      <p>If a build fails with "No such file or directory" despite the binary being present, check its architecture with <code>file &lt;binary&gt;</code>. ADT's <code>./setup.sh doctor</code> automatically catches x86_64 traps.</p>
+      <a class="more" href="https://github.com/soobujmiah/adt/blob/main/docs/TECHNICAL_REFERENCE.md">Architecture checks →</a>
+    </article>
+    <article class="card">
+      <h3>Wireless ADB pairing</h3>
+      <p>Remember that Android wireless debugging uses separate ephemeral ports for initial pairing (<code>adb pair</code>) and connection (<code>adb connect</code>). Do not reuse the pairing port for connection.</p>
+      <a class="more" href="https://github.com/soobujmiah/adt/blob/main/COMMANDS.md">Step-by-step pairing →</a>
+    </article>
+    <article class="card">
+      <h3>Shizuku operational dependency</h3>
+      <p>Detailed forensic record on how custom Shizuku relays interface with on-device ADB, port 5555 persistence, and crash resilience.</p>
+      <a class="more" href="https://github.com/soobujmiah/adt/blob/main/docs/ON_DEVICE_ADB_SHIZUKU_OPERATIONAL_DEPENDENCY.md">Read forensic report →</a>
+    </article>
+  </div>
+</section>
+
+<!-- ══ SECTION 6: EVIDENCE & RECORDS ══ -->
 <section aria-labelledby="r">
-  <h2 id="r">Validation records</h2>
+  <h2 id="r"><span class="n">06</span>Real-Device Validation Records</h2>
   <p class="section-note">
-    Device work produces records, not claims. These are the real-device validation
-    documents, kept in the repository alongside the work they describe.
+    Device engineering produces records, not marketing claims. These documents live directly in the repository alongside the tools they validate.
   </p>
   <ul class="facts">
     <li>
@@ -69,17 +156,7 @@ description: "ADT documentation — native build guide, real-device validation r
     <li>
       <span class="k">adb / shizuku</span>
       <span class="v"><a href="https://github.com/soobujmiah/adt/blob/main/docs/ON_DEVICE_ADB_SHIZUKU_OPERATIONAL_DEPENDENCY.md">Custom Shizuku operational dependency</a>
-        — on-device adb and its operational dependency</span>
-    </li>
-    <li>
-      <span class="k">session record</span>
-      <span class="v"><a href="https://github.com/soobujmiah/adt/blob/main/docs/validation/2026-08-31-arm64-build-pipeline.md">ARM64 Linux build pipeline validation, 2026-08-31</a>
-        — historical session record, superseded</span>
-    </li>
-    <li>
-      <span class="k">session record</span>
-      <span class="v"><a href="https://github.com/soobujmiah/adt/blob/main/docs/validation/2026-08-31-arm64-apk-pipeline.md">ARM64 APK pipeline validation, 2026-08-31</a>
-        — historical session record, superseded</span>
+        — on-device adb and its operational transport</span>
     </li>
     <li>
       <span class="k">version registry</span>
@@ -91,16 +168,16 @@ description: "ADT documentation — native build guide, real-device validation r
 </section>
 
 <section aria-labelledby="s">
-  <h2 id="s">Source and releases</h2>
+  <h2 id="s"><span class="n">07</span>Source, Licensing &amp; Community</h2>
   <div class="actions">
-    <a class="btn primary" href="https://github.com/soobujmiah/adt">Repository</a>
+    <a class="btn primary" href="https://github.com/soobujmiah/adt">GitHub repository</a>
     <a class="btn" href="https://github.com/soobujmiah/adt/releases">Releases</a>
-    <a class="btn" href="https://github.com/soobujmiah/adt/tree/main/docs">Documentation tree</a>
+    <a class="btn" href="https://github.com/soobujmiah/adt/blob/main/LICENSE">Apache-2.0 License</a>
     <a class="btn" href="{{ site.baseurl }}/">Back to overview</a>
   </div>
   <p class="section-note section-note--spaced">
-    Typography: Space Grotesk and JetBrains Mono, self-hosted and used under the
-    SIL Open Font License — see
+    Attribution: Sobuj Miah (@soobujmiah) · Licensed under Apache License 2.0.
+    Typography: Space Grotesk and JetBrains Mono under SIL Open Font License — see
     <a href="https://github.com/soobujmiah/adt/blob/main/assets/fonts/LICENSES.md">font licenses</a>.
   </p>
 </section>

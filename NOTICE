@@ -1,0 +1,18 @@
+ADT — ARM64 Android Development Toolchain
+Copyright (c) 2026 Sobuj Miah (@soobujmiah)
+
+This product includes software developed by Sobuj Miah (@soobujmiah)
+(https://github.com/soobujmiah/adt).
+
+This project adapts build logic originally developed by Lzhiyong
+(https://github.com/lzhiyong/android-sdk-tools), licensed under the Apache License 2.0.
+
+This product compiles official Android Open Source Project (AOSP) source code
+(https://android.googlesource.com), predominantly licensed under the Apache License 2.0,
+along with permissively-licensed third-party dependencies as aggregated by AOSP.
+
+This product bundles font software redistributed under the SIL Open Font License 1.1:
+- Space Grotesk (Copyright 2020 The Space Grotesk Project Authors)
+- JetBrains Mono (Copyright 2020 JetBrains s.r.o.)
+- Noto Sans Bengali (Copyright 2015 Google Inc.)
+For full font license terms, see assets/fonts/LICENSES.md.

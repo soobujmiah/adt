@@ -133,6 +133,9 @@ The build system adapts [lzhiyong/android-sdk-tools](https://github.com/lzhiyong
 
 ADT is the canonical project for this ARM64 Android development-tooling work. Higher-level projects may consume ADT's resulting capabilities, but ADT remains responsible for the underlying tooling. When a tool or version is added, the sequence is: `identify → obtain official source → adapt for Linux ARM64 → build → validate → document → record version status → publish reusable artifact when worthwhile`. Nothing is marked verified without evidence.
 
-## License
+## License & Trademarks
 
-Apache License 2.0 — see [`LICENSE`](LICENSE). ADT's build system is adapted from [lzhiyong/android-sdk-tools](https://github.com/lzhiyong/android-sdk-tools) (Apache 2.0); the built tools compile official AOSP source ([`repos.json`](repos.json)), predominantly Apache 2.0 with some permissively-licensed third-party components under `external/`, as AOSP itself aggregates.
+- **Code & Toolchain:** Licensed under the Apache License, Version 2.0. See [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE).
+- **Trademarks & Brand Identity:** The ADT and TERNUX project names, logos, and visual branding elements are reserved properties of Sobuj Miah and are not licensed under Apache 2.0. See [`TRADEMARKS.md`](TRADEMARKS.md).
+- **Upstream Attributions:** ADT's build system is adapted from [lzhiyong/android-sdk-tools](https://github.com/lzhiyong/android-sdk-tools) (Apache 2.0); the built tools compile official AOSP source ([`repos.json`](repos.json)), predominantly Apache 2.0 with permissively licensed third-party components under `external/`, as AOSP aggregates.
+- **Fonts:** Space Grotesk and JetBrains Mono are licensed under the SIL Open Font License 1.1 (see `assets/fonts/LICENSES.md`).

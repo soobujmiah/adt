@@ -16,10 +16,13 @@
   --accent: #22c55e;
   --accent-bright: #4ade80;
   --accent-soft: rgba(34, 197, 94, 0.14);
+  --cyan: #22d3ee;
+  --cyan-soft: rgba(34, 211, 238, 0.10);
   --amber: #f59e0b;
   --amber-soft: rgba(245, 158, 11, 0.12);
+  --red: #ef4444;
   --card: rgba(6, 7, 6, 0.66);
-  --code-bg: rgba(10, 14, 11, 0.85);
+  --code-bg: rgba(8, 10, 9, 0.92);
   --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --font-display: 'Space Grotesk', var(--font-body);
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -498,10 +501,10 @@ pre.cmd .g { color: rgba(228, 226, 223, 0.55); }
   text-transform: uppercase;
 }
 .cb-dots { display: flex; gap: 5px; }
-.cb-dots i { width: 6px; height: 6px; display: block; border-radius: 50%; background: #375049; }
-.cb-dots i:first-child { background: #d16c71; }
-.cb-dots i:nth-child(2) { background: #c99b50; }
-.cb-dots i:nth-child(3) { background: #4ca87f; }
+.cb-dots i { width: 6px; height: 6px; display: block; border-radius: 50%; }
+.cb-dots i:first-child { background: var(--red, #ef4444); }
+.cb-dots i:nth-child(2) { background: var(--amber, #f59e0b); }
+.cb-dots i:nth-child(3) { background: var(--accent, #22c55e); }
 .cb-lang { margin-right: auto; }
 .cb-copy {
   padding: 4px 8px;
