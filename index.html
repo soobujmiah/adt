@@ -261,14 +261,15 @@ description: >-
       <p class="section-note" data-i18n="inst.note">Works on any aarch64 Linux with glibc — the validated target is Termux + PRoot Debian on an ARM64 phone; Asahi, Raspberry Pi and ARM64 servers follow the same path. Idempotent: re-running updates an existing clone and skips what is already installed.</p>
       <pre class="cmd" data-copy><code><span class="c"># one-liner — fetches the repo and runs the whole bootstrap unattended</span>
 curl -fsSL https<span class="g">:</span>//raw.githubusercontent.com/soobujmiah/adt/main/install.sh | bash
-source ~/.bashrc
+source ~/.bashrc</code></pre>
 
-<span class="c"># from a clone — guided (asks before each step) or fully automatic</span>
+      <pre class="cmd" data-copy><code><span class="c"># from a clone — guided (asks before each step) or fully automatic</span>
 git clone --depth 1 https<span class="g">:</span>//github.com/soobujmiah/adt.git &amp;&amp; cd adt
-./setup.sh                    <span class="c"># guided</span>
-./setup.sh bootstrap --auto   <span class="c"># unattended, zero prompts</span>
+./setup.sh                    <span class="c"># guided</span></code></pre>
 
-<span class="c"># verify afterwards — pinpoints the broken piece if anything misbehaves</span>
+      <pre class="cmd" data-copy><code>./setup.sh bootstrap --auto   <span class="c"># unattended, zero prompts</span></code></pre>
+
+      <pre class="cmd" data-copy><code><span class="c"># verify afterwards — pinpoints the broken piece if anything misbehaves</span>
 ./setup.sh doctor</code></pre>
       <div class="grid">
         <article class="card">

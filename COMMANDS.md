@@ -22,7 +22,13 @@ Both devices must be on the same Wi‑Fi. On the phone: Developer options → **
 
 ```bash
 adb pair 192.168.1.5:37199      # the pairing screen's IP:port; it asks for the code (the port changes every time)
+```
+
+```bash
 adb connect 192.168.1.5:5555    # THEN connect to the main wireless IP:port (pairing port ≠ connect port!)
+```
+
+```bash
 adb devices -l                  # verify
 ```
 > Remember: `pair` and `connect` are separate steps using different ports — connecting to the pairing port will not work.
