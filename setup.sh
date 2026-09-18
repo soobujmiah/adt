@@ -146,6 +146,32 @@ detect_binary_arch() {
     fi
 
     ftype="$(file -b "$resolved" 2>/dev/null || true)"
+    if [[ -z "$ftype" ]] && command -v python3 &>/dev/null; then
+        local py_arch
+        py_arch="$(python3 -c '
+import struct, sys
+try:
+    with open(sys.argv[1], "rb") as f:
+        magic = f.read(4)
+        if magic != b"\x7fELF":
+            sys.exit(0)
+        ei_data = f.read(2)[1]
+        endian = "<" if ei_data == 1 else ">"
+        f.seek(18)
+        e_machine = struct.unpack(endian + "H", f.read(2))[0]
+        if e_machine == 183:
+            print("arm64")
+        elif e_machine == 62:
+            print("x86_64")
+except Exception:
+    pass
+' "$resolved" 2>/dev/null || true)"
+        if [[ -n "$py_arch" ]]; then
+            echo "$py_arch"
+            return
+        fi
+    fi
+
     case "$ftype" in
         *aarch64*|*"ARM aarch64"*) echo "arm64" ;;
         *"x86-64"*|*x86_64*)       echo "x86_64" ;;
