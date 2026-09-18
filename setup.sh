@@ -498,15 +498,30 @@ write_env_block() {
     local profile="$HOME/.bashrc"
     local display_root="$SDK_ROOT"
     [[ "$SDK_ROOT" == "$HOME/"* ]] && display_root="\$HOME/${SDK_ROOT#"$HOME"/}"
+
+    # Discover installed build-tools version so CLI utilities (aapt, aapt2, zipalign, aidl, etc.)
+    # are directly available on $PATH out of the box for dev shells
+    local bt_subpath=""
+    if [[ -d "$SDK_ROOT/build-tools" ]]; then
+        for d in $(ls -d "$SDK_ROOT/build-tools"/*/ 2>/dev/null | sort -V -r); do
+            local ver
+            ver="$(basename "$d")"
+            if [[ -n "$ver" ]]; then
+                bt_subpath=":\$ANDROID_HOME/build-tools/${ver}"
+                break
+            fi
+        done
+    fi
+
     touch "$profile"
     if grep -q ">>> ADT Android environment >>>" "$profile"; then
-        python3 - "$profile" "$display_root" <<'PY'
+        python3 - "$profile" "$display_root" "$bt_subpath" <<'PY'
 import re, sys
-path, root = sys.argv[1], sys.argv[2]
+path, root, bt_subpath = sys.argv[1], sys.argv[2], sys.argv[3]
 block = ('# >>> ADT Android environment >>>\n'
          'export ANDROID_HOME="%s"\n'
-         'export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin:$PATH"\n'
-         '# <<< ADT Android environment <<<' % root)
+         'export PATH="$ANDROID_HOME/platform-tools:$ANDROID_HOME/cmdline-tools/latest/bin%s:$PATH"\n'
+         '# <<< ADT Android environment <<<' % (root, bt_subpath))
 src = open(path).read()
 new = re.sub(r'# >>> ADT Android environment >>>.*?# <<< ADT Android environment <<<',
              block, src, count=1, flags=re.S)
@@ -518,7 +533,7 @@ PY
             echo ""
             echo "# >>> ADT Android environment >>>"
             echo "export ANDROID_HOME=\"${display_root}\""
-            echo "export PATH=\"\$ANDROID_HOME/platform-tools:\$ANDROID_HOME/cmdline-tools/latest/bin:\$PATH\""
+            echo "export PATH=\"\$ANDROID_HOME/platform-tools:\$ANDROID_HOME/cmdline-tools/latest/bin${bt_subpath}:\$PATH\""
             echo "# <<< ADT Android environment <<<"
         } >> "$profile"
         info "Wrote Android environment block to ${profile}"
@@ -1080,7 +1095,7 @@ cmd_build_all() {
     echo ""
     echo "  Next steps:"
     echo "    export ANDROID_HOME=\"${SDK_ROOT}\""
-    echo "    export PATH=\"\$ANDROID_HOME/platform-tools:\$ANDROID_HOME/cmdline-tools/latest/bin:\$PATH\""
+    echo "    export PATH=\"\$ANDROID_HOME/platform-tools:\$ANDROID_HOME/cmdline-tools/latest/bin:\$ANDROID_HOME/build-tools/${bt_version}:\$PATH\""
     echo ""
     echo "    ./setup.sh doctor        # verify everything"
     echo "    ./setup.sh status        # see what's installed"
