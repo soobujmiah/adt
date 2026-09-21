@@ -58,6 +58,9 @@ adb shell pm list packages | grep name  # find an installed package
 adb shell screencap /sdcard/s.png && adb pull /sdcard/s.png   # screenshot
 adb shell input tap 540 1200            # simulate a screen tap (x y)
 adb shell input keyevent KEYCODE_HOME   # press a button
+# NOTE (2026-09-21): ``input tap/swipe/keyevent/text`` are operator tools — for the owner's own
+# manual use. Autonomous agent interaction with an application UI is not authorized by any
+# mechanism. See soobujmiah/skb -> DEC-2026-09-21-001.
 
 adb reboot                              # reboot
 adb reboot bootloader                   # enter fastboot mode
