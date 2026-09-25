@@ -85,6 +85,8 @@ The strongest test is the full path, not the presence of binaries. On the valida
 
 Every version's exact status, AOSP tag, CI run and notes are tracked in [`versions.json`](versions.json). Per-component history lives in [`docs/validation/`](docs/validation/). The evidence vocabulary used across this project and its ecosystem sites: **Verified · Measured · Observed · Experimental · Not yet tested · Not supported**.
 
+`.repo/project.yaml` and `.repo/STATUS.md` add a machine-generated layer on top: the exact head commit and the current `CI` workflow's build/test status, kept current by `tools/repo_knowledge/` (vendored from `soobujmiah/skb`) and `.github/workflows/repo-knowledge-sync.yml`. It reads the existing `CI` workflow's results rather than re-running the 60-minute AOSP build matrix.
+
 ## ADT and Ternux — two layers of one ARM64 story
 
 ```text
