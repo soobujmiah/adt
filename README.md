@@ -107,17 +107,17 @@ The full relationship — the two layers side by side, where they differ, what i
 
 ## Documentation
 
-| Document | Contents |
+| Document | Purpose |
 |---|---|
-| [soobujmiah.github.io/adt](https://soobujmiah.github.io/adt/) · [docs site](https://soobujmiah.github.io/adt/docs/) | Hosted project site — overview, toolchain map, evidence and the documentation index |
-| [COMMANDS.md](COMMANDS.md) | Everyday commands for every installed tool, device pairing, troubleshooting |
-| [docs/TECHNICAL_REFERENCE.md](docs/TECHNICAL_REFERENCE.md) | Tool roles, native build strategy, NDK/PRoot reality, step-by-step install, `setup.sh` reference, profiles, repository structure |
-| [docs/REAL_DEVICE_BUILD_VALIDATION.md](docs/REAL_DEVICE_BUILD_VALIDATION.md) | Canonical real-device evidence record |
-| [docs/ANDROID_ARM64_NATIVE_BUILD_GUIDE.md](docs/ANDROID_ARM64_NATIVE_BUILD_GUIDE.md) | Reproducible native build/install procedure |
-| [docs/ANDROID_ARM64_BUILD_HANDOFF.md](docs/ANDROID_ARM64_BUILD_HANDOFF.md) | Build handoff record (build-tools 36.0.0 context) |
-| [docs/ON_DEVICE_ADB_SHIZUKU_OPERATIONAL_DEPENDENCY.md](docs/ON_DEVICE_ADB_SHIZUKU_OPERATIONAL_DEPENDENCY.md) | Shizuku operational dependency audit |
-| [docs/TERNUX_RELATIONSHIP.md](docs/TERNUX_RELATIONSHIP.md) | The ADT ↔ Ternux relationship: what each layer does, what is verified, what is not yet tested |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | Build internals — adding AOSP versions, fixing build issues |
+| [Project site](https://soobujmiah.github.io/adt/) · [Docs](https://soobujmiah.github.io/adt/docs/) | Overview, toolchain map, evidence, index |
+| [COMMANDS.md](COMMANDS.md) | Commands, device pairing, troubleshooting |
+| [TECHNICAL_REFERENCE.md](docs/TECHNICAL_REFERENCE.md) | Tool roles, native build, NDK/PRoot, setup, profiles, repo structure |
+| [REAL_DEVICE_BUILD_VALIDATION.md](docs/REAL_DEVICE_BUILD_VALIDATION.md) | Canonical device-validation evidence |
+| [ANDROID_ARM64_NATIVE_BUILD_GUIDE.md](docs/ANDROID_ARM64_NATIVE_BUILD_GUIDE.md) | Native ARM64 build/install procedure |
+| [ANDROID_ARM64_BUILD_HANDOFF.md](docs/ANDROID_ARM64_BUILD_HANDOFF.md) | Build handoff · build-tools 36.0.0 |
+| [ON_DEVICE_ADB_SHIZUKU_OPERATIONAL_DEPENDENCY.md](docs/ON_DEVICE_ADB_SHIZUKU_OPERATIONAL_DEPENDENCY.md) | Shizuku dependency audit |
+| [TERNUX_RELATIONSHIP.md](docs/TERNUX_RELATIONSHIP.md) | ADT ↔ Ternux roles, verification, open testing |
+| [CONTRIBUTING.md](CONTRIBUTING.md) | Build internals and AOSP contributions |
 
 ## Project lineage
 
