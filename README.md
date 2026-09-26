@@ -16,6 +16,8 @@
 
 ---
 
+![ADT ARM64 Android development pipeline](docs/assets/adt-arm64-pipeline.svg)
+
 ADT is a practical Android/Flutter toolchain for Linux ARM64 environments, including Termux + PRoot Debian on ARM64 Android devices. Google's Linux SDK host binaries are x86_64; ADT builds the native host tools from official AOSP source for aarch64/glibc, keeps offline-installable verified artifacts, and validates the whole pipeline on a real physical device.
 
 The CLI toolchain is the canonical path. GUI/X11 support is optional.
