@@ -86,19 +86,8 @@ Every version's exact status, AOSP tag, CI run and notes are tracked in [`versio
 `.repo/project.yaml` and `.repo/STATUS.md` add a machine-generated layer on top: the exact head commit and the current `CI` workflow's build/test status, kept current by `tools/repo_knowledge/` (vendored from `soobujmiah/skb`) and `.github/workflows/repo-knowledge-sync.yml`. It reads the existing `CI` workflow's results rather than re-running the 60-minute AOSP build matrix.
 
 ## ADT and Ternux — two layers of one ARM64 story
+
 ![ADT and Ternux — two layers of one ARM64 story](docs/assets/adt-ternux-two-layers.svg)
-
-
-```text
-                 Android Device
-                       │
-          ┌────────────┴────────────┐
-          │                         │
-         ADT                      Ternux
-          │                         │
- Android development        Linux ARM64 desktop
- Build / Sign / ADB         Debian / Xfce4 / GPU
-```
 
 - **ADT** (this repository) is the *development-toolchain* layer: native SDK build-tools, platform-tools, signing and ADB workflows for Linux ARM64.
 - **[Ternux](https://github.com/soobujmiah/ternux)** is the *Linux desktop* layer: a no-root Debian + Xfce4 desktop on Android via PRoot and Termux:X11, with GPU acceleration (Mesa/Zink, Turnip on Adreno). Site: [soobujmiah.github.io/ternux](https://soobujmiah.github.io/ternux/).
