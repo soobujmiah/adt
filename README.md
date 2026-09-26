@@ -69,6 +69,8 @@ Everyday commands for every installed tool — device pairing, the APK pipeline,
 4. **Inspect / debug** — `dexdump`, `adb logcat`, shell access, process checks.
 5. **Validate** — confirm Android selects the `arm64-v8a` native library, the app launches and the process survives.
 
+![ADT ARM64 Android development pipeline](docs/assets/adt-arm64-pipeline.svg)
+
 ## Evidence — what is actually tested
 
 The strongest test is the full path, not the presence of binaries. On the validation device below, this chain ran end-to-end:
@@ -90,7 +92,7 @@ Every version's exact status, AOSP tag, CI run and notes are tracked in [`versio
 `.repo/project.yaml` and `.repo/STATUS.md` add a machine-generated layer on top: the exact head commit and the current `CI` workflow's build/test status, kept current by `tools/repo_knowledge/` (vendored from `soobujmiah/skb`) and `.github/workflows/repo-knowledge-sync.yml`. It reads the existing `CI` workflow's results rather than re-running the 60-minute AOSP build matrix.
 
 ## ADT and Ternux — two layers of one ARM64 story
-![ADT and Ternux — two layers of one ARM64 story](docs/assets/adt-arm64-pipeline.svg)
+![ADT and Ternux — two layers of one ARM64 story](docs/assets/adt-ternux-two-layers.svg)
 
 
 ```text
