@@ -63,12 +63,6 @@ Everyday commands for every installed tool — device pairing, the APK pipeline,
 
 ## What can it do?
 
-1. **Build** — native ARM64 `aapt2`/`aidl` compile resources and AIDL; Gradle/Flutter produce APKs.
-2. **Sign** — `apksigner` (JVM, Debian-packaged) signs and verifies APKs.
-3. **Install** — native ARM64 `adb` installs onto a physical device over USB or wireless debugging.
-4. **Inspect / debug** — `dexdump`, `adb logcat`, shell access, process checks.
-5. **Validate** — confirm Android selects the `arm64-v8a` native library, the app launches and the process survives.
-
 ![ADT ARM64 Android development pipeline](docs/assets/adt-arm64-pipeline.svg)
 
 ## Evidence — what is actually tested
