@@ -1,0 +1,7 @@
+event_id: commit-2f9631c-20260926085210Z
+repository: soobujmiah/adt
+commit: 2f9631c35e53adbbf336e0615c019d1e6f3b61bc
+kind: commit
+occurred_at: '2026-09-26T08:52:10Z'
+status: completed
+summary: 'docs: shorten documentation labels'
