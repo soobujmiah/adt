@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 500" role="img" aria-labelledby="title desc">
+<title id="title">ADT and Ternux — two layers of one ARM64 story</title>
+<desc id="desc">Diagram showing one Android ARM64 device as the shared foundation, with ADT providing the Android development toolchain and Ternux providing the Linux ARM64 desktop environment.</desc>
+<defs>
+<linearGradient id="bg" x1="0" x2="1"><stop stop-color="#07140d"/><stop offset="1" stop-color="#0b2115"/></linearGradient>
+<linearGradient id="card" x1="0" x2="1"><stop stop-color="#10291a"/><stop offset="1" stop-color="#0b1d13"/></linearGradient>
+</defs>
+<rect width="1100" height="500" rx="28" fill="url(#bg)"/>
+<text x="550" y="58" text-anchor="middle" fill="#8ff0ad" font-family="sans-serif" font-size="15" font-weight="700" letter-spacing="3">ADT + TERNUX</text>
+<text x="550" y="94" text-anchor="middle" fill="#fff" font-family="sans-serif" font-size="28" font-weight="700">Two layers of one ARM64 story</text>
+<g font-family="sans-serif">
+<rect x="390" y="125" width="320" height="100" rx="22" fill="#123820" stroke="#67d88c" stroke-width="2"/>
+<text x="550" y="163" text-anchor="middle" fill="#9af4b5" font-size="13" font-weight="700">SHARED FOUNDATION</text>
+<text x="550" y="197" text-anchor="middle" fill="#fff" font-size="23" font-weight="700">Android ARM64 Device</text>
+</g>
+<g font-family="sans-serif">
+<rect x="90" y="315" width="400" height="105" rx="20" fill="url(#card)" stroke="#2c6b43"/>
+<text x="290" y="350" text-anchor="middle" fill="#8ff0ad" font-size="13" font-weight="700">ADT · DEVELOPMENT-TOOLCHAIN LAYER</text>
+<text x="290" y="382" text-anchor="middle" fill="#fff" font-size="19" font-weight="700">Build · Sign · ADB · Validate</text>
+<text x="290" y="405" text-anchor="middle" fill="#b8cfc0" font-size="13">Native Android tooling on ARM64 Linux</text>
+<rect x="610" y="315" width="400" height="105" rx="20" fill="url(#card)" stroke="#2c6b43"/>
+<text x="810" y="350" text-anchor="middle" fill="#8ff0ad" font-size="13" font-weight="700">TERNUX · LINUX-DESKTOP LAYER</text>
+<text x="810" y="382" text-anchor="middle" fill="#fff" font-size="19" font-weight="700">Debian · Xfce4 · GPU</text>
+<text x="810" y="405" text-anchor="middle" fill="#b8cfc0" font-size="13">No-root Linux desktop environment on Android</text>
+</g>
+<g stroke="#69dc8e" stroke-width="3" fill="none"><path d="M500 225v42L290 315"/><path d="M600 225v42l210 48"/></g>
+<text x="550" y="465" text-anchor="middle" fill="#8da897" font-family="sans-serif" font-size="13">Same device · same ARM64 foundation · complementary capabilities</text>
+</svg>
