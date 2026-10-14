@@ -274,7 +274,13 @@ Project versions track Android build-tools versions:
 - A `release` field in `versions.json` means the tag **actually exists** on `soobujmiah/adt` with downloadable assets. Never register a release that has not been published — `install-*` trusts the field and downloads will otherwise 404.
 - Asset naming convention, shared by `artifacts/` and release uploads: `build-tools-<version>-linux-arm64.tar.gz` and `platform-tools-<version>-linux-arm64.tar.gz`.
 - Installer order for a verified version: (1) checked-in `artifacts/` tarball, SHA256-verified against `artifacts/SHA256SUMS`; (2) GitHub Release download if a `release` field exists; (3) source build.
+- **Release downloads are integrity-checked before install.** The archive's SHA256 is compared against the asset `digest` reported by the GitHub Releases API (`fetch_release_asset_digest` + `verify_asset_digest`), and every expected binary's architecture is verified (`verify_payload_arch`) *before* anything is copied into `$SDK_ROOT`. The architecture check searches the whole extraction, so any tarball layout — flat `build-tools/<bin>` or a nested `android-sdk-linux-arm64/...` tree — is covered. A bad payload aborts the install and leaves the SDK untouched. When no digest is available the install continues with an explicit warning (offline use stays possible).
+- **`sdkmanager` must not install `build-tools` or `platform-tools` on ARM64.** Google serves linux-x86_64 payloads for both; they install cleanly and only fail when executed. `run_sdkmanager` refuses those two packages at its single choke point — which covers every caller, including `bootstrap`, `install-profile` and `install-platforms` — and points at `install-build-tools` / `install-platform-tools` instead. Platforms, NDK, CMake and cmdline-tools are unaffected.
+- **Covered by tests:** `tests/test_release_integrity.sh` (run by CI) exercises the architecture gate, the digest check and the `sdkmanager` refusal.
 - When adding a new validated artifact, commit the tarball under `artifacts/` and append its SHA256 line to `artifacts/SHA256SUMS` in the same commit.
+- **`configure_gradle` never overwrites a deliberate local shim.** If `android.aapt2FromMavenOverride` already points outside `$SDK_ROOT`, it is kept (with a warning and a timestamped backup of `gradle.properties`); `./setup.sh setup-gradle --force` is the explicit opt-in.
+- **`--sdk-root <path>` is honoured by the install commands and by the read-only `doctor`/`status`/`cleanup`.** Without it `detect_sdk_root` guesses, which is how a diagnostic can silently report on the wrong SDK.
+- **Covered by tests:** `tests/test_cli_args.sh` (run by CI) exercises the `--sdk-root` handling and the Gradle-override protection.
 
 ### Patch Resolution Order
 
@@ -344,11 +350,20 @@ deployagent.inc, deployagentscript.inc, etc:
 | `install-profile [name]` | Install a named bundle of already-verified versions from `versions.json`'s `profiles` key by calling `install-build-tools`/`install-ndk`/`install-platforms` in sequence — builds/verifies nothing new. Default/only profile: `validated` (build-tools 35.0.2 + NDK 27.2.12479018 + platforms;android-36 — see `docs/REAL_DEVICE_BUILD_VALIDATION.md`) |
 | `build-build-tools <ver>` | Build from AOSP source |
 | `build-platform-tools <ver>` | Build from AOSP source |
-| `doctor` | Diagnose setup (checks arch per build-tools version) |
+| `doctor` | Diagnose setup: architecture of every build-tools version, platform-tools binaries, platforms, NDK/CMake shims, and the Gradle override (classifying a custom shim) |
 | `status` | Show what's installed |
-| `setup-gradle` | Configure `android.aapt2FromMavenOverride` |
+| `setup-gradle [--force]` | Configure `android.aapt2FromMavenOverride`. Keeps an existing override that lives outside `$SDK_ROOT` (warns, backs up the file); `--force` rewrites it |
+
+Install commands and `doctor`/`status`/`cleanup` accept `--sdk-root <path>`; the read-only three take no other options.
 
 ## Troubleshooting
+
+### Installer pitfalls on ARM64 (read before installing)
+
+- **A "successful" install can still be unusable.** Google's linux-x86_64 payloads land with the same names and exec bits as ARM64 ones and only fail when executed (`bad machine`). That is why the architecture gate runs before any copy, and why `doctor` checks the architecture of every binary it finds.
+- **Never let `sdkmanager` touch build-tools/platform-tools.** Use `install-build-tools` / `install-platform-tools`; `run_sdkmanager` refuses those two packages and tells you the right command.
+- **Release downloads need retries and visible errors.** In PRoot/container environments `curl` can fail against a perfectly healthy URL. `download_asset` retries (`--retry 3 --retry-all-errors`, 20 s connect timeout), falls back to `wget`, and prints the last lines of the transfer log instead of discarding stderr. If it still fails, fetch the asset by hand, compare `sha256sum` with the release asset's `digest` from the GitHub API, then extract.
+- **Keep the receipts:** an install that refuses a payload says so explicitly (`the SDK is left untouched`) — check that line, not just the exit code.
 
 ### Common Build Issues
 

@@ -102,8 +102,15 @@ zipalign -f 4 app-unsigned.apk app-aligned.apk        # 4-byte alignment (requir
 
 To make Gradle projects use ADT's aapt2:
 ```bash
-./setup.sh setup-gradle       # writes android.aapt2FromMavenOverride into gradle.properties
+./setup.sh setup-gradle            # writes android.aapt2FromMavenOverride into gradle.properties
+./setup.sh setup-gradle --force    # overwrite an override that lives outside the SDK too
 ```
+
+`setup-gradle` **keeps** an existing `android.aapt2FromMavenOverride` that points outside `$SDK_ROOT`
+(a deliberate local shim — for example one that rewrites `--option=value` into `--option value` for
+aapt2 builds that only accept the spaced form). It warns, leaves the file as it is, and writes a
+`.bak-<timestamp>` copy next to it. `--force` overwrites. Verify with `./setup.sh doctor` — it prints
+`Gradle aapt2 override: <path> (custom shim, <arch>)` and whether that path is inside the SDK.
 
 ---
 
@@ -132,11 +139,18 @@ apksigner verify --print-certs app.apk
 sdkmanager --list_installed                    # what is installed
 sdkmanager --list | head -30                   # what is available
 sdkmanager "platforms;android-35"              # install a platform
-sdkmanager "build-tools;35.0.0"                # (note: on ARM64, prefer ADT's artifacts; these are x86)
+sdkmanager "build-tools;35.0.0"                # REFUSED on ARM64 (x86_64 payload) — use install-build-tools
 sdkmanager --uninstall "platforms;android-34"  # remove old packages (saves storage)
 yes | sdkmanager --licenses                    # accept licenses automatically
 ```
 **Requires internet** — the only online-dependent part of the SDK.
+
+**Never install or update `build-tools` / `platform-tools` with sdkmanager.** Google publishes
+linux-x86_64 payloads for both; they install without error on ARM64 and then every binary fails at
+exec time (`bad machine` / `cannot execute binary file`). ADT refuses those two packages on purpose
+and prints the command that does work (`./setup.sh install-build-tools <version>` /
+`install-platform-tools <version>`). `platforms;…`, `ndk;…`, `cmake;…`, `cmdline-tools;…` and
+`--licenses` are unaffected.
 
 ---
 
@@ -169,6 +183,10 @@ echo $ANDROID_HOME                # where the SDK lives (bootstrap writes it to 
 
 If `ANDROID_HOME` was deleted or a new shell does not see it: `source ~/.bashrc`.
 
+The install commands and the read-only commands (`doctor`, `status`, `cleanup`) all accept
+`--sdk-root <path>`, so a check can be pointed at a specific SDK instead of guessing:
+`./setup.sh doctor --sdk-root /opt/android-sdk`.
+
 ---
 
 ## 8. Symptom → quick fix table
@@ -180,7 +198,10 @@ If `ANDROID_HOME` was deleted or a new shell does not see it: `source ~/.bashrc`
 | `no devices/emulators found` (wireless) | re-run `adb connect IP:PORT`; check both devices are on the same Wi‑Fi |
 | Java error from sdkmanager | Java is missing — run `./setup.sh bootstrap --auto` (installs it automatically) |
 | Storage full | `./setup.sh cleanup` + `sdkmanager --uninstall` for old platforms |
+| build-tools / platform-tools stopped working right after `sdkmanager` | sdkmanager pulled x86_64 payloads — re-install from ADT: `./setup.sh install-build-tools <ver>` / `install-platform-tools <ver>` |
+| Release download fails with a bare `Download failed` | ADT retries and prints the transfer log; if it still fails, download the asset manually and compare `sha256sum` with the release's `digest` before extracting |
 | Generally odd behaviour | read `./setup.sh doctor` output — whichever check is red is the problem |
+| `doctor` reports "No Android SDK found" or checks the wrong directory | pass the path: `./setup.sh doctor --sdk-root /opt/android-sdk` |
 | Gradle native build fails with `Cannot run program ".../llvm-strip"` / `Exec failed, error: 2` | An NDK version's bundled host tool is x86_64 and cannot run here — run `./setup.sh doctor` to confirm which NDK version, then `./setup.sh install-ndk <version>` to install the ARM64-compatible shim, or pin `ndkVersion` in `app/build.gradle.kts` to a version `doctor` reports OK |
 
 ---
