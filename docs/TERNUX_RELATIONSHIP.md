@@ -42,6 +42,28 @@ userspace with an Xfce4 desktop, Termux:X11 display and PulseAudio bridge, an ex
 (Mesa/Zink over Turnip on supported Adreno devices) and a documented compatibility fallback, installed
 and operated by its own `ternux` CLI.
 
+## Use both on one phone
+
+Ternux provides the no-root Debian desktop; ADT installs and manages the Android
+development toolchain inside that Debian environment. Install/start Ternux from
+Termux, enter its Debian guest with `db` (or open a Debian terminal in Xfce),
+then run ADT's one-command installer as the normal Debian user:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/soobujmiah/adt/main/install.sh | bash
+source ~/.bashrc
+cd ~/adt && ./setup.sh doctor
+```
+
+Use ADT's guided `./setup.sh` or `./setup.sh install-profile validated` to
+reproduce the device-tested SDK/NDK/API combination. The exact installation
+steps are in Ternux's [ADT-in-Debian guide](https://github.com/soobujmiah/ternux/blob/main/docs/INSTALLATION.md#install-adt-tools-inside-the-ternux-debian-guest); ADT's full build, signing, ADB and validation commands are in its [command guide](https://github.com/soobujmiah/adt/blob/main/COMMANDS.md).
+
+The Android app build/device-validation workflow is verified on the shared
+Termux + PRoot host. Invoking ADT from a Ternux Xfce terminal has been observed,
+but the combined GUI-session workflow is not formally tested. Keep the two
+installers, version registries and evidence records project-owned and separate.
+
 ## Where they differ
 
 | | ADT | Ternux |

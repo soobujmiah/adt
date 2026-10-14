@@ -97,7 +97,7 @@ Every version's exact status, AOSP tag, CI run and notes are tracked in [`versio
 
 **How they relate.** Both run on the same foundation — Termux + PRoot Debian on an ARM64 phone — and ADT's canonical validation environment is exactly that foundation. Ternux gives you the desktop; ADT gives you the Android tooling inside it.
 
-The full relationship — the two layers side by side, where they differ, what is verified between them and what is still not yet tested — is documented in **[docs/TERNUX_RELATIONSHIP.md](docs/TERNUX_RELATIONSHIP.md)**.
+**Use them together.** Install Ternux on the phone, enter Debian with `db` (or an Xfce terminal), then install ADT as the normal Debian user with its one-command installer. Run `cd ~/adt && ./setup.sh doctor` to inspect the toolchain. See [the detailed install and boundary guide](docs/TERNUX_RELATIONSHIP.md#use-both-on-one-phone) and Ternux's [ADT installation steps](https://github.com/soobujmiah/ternux/blob/main/docs/INSTALLATION.md#install-adt-tools-inside-the-ternux-debian-guest).
 
 **What is verified vs experimental.** ADT's pipeline is verified on the shared PRoot Debian host (see Evidence above). Ternux's desktop and GPU stack are verified separately in the Ternux repository. Direct cross-project workflows (for example, running ADT-installed tools from inside a Ternux desktop session on the same device) are **observed to coexist** in this setup but are **not yet tested as a formal combined workflow** — they remain experimental until recorded as such.
 
