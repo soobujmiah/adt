@@ -62,6 +62,12 @@ call_setup() {
         _ "$SETUP_SH" "$WORKDIR/sdk" "$@"
 }
 
+call_setup_with_path() {
+    local path="$1"; shift
+    PATH="$path" ADT_SOURCE_ONLY=1 /bin/bash -c 'source "$1"; shift; "$@"' \
+        _ "$SETUP_SH" "$@"
+}
+
 # Fixtures: a real ARM64 ELF from this host, a text shim, and a fake x86_64 ELF.
 make_arm64() { mkdir -p "$(dirname "$1")"; cp /bin/true "$1"; chmod +x "$1"; }
 make_script() { mkdir -p "$(dirname "$1")"; printf '#!/bin/sh\nexit 0\n' > "$1"; chmod +x "$1"; }
@@ -78,6 +84,31 @@ PY
 }
 
 assert_eq "fixture: /bin/true is a native ARM64 ELF here" "arm64" "$(call_setup detect_binary_arch /bin/true)"
+
+echo ""
+echo "== download_asset wget fallback =="
+
+wget_only="$WORKDIR/wget-only-bin"
+mkdir -p "$wget_only"
+ln -s "$(command -v rm)" "$wget_only/rm"
+ln -s "$(command -v basename)" "$wget_only/basename"
+cat > "$wget_only/wget" <<'SH'
+#!/bin/sh
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        -O) out="$2"; shift 2 ;;
+        *) shift ;;
+    esac
+done
+printf 'wget fixture payload\n' > "$out"
+SH
+chmod +x "$wget_only/wget"
+
+wget_archive="$WORKDIR/wget-archive"
+out="$(call_setup_with_path "$wget_only" download_asset https://example.invalid/asset "$wget_archive" 2>&1)"; rc=$?
+assert_eq "wget-only transfer succeeds" "0" "$rc"
+assert_contains "wget fallback is reported" "Using wget fallback" "$out"
+assert_eq "wget fixture is written to the requested path" "wget fixture payload" "$(<"$wget_archive")"
 
 echo ""
 echo "== verify_payload_arch =="

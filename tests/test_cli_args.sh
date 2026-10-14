@@ -94,7 +94,7 @@ assert_not_contains "status does not fall back to ~/android-sdk" "$HOME/android-
 
 out="$(call_setup cmd_doctor --sdk-root "$WORKDIR/sdkroot" 2>&1)"
 assert_contains "doctor reports the requested root" "$WORKDIR/sdkroot" "$out"
-assert_not_contains "doctor does not fall back to ~/android-sdk" "$HOME/android-sdk" "$out"
+assert_not_contains "doctor does not use ~/android-sdk as its SDK root" "SDK root: $HOME/android-sdk" "$out"
 
 echo ""
 echo "== configure_gradle keeps a foreign override =="

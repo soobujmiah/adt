@@ -1809,7 +1809,7 @@ download_asset() {
         fi
     fi
     if command -v wget >/dev/null 2>&1; then
-        warn "curl could not fetch $(basename "$out") — retrying with wget..."
+        warn "Using wget fallback for $(basename "$out")..."
         if wget -q --tries=3 --timeout=60 -O "$out" "$url" 2>>"$log"; then
             rm -f "$log"
             return 0
@@ -1979,7 +1979,9 @@ download_and_install_release() {
     local dest_dir="$2"
     local component="$3"  # "build-tools" or "platform-tools"
 
-    require_command curl
+    if ! command -v curl >/dev/null 2>&1 && ! command -v wget >/dev/null 2>&1; then
+        die "Required command 'curl' or 'wget' not found. Please install one of them."
+    fi
     require_command tar
 
     local version="${release_tag#v}"
