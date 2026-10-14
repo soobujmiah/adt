@@ -1,0 +1,16 @@
+event_id: test-2a9da2a31073-38505800412-1
+repository: soobujmiah/adt
+commit: 2a9da2a310732675c4dea5dfdefcdce3754c29c5
+kind: test
+occurred_at: '2026-10-14T03:32:44Z'
+run_id: '38505800412'
+run_attempt: '1'
+status: passed
+summary: setup.sh unit tests (ci.yml)
+workflow_name: CI
+workflow_id: '346750754'
+event_type: push
+started_at: '2026-10-14T03:21:07Z'
+completed_at: '2026-10-14T03:32:25Z'
+actor: soobujmiah
+run_url: https://github.com/soobujmiah/adt/actions/runs/38505800412
