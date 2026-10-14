@@ -104,7 +104,7 @@ Cannot run program "/home/sbj/android-sdk/ndk/28.2.13676358/toolchains/llvm/preb
 Exec failed, error: 2 (No such file or directory)
 ```
 
-This is a **host-tool execution limitation**: my ARM64 PRoot environment can't directly start the downloaded Linux-x86_64 NDK host executable. It isn't evidence that Android ARM64 target compilation or NDK 28 is universally broken. (I later fixed this specific trap for NDK 28 too — see `docs/ANDROID_ARM64_BUILD_HANDOFF.md`.)
+This is a **host-tool execution limitation**: my ARM64 PRoot environment can't directly start the downloaded Linux-x86_64 NDK host executable. It isn't evidence that Android ARM64 target compilation or NDK 28 is universally broken. I later fixed and revalidated the NDK 28 shim; the current version status and evidence are in [`versions.json`](../versions.json).
 
 ## Resolution
 
@@ -269,4 +269,4 @@ These are future cleanup items and **must not reopen this completed validation g
 
 I'll reopen this validation only after a material change to the project, Gradle/AGP configuration, NDK version, SDK tools, Flutter toolchain, Android OS, or execution environment.
 
-See `docs/ANDROID_ARM64_BUILD_HANDOFF.md` for my engineering handoff notes and the follow-up work (NDK 28 fix, build-tools 36.0.0) completed after this gate closed.
+Follow-up work after this gate closed is represented in the canonical [`versions.json`](../versions.json), [`TECHNICAL_REFERENCE.md`](./TECHNICAL_REFERENCE.md), and [`COMMANDS.md`](../COMMANDS.md) records. This validation remains scoped to the exact Flutter/Gradle configuration above.

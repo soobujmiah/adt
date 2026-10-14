@@ -296,7 +296,7 @@ If the development environment changes (e.g., direct USB ADB, different device, 
 ## Cross-References
 
 - [REAL_DEVICE_BUILD_VALIDATION.md](./REAL_DEVICE_BUILD_VALIDATION.md) — End-to-end ARM64 build validation on this device
-- [ANDROID_ARM64_BUILD_HANDOFF.md](./ANDROID_ARM64_BUILD_HANDOFF.md) — Build environment configuration and validated state
+- [REAL_DEVICE_BUILD_VALIDATION.md](./REAL_DEVICE_BUILD_VALIDATION.md) — Build environment configuration and validated state
 - [forensic-report-phase5-source-comparison-2026-09-13.md](../../forensic-report-phase5-source-comparison-2026-09-13.md) — Source-level fork vs upstream diff
 - [forensic-report-phase6-property-monitor-2026-09-13.md](../../forensic-report-phase6-property-monitor-2026-09-13.md) — Live monitoring: port persistence after kill, watchdog restart verification
 

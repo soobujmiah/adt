@@ -5,7 +5,7 @@
 # x86_64 binary in an ARM64 SDK/NDK install before it causes a confusing
 # "No such file or directory" build failure — see the build-tools
 # 36.0.0/aapt2 and NDK 28/llvm-strip cases in
-# docs/ANDROID_ARM64_BUILD_HANDOFF.md.
+# docs/REAL_DEVICE_BUILD_VALIDATION.md and versions.json.
 #
 # Each case runs in its own `bash -c` subprocess with ADT_SOURCE_ONLY=1,
 # so setup.sh's `set -euo pipefail` and function definitions load without

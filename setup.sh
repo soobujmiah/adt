@@ -40,8 +40,8 @@ PLATFORM_TOOLS_BINS=(adb fastboot sqlite3 etc1tool hprof-conv mke2fs e2fsdroid m
 
 # NDK "host tools" that the Android Gradle Plugin invokes by a fixed path
 # under toolchains/llvm/prebuilt/<host-tag>/bin/ regardless of $PATH — this
-# is the entry point that tripped the documented NDK 28 x86_64 llvm-strip
-# trap (see docs/ANDROID_ARM64_BUILD_HANDOFF.md). Add a name here if a
+# is the entry point that tripped the NDK 28 x86_64 llvm-strip
+# trap (see versions.json and docs/REAL_DEVICE_BUILD_VALIDATION.md). Add a name here if a
 # future AGP/Gradle version is found to invoke another NDK host tool the
 # same way; detect_binary_arch() itself is generic and needs no changes.
 NDK_HOST_TOOL_BINS=(llvm-strip)
