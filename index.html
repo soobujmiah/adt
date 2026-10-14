@@ -240,7 +240,7 @@ description: >-
             <tr><td>build-tools 35.0.2</td><td><code>aapt</code> <code>aapt2</code> <code>aidl</code> <code>zipalign</code> <code>dexdump</code> <code>split-select</code></td><td data-i18n="tool.r1.p">native ARM64, offline artifact</td><td><span class="ev ev-verified" data-i18n="ev.verified">Verified</span></td></tr>
             <tr><td>build-tools 36.0.0</td><td><code>aapt2</code> <code>aidl</code> <code>zipalign</code> …</td><td data-i18n="tool.r2.p">native ARM64, offline artifact</td><td><span class="ev ev-verified" data-i18n="ev.verified">Verified</span></td></tr>
             <tr><td>build-tools 37.0.0</td><td><code>aapt2</code> <code>aidl</code> <code>zipalign</code> …</td><td data-i18n="tool.r3.p">native ARM64, GitHub Release</td><td><span class="ev ev-verified" data-i18n="ev.verified">Verified</span></td></tr>
-            <tr><td>platform-tools 35.0.2</td><td><code>adb</code> <code>fastboot</code></td><td data-i18n="tool.r4.p">native ARM64, offline artifact</td><td><span class="ev ev-verified" data-i18n="ev.verified">Verified</span></td></tr>
+            <tr><td>platform-tools 35.0.2 / 37.0.0</td><td><code>adb</code> <code>fastboot</code></td><td data-i18n="tool.r4.p">native ARM64, offline artifact</td><td><span class="ev ev-verified" data-i18n="ev.verified">Verified</span></td></tr>
             <tr><td>NDK <code>27.2.12479018</code></td><td><code>llvm-strip</code> shim</td><td data-i18n="tool.r5.p">shim → system ARM64 llvm-strip</td><td><span class="ev ev-verified" data-i18n="ev.verified">Verified</span></td></tr>
             <tr><td><code>apksigner</code> · <code>d8</code> · R8 · <code>sdkmanager</code></td><td data-i18n="tool.r6.t">signing · dex · shrink · packages</td><td data-i18n="tool.r6.p">JVM, architecture-independent</td><td><span class="ev ev-verified" data-i18n="ev.verified">Verified</span></td></tr>
             <tr><td>cmdline-tools · platforms</td><td><code>sdkmanager</code> downloads</td><td data-i18n="tool.r7.p">Google-hosted, network needed</td><td><span class="ev ev-verified" data-i18n="ev.verified">Verified</span></td></tr>
@@ -282,7 +282,7 @@ git clone --depth 1 https<span class="g">:</span>//github.com/soobujmiah/adt.git
         </article>
         <article class="card">
           <h3 data-i18n="inst.prof.t">Validated profile</h3>
-          <p data-i18n="inst.prof.d">One command installs the exact verified bundle: <code>./setup.sh install-profile validated</code> — build-tools 35.0.2 + NDK 27.2 + android-36.</p>
+          <p data-i18n="inst.prof.d">The guided CLI can install the exact tested bundle: <code>./setup.sh install-profile validated</code> — build-tools 35.0.2 + NDK 27.2 + android-36.</p>
         </article>
       </div>
     </section>
@@ -316,11 +316,19 @@ git clone --depth 1 https<span class="g">:</span>//github.com/soobujmiah/adt.git
           <a class="more" href="https://github.com/soobujmiah/adt/blob/main/COMMANDS.md" data-i18n="wf.d.l">ADB commands →</a>
         </article>
         <article class="card">
-          <h3><span class="n">E</span><span data-i18n="wf.e.t">Closed-loop automation</span></h3>
-          <p data-i18n="wf.e.d">Current verified status: manual/scripted on-device execution. Potential future capability: authorized agent loops modifying code, building via ADT, deploying to the host device, and evaluating logcat for iterative fixes.</p>
+          <h3><span class="n">E</span><span data-i18n="wf.e.t">Build, run, inspect</span></h3>
+          <p data-i18n="wf.e.d">The verified path builds an APK, installs and launches it on the physical phone, checks the ARM64 ABI and reviews logs. Manual and scripted use is verified; an autonomous agent loop is not claimed.</p>
           <a class="more" href="https://github.com/soobujmiah/adt/blob/main/docs/REAL_DEVICE_BUILD_VALIDATION.md" data-i18n="docs.open">Device validation →</a>
         </article>
       </div>
+      <h3 class="workstation-title" data-i18n="use.title">What I have used ADT for on this phone</h3>
+      <p class="section-note" data-i18n="use.note">These are recorded outcomes from my Redmi Turbo 4 Pro workstation, not promises for every ARM64 device.</p>
+      <div class="grid">
+        <article class="card"><h3 data-i18n="use.c1.t">Build a Flutter app</h3><p data-i18n="use.c1.d">A clean Gradle/Flutter APK build completed in 1m 21s; I installed it on the phone, confirmed arm64-v8a, exercised the app and checked for crashes.</p></article>
+        <article class="card"><h3 data-i18n="use.c2.t">Validate native Android code</h3><p data-i18n="use.c2.d">I compiled Android-targeted native code, packaged it into an APK, loaded its JNI library on-device and confirmed the process remained alive with clean logs.</p></article>
+        <article class="card"><h3 data-i18n="use.c3.t">Keep a known-good toolchain</h3><p data-i18n="use.c3.d">The validated setup profile pins build-tools 35.0.2, NDK 27.2 and Android API 36. NDK 28 was also tested as an option after its ARM64 llvm-strip shim was repaired.</p></article>
+      </div>
+      <p><a class="more" href="https://github.com/soobujmiah/adt/blob/main/docs/REAL_DEVICE_BUILD_VALIDATION.md" data-i18n="use.link">See the device record and commands →</a></p>
     </section>
 
     <!-- ══ EVIDENCE ══ -->
@@ -389,6 +397,13 @@ log output → process remains alive
           <p data-i18n="tx.c3.d">ADT's pipeline is verified on the shared Termux + PRoot Debian host; Ternux verifies the desktop and GPU stack separately. Combined cross-project workflows are observed to coexist but are not yet tested formally — they remain experimental.</p>
         </article>
       </div>
+      <h3 class="workstation-title" data-i18n="pair.title">Use both on the same phone</h3>
+      <p class="section-note" data-i18n="pair.note">Install Ternux for the Debian desktop, then install ADT inside that same Debian userland. From Termux, enter with <code>db</code>; from Xfce, open a terminal in the Debian session.</p>
+      <pre class="cmd"><code># inside the Ternux Debian guest
+curl -fsSL https://raw.githubusercontent.com/soobujmiah/adt/main/install.sh | bash
+source ~/.bashrc
+cd ~/adt &amp;&amp; ./setup.sh doctor</code></pre>
+      <p class="note" data-i18n="pair.limit">ADT's build and physical-device workflow is verified on this shared Termux + PRoot host. Running the tools specifically from a Ternux Xfce session has been observed, but is not yet a formally tested combined workflow.</p>
       <div class="actions">
         <a class="btn" href="https://soobujmiah.github.io/ternux/" data-i18n="tx.site">Ternux website</a>
         <a class="btn" href="https://github.com/soobujmiah/ternux" data-i18n="tx.repo">Ternux repository</a>
@@ -471,7 +486,7 @@ log output → process remains alive
       'inst.net.t': 'নেটওয়ার্ক দরকার', 'inst.net.d': 'cmdline-tools (গুগল জিপ) এবং platforms;android-* — অন্য যেকোনো build-tools ভার্সন এওএসপি সোর্স থেকে বিল্ড হয় (~২–৪ জিবি, ~১৫–৩০ মিনিট)।',
       'inst.prof.t': 'যাচাইকৃত প্রোফাইল', 'inst.prof.d': 'এক কমান্ডে হুবহু যাচাইকৃত বান্ডিল: ./setup.sh install-profile validated — build-tools ৩৫.০.২ + এনডিকে ২৭.২ + android-36।',
       'wf.title': 'ওয়ার্কফ্লো',
-      'wf.note': 'চারটি দৈনন্দিন পথ। নির্দিষ্ট কমান্ড — ওয়্যারলেস adb পেয়ারিংসহ, যেখানে বেশিরভাগ মানুষ আটকে যায় — COMMANDS.md-তে।',
+      'wf.note': 'দৈনন্দিন build, signing, ADB ও device-validation পথ। নির্দিষ্ট কমান্ড — ওয়্যারলেস adb পেয়ারিংসহ — COMMANDS.md-তে।',
       'wf.a.t': 'বিল্ড ওয়ার্কফ্লো', 'wf.a.d': 'নেটিভ এআরএম৬৪ aapt2/aidl রিসোর্স ও এআইডিএল কম্পাইল করে; গ্র্যাডল বা ফ্লাটার এপিকে জোড়া দেয়। টার্মাক্সে অ্যান্ড্রয়েড-টার্গেট নেটিভ কোড টার্মাক্স ক্ল্যাং ও অ্যান্ড্রয়েড টার্গেট ট্রিপল দিয়ে কম্পাইল হয়।',
       'wf.a.l': 'নেটিভ বিল্ড গাইড →',
       'wf.b.t': 'এপিকে ওয়ার্কফ্লো', 'wf.b.d': 'প্যাকেজ → অ্যালাইন → পরিদর্শন: aapt2 রিসোর্স লিঙ্ক করে, zipalign এপিকে অ্যালাইন করে, dexdump ডেক্স দেখে। যাচাইকৃত ফ্লাটার/গ্র্যাডল বিল্ড টেস্ট ডিভাইসে ১মি ২১সে-এ শেষ হয়েছিল।',
@@ -480,8 +495,17 @@ log output → process remains alive
       'wf.c.l': 'স্বাক্ষর কমান্ড →',
       'wf.d.t': 'এডিবি ও ডিভাইস', 'wf.d.d': 'ইউএসবি বা ওয়্যারলেস ডিবাগিংয়ে নেটিভ adb: ইনস্টল, লঞ্চ, লগক্যাট, শেল। পেয়ারিং ও কানেক্ট ভিন্ন পোর্ট ব্যবহার করে — নির্দিষ্ট ধাপগুলো COMMANDS.md-তে।',
       'wf.d.l': 'এডিবি কমান্ড →',
-      'wf.e.t': 'ক্লোজড-লুপ অটোমেশন',
-      'wf.e.d': 'বর্তমান যাচাইকৃত অবস্থা: অন-ডিভাইস ম্যানুয়াল বা স্ক্রিপ্টেড এক্সিকিউশন। সম্ভাব্য ভবিষ্যতের সক্ষমতা: অনুমোদিত এজেন্ট কোড সংশোধন, এডিটির মাধ্যমে বিল্ড, হোস্ট ডিভাইসে ডিপ্লয় এবং পুনরাবৃত্তিমূলক সংশোধনের জন্য লগক্যাট মূল্যায়ন।',
+      'wf.e.t': 'বিল্ড, চালান, পরীক্ষা',
+      'wf.e.d': 'যাচাইকৃত ধাপে এপিকে বিল্ড, ফিজিক্যাল ফোনে ইনস্টল ও চালু, ARM64 ABI পরীক্ষা এবং লগ দেখা হয়। ম্যানুয়াল ও scripted workflow verified; autonomous agent loop-এর দাবি করা হচ্ছে না।',
+      'use.title': 'এই ফোনে ADT দিয়ে আমি যা করেছি',
+      'use.note': 'এগুলো Redmi Turbo 4 Pro workstation-এ নথিভুক্ত ফল, সব ARM64 device-এর নিশ্চয়তা নয়।',
+      'use.c1.t': 'Flutter app build', 'use.c1.d': 'পরিষ্কার Gradle/Flutter APK build ১মি ২১সে-এ শেষ করেছি; ফোনে install, arm64-v8a যাচাই, app চালিয়ে দেখা এবং crash check করেছি।',
+      'use.c2.t': 'Native Android code যাচাই', 'use.c2.d': 'Android-targeted native code compile করে APK-তে রেখেছি, device-এ JNI library load করেছি, process সচল ও log পরিষ্কার নিশ্চিত করেছি।',
+      'use.c3.t': 'পরিচিত toolchain সংরক্ষণ', 'use.c3.d': 'যাচাইকৃত profile-এ build-tools 35.0.2, NDK 27.2 ও Android API 36 pin করা। ARM64 llvm-strip shim ঠিক করার পর NDK 28-ও option হিসেবে পরীক্ষা করেছি।',
+      'use.link': 'Device record ও command দেখুন →',
+      'pair.title': 'একই ফোনে দুটো একসাথে ব্যবহার',
+      'pair.note': 'Debian desktop-এর জন্য Ternux install করুন, তারপর সেই Debian userland-এ ADT বসান। Termux থেকে `db` দিয়ে ঢুকুন; Xfce থেকে Debian session-এর terminal খুলুন।',
+      'pair.limit': 'এই shared Termux + PRoot host-এ ADT build ও physical-device workflow verified। Ternux Xfce session থেকে tool চালানো দেখা গেছে, তবে combined workflow-টি এখনো formal ভাবে পরীক্ষা করা হয়নি।',
       'evi.title': 'প্রমাণ — বাস্তব ফলাফল',
       'evi.note': 'সবচেয়ে শক্তিশালী পরীক্ষা বাইনারির উপস্থিতি নয়, সম্পূর্ণ পথ। ১ সেপ্টেম্বর ২০২৬-এ এই শৃঙ্খলটি একটি বাস্তব ফিজিক্যাল ডিভাইসে এন্ড-টু-এন্ড চলেছিল:',
       'evi.c1.t': 'যাচাই রেকর্ড', 'evi.c1.d': 'REAL_DEVICE_BUILD_VALIDATION.md — যাচাইকৃত প্রজেক্ট অবস্থার জন্য অবস্থা ভেরিফায়েড / ক্লোজড। ডিভাইস টপোলজি, কমান্ড ও আউটপুট রিপোতেই রেকর্ড করা।',

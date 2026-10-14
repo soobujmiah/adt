@@ -61,12 +61,35 @@ BOLD='\033[1m'
 DIM='\033[2m'
 NC='\033[0m'
 
-info()    { echo -e "${BLUE}::${NC} $*"; }
-ok()      { echo -e "${GREEN}::${NC} $*"; }
-warn()    { echo -e "${YELLOW}:: WARNING:${NC} $*"; }
-err()     { echo -e "${RED}:: ERROR:${NC} $*"; }
+info()    { echo -e "  ${BLUE}[INFO]${NC} $*"; }
+ok()      { echo -e "  ${GREEN}[DONE]${NC} $*"; }
+warn()    { echo -e "  ${YELLOW}[WARN]${NC} $*"; }
+err()     { echo -e "  ${RED}[FAIL]${NC} $*"; }
 die()     { err "$@"; exit 1; }
-header()  { echo ""; echo -e "${BOLD}$*${NC}"; echo -e "${DIM}$(printf '%.0s─' $(seq 1 60))${NC}"; }
+header()  {
+    echo ""
+    echo -e "  ${BOLD}== $* ==${NC}"
+    printf '  %s------------------------------------------------------------%s\n' "$DIM" "$NC"
+}
+
+adt_banner() {
+    [[ -t 1 ]] || return 0
+    printf '\n  +----------------------------------------------------------+\n'
+    printf '  |  ADT  |  Android Development Toolchain  |  Linux ARM64  |\n'
+    printf '  +----------------------------------------------------------+\n'
+    printf '  %sAOSP tools · native ARM64 · real-device workflow%s\n\n' "$DIM" "$NC"
+}
+
+adt_signature() {
+    local status="${1:-0}" label="session complete"
+    [[ "$status" -eq 0 ]] || label="session ended with status $status"
+    printf '\n  %s%s · © 2026 Sobuj Miah%s\n' "$DIM" "$label" "$NC" >&2
+    printf '  %sAndroid Development Toolchain · github.com/soobujmiah/adt%s\n' "$DIM" "$NC" >&2
+}
+
+if [[ ! -t 1 || -n "${NO_COLOR:-}" || "${TERM:-}" == "dumb" ]]; then
+    RED='' GREEN='' YELLOW='' BLUE='' CYAN='' BOLD='' DIM='' NC=''
+fi
 
 # ── Globals ────────────────────────────────────────────────────────────────────
 
@@ -2224,5 +2247,7 @@ main() {
 # (e.g. detect_binary_arch) without triggering a real command. Unset/empty
 # is the normal case for every existing invocation of this script.
 if [[ "${ADT_SOURCE_ONLY:-0}" != "1" ]]; then
+    adt_banner
+    trap 'adt_status=$?; adt_signature "$adt_status"' EXIT
     main "$@"
 fi
