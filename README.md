@@ -117,7 +117,6 @@ The full relationship — the two layers side by side, where they differ, what i
 | [TECHNICAL_REFERENCE.md](docs/TECHNICAL_REFERENCE.md) | Tool roles, native build, NDK/PRoot, setup, profiles, repo structure |
 | [REAL_DEVICE_BUILD_VALIDATION.md](docs/REAL_DEVICE_BUILD_VALIDATION.md) | Canonical device-validation evidence |
 | [ANDROID_ARM64_NATIVE_BUILD_GUIDE.md](docs/ANDROID_ARM64_NATIVE_BUILD_GUIDE.md) | Native ARM64 build/install procedure |
-| [ANDROID_ARM64_BUILD_HANDOFF.md](docs/ANDROID_ARM64_BUILD_HANDOFF.md) | Build handoff · build-tools 36.0.0 |
 | [ON_DEVICE_ADB_SHIZUKU_OPERATIONAL_DEPENDENCY.md](docs/ON_DEVICE_ADB_SHIZUKU_OPERATIONAL_DEPENDENCY.md) | Shizuku dependency audit |
 | [TERNUX_RELATIONSHIP.md](docs/TERNUX_RELATIONSHIP.md) | ADT ↔ Ternux roles, verification, open testing |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Build internals and AOSP contributions |

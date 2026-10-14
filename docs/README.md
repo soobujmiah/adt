@@ -18,16 +18,14 @@ created to satisfy a checklist.
 
 ## What exists here
 
-- `ANDROID_ARM64_BUILD_HANDOFF.md/`
-- `ANDROID_ARM64_NATIVE_BUILD_GUIDE.md/`
-- `ON_DEVICE_ADB_SHIZUKU_OPERATIONAL_DEPENDENCY.md/`
-- `REAL_DEVICE_BUILD_VALIDATION.md/`
-- `SEO.md/`
-- `TECHNICAL_REFERENCE.md/`
-- `TERNUX_RELATIONSHIP.md/`
-- `assets/`
-- `index.html/`
-- `validation/`
+- [`ANDROID_ARM64_NATIVE_BUILD_GUIDE.md`](ANDROID_ARM64_NATIVE_BUILD_GUIDE.md) — reproducible native build and APK validation procedure.
+- [`ON_DEVICE_ADB_SHIZUKU_OPERATIONAL_DEPENDENCY.md`](ON_DEVICE_ADB_SHIZUKU_OPERATIONAL_DEPENDENCY.md) — operational dependency audit.
+- [`REAL_DEVICE_BUILD_VALIDATION.md`](REAL_DEVICE_BUILD_VALIDATION.md) — canonical physical-device evidence.
+- [`TECHNICAL_REFERENCE.md`](TECHNICAL_REFERENCE.md) — architecture, tool roles, install model, and version boundaries.
+- [`TERNUX_RELATIONSHIP.md`](TERNUX_RELATIONSHIP.md) — project boundary and cross-project qualification.
+- [`SEO.md`](SEO.md) — site search/indexing review.
+- [`validation/`](validation/) and [`assets/`](assets/) — dated evidence and diagrams.
+- [`index.html`](index.html) — documentation website source.
 
 ## Rules
 
