@@ -98,21 +98,21 @@ description: >-
           <a class="btn primary" href="#install"><span data-i18n="hero.cta">Get the toolchain</span><span aria-hidden="true">↗</span></a>
           <a class="btn" href="https://github.com/soobujmiah/adt"><span data-i18n="hero.repo">Explore on GitHub</span><span aria-hidden="true">↗</span></a>
         </div>
-        <p class="hero-proofline"><span aria-hidden="true">✓</span><strong data-i18n="hero.verified">Real-device workflow validated</strong><i>·</i> native aarch64 tools <i>·</i> offline artifacts</p>
+        <p class="hero-proofline"><span aria-hidden="true">✓</span><strong data-i18n="hero.verified">Real-device workflow validated</strong><i>·</i> <span data-i18n="hero.proof.tools">native aarch64 tools</span> <i>·</i> <span data-i18n="hero.proof.offline">offline artifacts</span></p>
       </div>
 
       <div class="hero-visual" role="img" aria-label="Illustrative Android app screen alongside the ADT build and verification workflow">
         <div class="visual-halo" aria-hidden="true"></div>
         <div class="visual-orbit" aria-hidden="true"></div>
-        <div class="tool-float tool-aapt" aria-hidden="true"><span class="tool-glyph">A</span><span><b>AAPT2</b><small>RESOURCE LINKER</small></span></div>
-        <div class="tool-float tool-adb" aria-hidden="true"><span class="tool-glyph">⌁</span><span><b>ADB</b><small>DEVICE BRIDGE</small></span></div>
-        <div class="tool-float tool-arm" aria-hidden="true"><span class="tool-glyph">64</span><span><b>ARM64</b><small>NATIVE TOOLS</small></span></div>
+        <div class="tool-float tool-aapt" aria-hidden="true"><span class="tool-glyph">A</span><span><b>AAPT2</b><small data-i18n="visual.resource">RESOURCE LINKER</small></span></div>
+        <div class="tool-float tool-adb" aria-hidden="true"><span class="tool-glyph">⌁</span><span><b>ADB</b><small data-i18n="visual.bridge">DEVICE BRIDGE</small></span></div>
+        <div class="tool-float tool-arm" aria-hidden="true"><span class="tool-glyph">64</span><span><b>ARM64</b><small data-i18n="visual.native">NATIVE TOOLS</small></span></div>
         <div class="visual-caption" data-i18n="hero.visual.caption">ILLUSTRATIVE BUILD FLOW · ARM64</div>
         <div class="device-frame" aria-hidden="true">
           <div class="device-screen">
             <div class="device-island"></div>
-            <div class="app-status"><span>ADT / BUILD SESSION</span><span>● ARM64</span></div>
-            <div class="ide-head"><span class="ide-android">A</span><strong>Fieldnote</strong><small>ANDROID PROJECT</small></div>
+            <div class="app-status"><span data-i18n="visual.session">ADT / BUILD SESSION</span><span>● ARM64</span></div>
+            <div class="ide-head"><span class="ide-android">A</span><strong>Fieldnote</strong><small data-i18n="visual.project">ANDROID PROJECT</small></div>
             <div class="ide-tabs"><span>app</span><span class="active">MainActivity.kt</span><span>+</span></div>
             <div class="ide-code">
               <div><i>01</i><span><b>class</b> MainActivity</span></div>
@@ -124,17 +124,17 @@ description: >-
               <div><i>07</i><span>  }</span></div>
               <div><i>08</i><span>}</span></div>
             </div>
-            <div class="build-console"><span>BUILD OUTPUT</span><b>BUILD SUCCESSFUL</b><small>:app:assembleDebug · 00:42</small></div>
-            <div class="ide-bottom"><span>◉ CONNECTED</span><span>APK READY</span></div>
+            <div class="build-console"><span data-i18n="visual.output">BUILD OUTPUT</span><b data-i18n="visual.success">BUILD SUCCESSFUL</b><small>:app:assembleDebug · 00:42</small></div>
+            <div class="ide-bottom"><span data-i18n="visual.connected">◉ CONNECTED</span><span data-i18n="visual.ready">APK READY</span></div>
           </div>
         </div>
         <div class="workflow-preview" aria-hidden="true">
-          <div class="workflow-preview-head"><span>ADT WORKFLOW PREVIEW</span><b>BUILD → VERIFY</b></div>
+          <div class="workflow-preview-head"><span data-i18n="visual.preview">ADT WORKFLOW PREVIEW</span><b data-i18n="visual.buildverify">BUILD → VERIFY</b></div>
           <div class="workflow-progress"><i></i><i></i><i></i><i></i><i></i></div>
-          <div class="workflow-labels"><span>BUILD</span><span>SIGN</span><span>ALIGN</span><span>INSTALL</span><span>VERIFY</span></div>
+          <div class="workflow-labels"><span data-i18n="visual.build">BUILD</span><span data-i18n="visual.sign">SIGN</span><span data-i18n="visual.align">ALIGN</span><span data-i18n="visual.install">INSTALL</span><span data-i18n="visual.verify">VERIFY</span></div>
         </div>
         <div class="artifact-preview" aria-hidden="true">
-          <span class="artifact-icon">APK</span><span class="artifact-name">Example app<small>Illustrative package · arm64-v8a</small></span><b>✓</b>
+          <span class="artifact-icon">APK</span><span class="artifact-name"><span data-i18n="visual.example">Example app</span><small data-i18n="visual.package">Illustrative package · arm64-v8a</small></span><b>✓</b>
         </div>
       </div>
     </section>
@@ -171,7 +171,7 @@ description: >-
         <div class="stage" role="listitem"><div class="t" data-i18n="pipe.verify.t">Verify</div><div class="d" data-i18n="pipe.verify.d">arm64-v8a selected · app alive · logs clean</div></div>
       </div>
       <div style="margin-top: 24px;">
-        <img src="{{ site.baseurl }}/assets/img/adt-architecture.svg" alt="ADT Architecture Diagram" width="100%" style="border-radius: 12px; border: 1px solid var(--border);" loading="lazy">
+        <img src="{{ site.baseurl }}/assets/img/adt-architecture.svg" data-img-en="{{ site.baseurl }}/assets/img/adt-architecture.svg" data-img-bn="{{ site.baseurl }}/assets/img/adt-architecture.bn.svg" alt="ADT Architecture Diagram" data-alt-en="ADT Architecture Diagram" data-alt-bn="ADT কাঠামোর চিত্র" width="100%" style="border-radius: 12px; border: 1px solid var(--border);" loading="lazy">
       </div>
     </section>
 
@@ -180,11 +180,11 @@ description: >-
       <h2 id="features-h"><span class="n">02</span><span data-i18n="feat.title">Features</span></h2>
       <p class="section-note" data-i18n="feat.note">Tools that only need a JVM execution path are architecture-independent at the Java level; everything else is a native aarch64 binary, built from source, or shimmed — and documented as such.</p>
       <div class="grid">
-        <article class="card"><h3><span class="n">01</span>SDK build-tools</h3><p data-i18n="feat.c1">ARM64-native aapt, aapt2, aidl, zipalign, dexdump and split-select, built from AOSP source for linux-arm64.</p></article>
-        <article class="card"><h3><span class="n">02</span>Platform-tools</h3><p data-i18n="feat.c2">ARM64-native adb, fastboot and the full platform-tools set, used in the real-device validation.</p></article>
+        <article class="card"><h3><span class="n">01</span><span data-i18n="feat.sdk">SDK build-tools</span></h3><p data-i18n="feat.c1">ARM64-native aapt, aapt2, aidl, zipalign, dexdump and split-select, built from AOSP source for linux-arm64.</p></article>
+        <article class="card"><h3><span class="n">02</span><span data-i18n="feat.platform">Platform-tools</span></h3><p data-i18n="feat.c2">ARM64-native adb, fastboot and the full platform-tools set, used in the real-device validation.</p></article>
         <article class="card"><h3><span class="n">03</span><span data-i18n="feat.c3.t">Host toolchain</span></h3><p data-i18n="feat.c3.d">GCC/Clang, CMake, Ninja and Make for native builds, with Git and source-management tooling.</p></article>
         <article class="card"><h3><span class="n">04</span><span data-i18n="feat.c4.t">JVM tool paths</span></h3><p data-i18n="feat.c4.d">JDK plus apksigner, d8 and R8 through their JVM execution paths — architecture-independent.</p></article>
-        <article class="card"><h3><span class="n">05</span>Flutter &amp; Dart</h3><p data-i18n="feat.c5">Flutter and Dart alongside Android SDK platforms for application builds on ARM64.</p></article>
+        <article class="card"><h3><span class="n">05</span><span data-i18n="feat.flutter">Flutter &amp; Dart</span></h3><p data-i18n="feat.c5">Flutter and Dart alongside Android SDK platforms for application builds on ARM64.</p></article>
         <article class="card"><h3><span class="n">06</span><span data-i18n="feat.c6.t">Offline artifacts</span></h3><p data-i18n="feat.c6.d">SHA256-verified ARM64 tarballs for expensive builds — install without rebuilding from source.</p></article>
       </div>
     </section>
@@ -219,17 +219,17 @@ description: >-
     <section id="install" aria-labelledby="install-h" class="reveal">
       <h2 id="install-h"><span class="n">04</span><span data-i18n="inst.title">Installation</span></h2>
       <p class="section-note" data-i18n="inst.note">Works on any aarch64 Linux with glibc — the validated target is Termux + PRoot Debian on an ARM64 phone; Asahi, Raspberry Pi and ARM64 servers follow the same path. Idempotent: re-running updates an existing clone and skips what is already installed.</p>
-      <pre class="cmd" data-copy><code><span class="c"># one-liner — fetches the repo and runs the whole bootstrap unattended</span>
+      <pre class="cmd" data-copy><code><span class="c" data-i18n="code.oneliner"># এক লাইনে — সংগ্রহশালা এনে সম্পূর্ণ প্রাথমিক সেটআপ চালায়</span>
 curl -fsSL https<span class="g">:</span>//raw.githubusercontent.com/soobujmiah/adt/main/install.sh | bash
 source ~/.bashrc</code></pre>
 
-      <pre class="cmd" data-copy><code><span class="c"># from a clone — guided (asks before each step) or fully automatic</span>
+      <pre class="cmd" data-copy><code><span class="c" data-i18n="code.guided"># কপি থেকে — ধাপে ধাপে নির্দেশসহ অথবা সম্পূর্ণ স্বয়ংক্রিয়</span>
 git clone --depth 1 https<span class="g">:</span>//github.com/soobujmiah/adt.git &amp;&amp; cd adt
-./setup.sh                    <span class="c"># guided</span></code></pre>
+./setup.sh                    <span class="c" data-i18n="code.guidedshort"># নির্দেশসহ</span></code></pre>
 
-      <pre class="cmd" data-copy><code>./setup.sh bootstrap --auto   <span class="c"># unattended, zero prompts</span></code></pre>
+      <pre class="cmd" data-copy><code>./setup.sh bootstrap --auto   <span class="c" data-i18n="code.silent"># কোনো প্রশ্ন ছাড়াই</span></code></pre>
 
-      <pre class="cmd" data-copy><code><span class="c"># verify afterwards — pinpoints the broken piece if anything misbehaves</span>
+      <pre class="cmd" data-copy><code><span class="c" data-i18n="code.doctor"># পরে যাচাই — সমস্যা হলে কোন অংশে তা শনাক্ত করে</span>
 ./setup.sh doctor</code></pre>
       <div class="grid">
         <article class="card">
@@ -252,7 +252,7 @@ git clone --depth 1 https<span class="g">:</span>//github.com/soobujmiah/adt.git
       <h2 id="workflows-h"><span class="n">05</span><span data-i18n="wf.title">Workflows</span></h2>
       <p class="section-note" data-i18n="wf.note">The everyday developer paths. Exact commands — including wireless adb pairing, which trips most people — are in COMMANDS.md.</p>
       <div style="margin: 20px 0;">
-        <img src="{{ site.baseurl }}/assets/img/adt-workflow.svg" alt="ADT Pipeline and Closed-Loop Automation Diagram" width="100%" style="border-radius: 12px; border: 1px solid var(--border);" loading="lazy">
+        <img src="{{ site.baseurl }}/assets/img/adt-workflow.svg" data-img-en="{{ site.baseurl }}/assets/img/adt-workflow.svg" data-img-bn="{{ site.baseurl }}/assets/img/adt-workflow.bn.svg" alt="ADT Pipeline and Closed-Loop Automation Diagram" data-alt-en="ADT Pipeline and Closed-Loop Automation Diagram" data-alt-bn="ADT নির্মাণধারা ও স্বয়ংক্রিয়তার চিত্র" width="100%" style="border-radius: 12px; border: 1px solid var(--border);" loading="lazy">
       </div>
       <div class="grid">
         <article class="card">
@@ -299,10 +299,10 @@ git clone --depth 1 https<span class="g">:</span>//github.com/soobujmiah/adt.git
 ADB installation → ARM64 ABI selection → JNI loading → native execution →
 log output → process remains alive
 
-<span class="c"># final build</span>      BUILD SUCCESSFUL in 1m 21s   <span class="c">(60 actionable tasks)</span>
-<span class="c"># install</span>         adb install -r app-debug.apk → Success
-<span class="c"># abi</span>             Device ABI: arm64-v8a · APK primaryCpuAbi: arm64-v8a
-<span class="c"># runtime</span>         PID observed · crash/ANR scan clean · app alive</code></pre>
+<span class="c" data-i18n="evi.code.build"># final build</span>      BUILD SUCCESSFUL in 1m 21s   <span class="c">(60 actionable tasks)</span>
+<span class="c" data-i18n="evi.code.install"># install</span>         adb install -r app-debug.apk → Success
+<span class="c" data-i18n="evi.code.abi"># abi</span>             Device ABI: arm64-v8a · APK primaryCpuAbi: arm64-v8a
+<span class="c" data-i18n="evi.code.runtime"># runtime</span>         PID observed · crash/ANR scan clean · app alive</code></pre>
       <div class="grid">
         <article class="card">
           <h3 data-i18n="evi.c1.t">Validation record</h3>
@@ -336,7 +336,7 @@ log output → process remains alive
     <section id="ternux" aria-labelledby="ternux-h" class="reveal">
       <h2 id="ternux-h"><span class="n">07</span><span data-i18n="tx.title">ADT and Ternux — two layers of one ARM64 story</span></h2>
       <div style="margin: 20px 0;">
-        <img src="{{ site.baseurl }}/assets/img/adt-ternux-relationship.svg" alt="ADT and TERNUX Relationship Diagram" width="100%" style="border-radius: 12px; border: 1px solid var(--border);" loading="lazy">
+        <img src="{{ site.baseurl }}/assets/img/adt-ternux-relationship.svg" data-img-en="{{ site.baseurl }}/assets/img/adt-ternux-relationship.svg" data-img-bn="{{ site.baseurl }}/assets/img/adt-ternux-relationship.bn.svg" alt="ADT and TERNUX Relationship Diagram" data-alt-en="ADT and TERNUX Relationship Diagram" data-alt-bn="ADT ও টারনাক্সের সম্পর্কের চিত্র" width="100%" style="border-radius: 12px; border: 1px solid var(--border);" loading="lazy">
       </div>
       <div class="grid">
         <article class="card">
@@ -359,7 +359,7 @@ log output → process remains alive
       </div>
       <h3 class="workstation-title" data-i18n="pair.title">Use both on the same phone</h3>
       <p class="section-note" data-i18n="pair.note">Install Ternux for the Debian desktop, then install ADT inside that same Debian userland. From Termux, enter with <code>db</code>; from Xfce, open a terminal in the Debian session.</p>
-      <pre class="cmd"><code># inside the Ternux Debian guest
+      <pre class="cmd"><code># টারনাক্সের ডেবিয়ান পরিবেশের ভেতরে
 curl -fsSL https://raw.githubusercontent.com/soobujmiah/adt/main/install.sh | bash
 source ~/.bashrc
 cd ~/adt &amp;&amp; ./setup.sh doctor</code></pre>
@@ -375,7 +375,7 @@ cd ~/adt &amp;&amp; ./setup.sh doctor</code></pre>
       <h2 id="docs-h"><span class="n">08</span><span data-i18n="docs.title">Documentation</span></h2>
       <p class="section-note" data-i18n="docs.note">Simple first in the README; technical depth lives in the repository, linked here directly so what you read matches what the toolchain actually does.</p>
       <div class="grid">
-        <article class="card"><h3>README</h3><p data-i18n="docs.c1">What ADT is, evidence, the Ternux relationship and limits — the fast path.</p><a class="more" href="https://github.com/soobujmiah/adt/blob/main/README.md" data-i18n="docs.open">Read →</a></article>
+        <article class="card"><h3 data-i18n="docs.readme">README</h3><p data-i18n="docs.c1">What ADT is, evidence, the Ternux relationship and limits — the fast path.</p><a class="more" href="https://github.com/soobujmiah/adt/blob/main/README.md" data-i18n="docs.open">Read →</a></article>
         <article class="card"><h3 data-i18n="docs.c2.t">Technical reference</h3><p data-i18n="docs.c2.d">Tool roles, native build strategy, NDK/PRoot reality, setup.sh surface, profiles.</p><a class="more" href="https://github.com/soobujmiah/adt/blob/main/docs/TECHNICAL_REFERENCE.md" data-i18n="docs.open">Read →</a></article>
         <article class="card"><h3 data-i18n="docs.c3.t">Command reference</h3><p data-i18n="docs.c3.d">Everyday commands for every installed tool, device pairing, troubleshooting.</p><a class="more" href="https://github.com/soobujmiah/adt/blob/main/COMMANDS.md" data-i18n="docs.open">Read →</a></article>
         <article class="card"><h3 data-i18n="docs.c4.t">Validation records</h3><p data-i18n="docs.c4.d">Real-device evidence and dated session records, kept next to the work they describe.</p><a class="more" href="/adt/docs/" data-i18n="docs.open">Read →</a></article>
@@ -406,35 +406,48 @@ cd ~/adt &amp;&amp; ./setup.sh doctor</code></pre>
     var BN = {
       'skip': 'মূল বিষয়বস্তুতে যান',
       'brand.subtitle': 'এওএসপি / লিনাক্স হোস্ট টুল',
+      'code.oneliner': '# এক লাইনে — সংগ্রহশালা এনে সম্পূর্ণ প্রাথমিক সেটআপ চালায়',
+      'code.guided': '# কপি থেকে — ধাপে ধাপে নির্দেশসহ অথবা সম্পূর্ণ স্বয়ংক্রিয়',
+      'code.guidedshort': '# নির্দেশসহ', 'code.silent': '# কোনো প্রশ্ন ছাড়াই',
+      'code.doctor': '# পরে যাচাই — সমস্যা হলে কোন অংশে তা শনাক্ত করে',
+      'evi.code.build': '# চূড়ান্ত বিল্ড', 'evi.code.install': '# স্থাপন', 'evi.code.abi': '# এবিআই', 'evi.code.runtime': '# চালনার সময়',
+      'visual.resource': 'রিসোর্স সংযোজক', 'visual.bridge': 'যন্ত্র সংযোগ', 'visual.native': 'নিজস্ব সরঞ্জাম',
+      'visual.session': 'ADT / নির্মাণ পর্ব', 'visual.project': 'অ্যান্ড্রয়েড প্রকল্প',
+      'visual.output': 'নির্মাণের ফল', 'visual.success': 'নির্মাণ সফল', 'visual.connected': '◉ সংযুক্ত', 'visual.ready': 'এপিকে প্রস্তুত',
+      'visual.preview': 'ADT কাজের ধারার ঝলক', 'visual.buildverify': 'নির্মাণ → যাচাই',
+      'visual.build': 'নির্মাণ', 'visual.sign': 'স্বাক্ষর', 'visual.align': 'সাজানো', 'visual.install': 'স্থাপন', 'visual.verify': 'যাচাই',
+      'visual.example': 'নমুনা অ্যাপ', 'visual.package': 'উদাহরণ প্যাকেজ · arm64-v8a',
+      'feat.sdk': 'এসডিকে নির্মাণ-সরঞ্জাম', 'feat.platform': 'প্ল্যাটফর্ম-সরঞ্জাম', 'feat.flutter': 'ফ্লাটার ও ডার্ট', 'docs.readme': 'README',
       'nav.what': 'এডিটি কী', 'nav.toolchain': 'টুলচেইন', 'nav.install': 'ইনস্টল',
       'nav.workflows': 'ওয়ার্কফ্লো', 'nav.evidence': 'প্রমাণ', 'nav.docs': 'ডকুমেন্টেশন',
       'hero.eyebrow': 'অ্যান্ড্রয়েড অ্যাপ ওয়ার্কশপ · এআরএম৬৪',
       'hero.title.before': 'আপনার হাতের ডিভাইসেই', 'hero.title.accent': 'অ্যান্ড্রয়েড অ্যাপ বানান।',
       'hero.lede': 'লিনাক্স এআরএম৬৪-এ অ্যান্ড্রয়েড অ্যাপ তৈরির বাস্তব টুলচেইন — নেটিভ এসডিকে টুল থেকে বাস্তব ডিভাইসে স্বাক্ষরিত এপিকে পর্যন্ত। টার্মাক্স + পি-রুট ডেবিয়ান চালানো অ্যান্ড্রয়েড ফোনে, অথবা যেকোনো এআরএম৬৪ লিনাক্স মেশিনে কাজ করুন।',
       'hero.cta': 'টুলচেইন সেটআপ', 'hero.repo': 'GitHub-এ দেখুন',
-      'hero.verified': 'বাস্তব ডিভাইসে workflow যাচাইকৃত',
+      'hero.verified': 'বাস্তব যন্ত্রে কাজের ধারা যাচাইকৃত',
+      'hero.proof.tools': 'নিজস্ব aarch64 সরঞ্জাম', 'hero.proof.offline': 'নেটওয়ার্ক ছাড়া ব্যবহারযোগ্য ফাইল',
       'hero.visual.caption': 'নমুনা বিল্ড ফ্লো · এআরএম৬৪',
       'facts.device': 'ডিভাইস', 'facts.android': 'অ্যান্ড্রয়েড', 'facts.soc': 'এসওসি / জিপিইউ', 'facts.host': 'হোস্ট',
       'what.title': 'এডিটি কী?',
-      'what.note': 'গুগলের লিনাক্স এসডিকে হোস্ট বাইনারি এক্স৮৬৬৪। এডিটি অফিসিয়াল এওএসপি সোর্স থেকে aarch64/glibc-এর জন্য নেটিভ হোস্ট টুল বিল্ড করে, অফলাইন-ইনস্টলযোগ্য যাচাইকৃত আর্টিফ্যাক্ট রাখে এবং সম্পূর্ণ পাইপলাইন বাস্তব ফিজিক্যাল ডিভাইসে যাচাই করে।',
-      'what.card1.t': 'এটি কী', 'what.card1.d': 'এওএসপি সোর্স থেকে বিল্ড করা নেটিভ এআরএম৬৪ অ্যান্ড্রয়েড এসডিকে বিল্ড-টুলস ও প্ল্যাটফর্ম-টুলস, সাথে হোস্ট টুলচেইন: জেডিকে, সিমেক, নিনজা, এনডিকে শিম ও ফ্লাটার/ডার্ট সহায়তা।',
-      'what.card2.t': 'কেন এটি আছে', 'what.card2.d': 'একটি এআরএম৬৪ মেশিন — টার্মাক্স + পি-রুট ডেবিয়ান চালানো অ্যান্ড্রয়েড ফোনসহ — কোনো এক্স৮৬৬৪ হোস্ট ছাড়াই বাস্তব এপিকে তৈরি, স্বাক্ষর, ইনস্টল ও যাচাই করতে পারবে।',
-      'what.card3.t': 'কারা ব্যবহার করবেন', 'what.card3.d': 'এআরএম৬৪ লিনাক্সে কাজ করা ডেভেলপাররা — টার্মাক্স/পি-রুটের মাধ্যমে অ্যান্ড্রয়েড ডিভাইস, আসাহি লিনাক্স, এআরএম৬৪ সার্ভার ও বোর্ড — যাঁদের একটি সম্পূর্ণ ও সৎ অ্যান্ড্রয়েড টুলচেইন দরকার।',
+      'what.note': 'গুগলের লিনাক্স এসডিকে-র হোস্ট বাইনারি এক্স৮৬৬৪ স্থাপত্যের। এডিটি এওএসপি-র মূল কোড থেকে aarch64/glibc-এর জন্য নিজস্ব হোস্ট সরঞ্জাম তৈরি করে, নেটওয়ার্ক ছাড়া স্থাপনযোগ্য যাচাইকৃত ফাইল রাখে এবং পুরো প্রক্রিয়াটি বাস্তব যন্ত্রে যাচাই করে।',
+      'what.card1.t': 'এটি কী', 'what.card1.d': 'এওএসপি-র মূল কোড থেকে তৈরি নিজস্ব এআরএম৬৪ অ্যান্ড্রয়েড এসডিকে নির্মাণ-সরঞ্জাম ও প্ল্যাটফর্ম-সরঞ্জাম; সঙ্গে জেডিকে, সিমেক, নিনজা, এনডিকে শিম এবং ফ্লাটার/ডার্ট সহায়তা।',
+      'what.card2.t': 'কেন এটি আছে', 'what.card2.d': 'একটি এআরএম৬৪ যন্ত্র—টার্মাক্স + পি-রুট ডেবিয়ান চালানো অ্যান্ড্রয়েড ফোনও—এক্স৮৬৬৪ হোস্ট ছাড়াই বাস্তব এপিকে তৈরি, স্বাক্ষর, স্থাপন ও যাচাই করতে পারবে।',
+      'what.card3.t': 'কারা ব্যবহার করবেন', 'what.card3.d': 'এআরএম৬৪ লিনাক্সে কাজ করা নির্মাতারা—টার্মাক্স/পি-রুটসহ অ্যান্ড্রয়েড যন্ত্র, আসাহি লিনাক্স, এআরএম৬৪ সার্ভার ও বোর্ডে—যাঁদের পূর্ণাঙ্গ ও নির্ভরযোগ্য অ্যান্ড্রয়েড সরঞ্জাম দরকার।',
       'pipe.build.t': 'বিল্ড', 'pipe.build.d': 'aapt2 · aidl · গ্র্যাডল/ফ্লাটার এপিকে তৈরি করে',
       'pipe.sign.t': 'স্বাক্ষর', 'pipe.sign.d': 'zipalign · apksigner স্বাক্ষর ও যাচাই করে',
-      'pipe.install.t': 'ইনস্টল', 'pipe.install.d': 'নেটিভ adb ফিজিক্যাল ডিভাইসে পাঠায়',
+      'pipe.install.t': 'ইনস্টল', 'pipe.install.d': 'নেটিভ adb বাস্তব ডিভাইসে পাঠায়',
       'pipe.verify.t': 'যাচাই', 'pipe.verify.d': 'arm64-v8a নির্বাচিত · অ্যাপ জীবিত · লগ পরিষ্কার',
-      'feat.title': 'ফিচার',
-      'feat.note': 'যেসব টুলের শুধু জেভিএম এক্সিকিউশন পাথ দরকার সেগুলো জাভা স্তরে আর্কিটেকচার-নিরপেক্ষ; বাকি সব নেটিভ aarch64 বাইনারি, সোর্স থেকে বিল্ড করা, অথবা শিম — এবং সেভাবেই ডকুমেন্ট করা।',
+      'feat.title': 'সুবিধাসমূহ',
+      'feat.note': 'যেসব টুল শুধু জেভিএম এক্সিকিউশন পাথ ব্যবহার করে, সেগুলো জাভা স্তরে আর্কিটেকচার-ইনডিপেন্ডেন্ট; অন্যগুলো নেটিভ aarch64 বাইনারি, সোর্স থেকে বিল্ড করা, অথবা শিম—প্রতিটি অবস্থাই ডকুমেন্টেড।',
       'feat.c1': 'এওএসপি সোর্স থেকে linux-arm64-এর জন্য বিল্ড করা এআরএম৬৪-নেটিভ aapt, aapt2, aidl, zipalign, dexdump ও split-select।',
-      'feat.c2': 'এআরএম৬৪-নেটিভ adb, fastboot ও সম্পূর্ণ প্ল্যাটফর্ম-টুলস সেট — বাস্তব-ডিভাইস যাচাইয়ে ব্যবহৃত।',
+      'feat.c2': 'এআরএম৬৪-নেটিভ adb, fastboot ও সম্পূর্ণ প্ল্যাটফর্ম-টুলস সেট—বাস্তব ডিভাইস ভ্যালিডেশনে ব্যবহৃত।',
       'feat.c3.t': 'হোস্ট টুলচেইন', 'feat.c3.d': 'নেটিভ বিল্ডের জন্য জিসিসি/ক্ল্যাং, সিমেক, নিনজা ও মেক, সাথে গিট ও সোর্স-ম্যানেজমেন্ট টুলিং।',
-      'feat.c4.t': 'জেভিএম টুল পাথ', 'feat.c4.d': 'জেডিকে-এর সাথে জেভিএম এক্সিকিউশন পাথে apksigner, d8 ও R8 — আর্কিটেকচার-নিরপেক্ষ।',
+      'feat.c4.t': 'জেভিএম টুল পাথ', 'feat.c4.d': 'জেডিকে-এর সাথে জেভিএম এক্সিকিউশন পাথে apksigner, d8 ও R8—আর্কিটেকচার-ইনডিপেন্ডেন্ট।',
       'feat.c5': 'এআরএম৬৪-এ অ্যাপ্লিকেশন বিল্ডের জন্য অ্যান্ড্রয়েড এসডিকে প্ল্যাটফর্মের পাশাপাশি ফ্লাটার ও ডার্ট।',
-      'feat.c6.t': 'অফলাইন আর্টিফ্যাক্ট', 'feat.c6.d': 'ব্যয়বহুল বিল্ডের জন্য SHA256-যাচাইকৃত এআরএম৬৪ টারবল — সোর্স থেকে নতুন করে না বিল্ডেই ইনস্টল।',
+      'feat.c6.t': 'অফলাইন আর্টিফ্যাক্ট', 'feat.c6.d': 'সময়সাপেক্ষ বিল্ডের জন্য SHA256-ভেরিফায়েড এআরএম৬৪ টারবল—সোর্স থেকে আবার বিল্ড না করেই ইনস্টল।',
       'tool.title': 'টুলচেইন',
-      'tool.note': 'প্রতিটি কম্পোনেন্ট শ্রেণিবদ্ধ করা হয় এটি আসলে কীভাবে চলে তা দিয়ে — কোনো টুল শুধু আপস্ট্রিমে আছে বলেই সমর্থিত ধরা হয় না।',
-      'tool.layer': 'স্তর', 'tool.tools': 'টুল', 'tool.path': 'এক্সিকিউশন পাথ', 'tool.status': 'অবস্থা',
+      'tool.note': 'প্রতিটি অংশ কীভাবে চলে, তার ভিত্তিতে শ্রেণিবদ্ধ—মূল প্রকল্পে আছে বলেই কোনো সরঞ্জামকে সমর্থিত ধরা হয় না।',
+      'tool.layer': 'স্তর', 'tool.tools': 'সরঞ্জাম', 'tool.path': 'চালনার পদ্ধতি', 'tool.status': 'অবস্থা',
       'tool.r1.p': 'নেটিভ এআরএম৬৪, অফলাইন আর্টিফ্যাক্ট', 'tool.r2.p': 'নেটিভ এআরএম৬৪, অফলাইন আর্টিফ্যাক্ট',
       'tool.r3.p': 'নেটিভ এআরএম৬৪, গিটহাব রিলিজ', 'tool.r4.p': 'নেটিভ এআরএম৬৪, অফলাইন আর্টিফ্যাক্ট',
       'tool.r5.p': 'শিম → সিস্টেম এআরএম৬৪ llvm-strip', 'tool.r6.t': 'স্বাক্ষর · ডেক্স · শ্রিঙ্ক · প্যাকেজ',
@@ -443,36 +456,36 @@ cd ~/adt &amp;&amp; ./setup.sh doctor</code></pre>
       'tool.more': 'প্রতি-ভার্সন এওএসপি ট্যাগ, সিআই রান ও নোট versions.json-এ। প্রতিটি টুলের দৈনন্দিন কমান্ড COMMANDS.md-তে।',
       'tool.commands': 'কমান্ড রেফারেন্স',
       'inst.title': 'ইনস্টলেশন',
-      'inst.note': 'যেকোনো glibc সহ aarch64 লিনাক্সে চলে — যাচাইকৃত লক্ষ্য এআরএম৬৪ ফোনে টার্মাক্স + পি-রুট ডেবিয়ান; আসাহি, রাসবেরি পাই ও এআরএম৬৪ সার্ভারও একই পথ অনুসরণ করে। ইডেমপোটেন্ট: আবার চালালে বিদ্যমান ক্লোন আপডেট হয় এবং ইনস্টল করা অংশ বাদ যায়।',
-      'inst.off.t': 'সম্পূর্ণ অফলাইন', 'inst.off.d': 'build-tools ও platform-tools ৩৫.০.২, build-tools ৩৬.০.০ (চেক-ইন করা, SHA256-যাচাইকৃত আর্টিফ্যাক্ট), এনডিকে/সিমেক শিম।',
+      'inst.note': 'glibc-সহ যেকোনো aarch64 লিনাক্সে চলে—যাচাইকৃত লক্ষ্য এআরএম৬৪ ফোনে টার্মাক্স + পি-রুট ডেবিয়ান; আসাহি, রাসবেরি পাই ও এআরএম৬৪ সার্ভারেও একই পদ্ধতি চলে। আবার চালালে বিদ্যমান কপি হালনাগাদ হয়, আগে থেকে স্থাপিত অংশ বাদ থাকে।',
+      'inst.off.t': 'সম্পূর্ণ অফলাইন', 'inst.off.d': 'build-tools ও platform-tools ৩৫.০.২, build-tools ৩৬.০.০ (চেক-ইন করা, SHA256-ভেরিফায়েড আর্টিফ্যাক্ট), এনডিকে/সিমেক শিম।',
       'inst.net.t': 'নেটওয়ার্ক দরকার', 'inst.net.d': 'cmdline-tools (গুগল জিপ) এবং platforms;android-* — অন্য যেকোনো build-tools ভার্সন এওএসপি সোর্স থেকে বিল্ড হয় (~২–৪ জিবি, ~১৫–৩০ মিনিট)।',
-      'inst.prof.t': 'যাচাইকৃত প্রোফাইল', 'inst.prof.d': 'এক কমান্ডে হুবহু যাচাইকৃত বান্ডিল: ./setup.sh install-profile validated — build-tools ৩৫.০.২ + এনডিকে ২৭.২ + android-36।',
+      'inst.prof.t': 'যাচাইকৃত প্রোফাইল', 'inst.prof.d': 'এক কমান্ডে হুবহু ভেরিফায়েড বান্ডিল: ./setup.sh install-profile validated — build-tools ৩৫.০.২ + এনডিকে ২৭.২ + android-36।',
       'wf.title': 'ওয়ার্কফ্লো',
-      'wf.note': 'দৈনন্দিন build, signing, ADB ও device-validation পথ। নির্দিষ্ট কমান্ড — ওয়্যারলেস adb পেয়ারিংসহ — COMMANDS.md-তে।',
-      'wf.a.t': 'বিল্ড ওয়ার্কফ্লো', 'wf.a.d': 'নেটিভ এআরএম৬৪ aapt2/aidl রিসোর্স ও এআইডিএল কম্পাইল করে; গ্র্যাডল বা ফ্লাটার এপিকে জোড়া দেয়। টার্মাক্সে অ্যান্ড্রয়েড-টার্গেট নেটিভ কোড টার্মাক্স ক্ল্যাং ও অ্যান্ড্রয়েড টার্গেট ট্রিপল দিয়ে কম্পাইল হয়।',
+      'wf.note': 'দৈনন্দিন নির্মাণ, স্বাক্ষর, ADB ও যন্ত্র-যাচাইয়ের পদ্ধতি। ওয়্যারলেস adb জোড়া দেওয়াসহ নির্দিষ্ট নির্দেশ COMMANDS.md-তে।',
+      'wf.a.t': 'বিল্ড ওয়ার্কফ্লো', 'wf.a.d': 'নেটিভ এআরএম৬৪ aapt2/aidl রিসোর্স ও এআইডিএল কম্পাইল করে; গ্র্যাডল বা ফ্লাটার এপিকে তৈরি করে। টার্মাক্সে অ্যান্ড্রয়েড-লক্ষ্য কোড টার্মাক্স ক্ল্যাং ও অ্যান্ড্রয়েড টার্গেট ট্রিপল দিয়ে কম্পাইল হয়।',
       'wf.a.l': 'নেটিভ বিল্ড গাইড →',
-      'wf.b.t': 'এপিকে ওয়ার্কফ্লো', 'wf.b.d': 'প্যাকেজ → অ্যালাইন → পরিদর্শন: aapt2 রিসোর্স লিঙ্ক করে, zipalign এপিকে অ্যালাইন করে, dexdump ডেক্স দেখে। যাচাইকৃত ফ্লাটার/গ্র্যাডল বিল্ড টেস্ট ডিভাইসে ১মি ২১সে-এ শেষ হয়েছিল।',
+      'wf.b.t': 'এপিকে ওয়ার্কফ্লো', 'wf.b.d': 'প্যাকেজ → বিন্যাস → পরিদর্শন: aapt2 রিসোর্স লিঙ্ক করে, zipalign এপিকে বিন্যস্ত করে, dexdump ডেক্স দেখে। যাচাইকৃত ফ্লাটার/গ্র্যাডল বিল্ড পরীক্ষাযন্ত্রে ১ মিনিট ২১ সেকেন্ডে শেষ হয়েছিল।',
       'wf.b.l': 'যাচাই রেকর্ড →',
-      'wf.c.t': 'স্বাক্ষর', 'wf.c.d': 'apksigner (জেভিএম, ডেবিয়ান-প্যাকেজড — নেটিভ রিবিল্ড দরকার নেই) এআরএম৬৪-এ এপিকে স্বাক্ষর ও যাচাই করে। যাচাইকৃত এন্ড-টু-এন্ড পাইপলাইনে ব্যবহৃত।',
+      'wf.c.t': 'স্বাক্ষর', 'wf.c.d': 'apksigner (জেভিএম, ডেবিয়ান প্যাকেজ — নেটিভ পুনর্নির্মাণ দরকার নেই) এআরএম৬৪-এ এপিকে স্বাক্ষর ও যাচাই করে। যাচাইকৃত শুরু-থেকে-শেষ নির্মাণধারায় ব্যবহৃত।',
       'wf.c.l': 'স্বাক্ষর কমান্ড →',
-      'wf.d.t': 'এডিবি ও ডিভাইস', 'wf.d.d': 'ইউএসবি বা ওয়্যারলেস ডিবাগিংয়ে নেটিভ adb: ইনস্টল, লঞ্চ, লগক্যাট, শেল। পেয়ারিং ও কানেক্ট ভিন্ন পোর্ট ব্যবহার করে — নির্দিষ্ট ধাপগুলো COMMANDS.md-তে।',
+      'wf.d.t': 'এডিবি ও ডিভাইস', 'wf.d.d': 'ইউএসবি বা ওয়্যারলেস ডিবাগিংয়ে নেটিভ adb দিয়ে স্থাপন, চালু, লগক্যাট ও শেল ব্যবহার করা যায়। পেয়ারিং ও সংযোগে ভিন্ন পোর্ট লাগে—নির্দিষ্ট ধাপগুলো COMMANDS.md-তে।',
       'wf.d.l': 'এডিবি কমান্ড →',
       'wf.e.t': 'বিল্ড, চালান, পরীক্ষা',
-      'wf.e.d': 'যাচাইকৃত ধাপে এপিকে বিল্ড, ফিজিক্যাল ফোনে ইনস্টল ও চালু, ARM64 ABI পরীক্ষা এবং লগ দেখা হয়। ম্যানুয়াল ও scripted workflow verified; autonomous agent loop-এর দাবি করা হচ্ছে না।',
-      'use.title': 'এই ফোনে ADT দিয়ে আমি যা করেছি',
-      'use.note': 'এগুলো Redmi Turbo 4 Pro workstation-এ নথিভুক্ত ফল, সব ARM64 device-এর নিশ্চয়তা নয়।',
-      'use.c1.t': 'Flutter app build', 'use.c1.d': 'পরিষ্কার Gradle/Flutter APK build ১মি ২১সে-এ শেষ করেছি; ফোনে install, arm64-v8a যাচাই, app চালিয়ে দেখা এবং crash check করেছি।',
-      'use.c2.t': 'Native Android code যাচাই', 'use.c2.d': 'Android-targeted native code compile করে APK-তে রেখেছি, device-এ JNI library load করেছি, process সচল ও log পরিষ্কার নিশ্চিত করেছি।',
-      'use.c3.t': 'পরিচিত toolchain সংরক্ষণ', 'use.c3.d': 'যাচাইকৃত profile-এ build-tools 35.0.2, NDK 27.2 ও Android API 36 pin করা। ARM64 llvm-strip shim ঠিক করার পর NDK 28-ও option হিসেবে পরীক্ষা করেছি।',
-      'use.link': 'Device record ও command দেখুন →',
+      'wf.e.d': 'যাচাইকৃত পদ্ধতিতে এপিকে তৈরি, বাস্তব ফোনে স্থাপন ও চালু, ARM64 ABI পরীক্ষা এবং লগ দেখা হয়। হাতে চালানো ও স্ক্রিপ্টনির্ভর পদ্ধতি যাচাইকৃত; স্বয়ংক্রিয় এজেন্ট-চক্রের দাবি করা হয় না।',
+      'use.title': 'এই ফোনে ADT দিয়ে আমার কাজ',
+      'use.note': 'এগুলো Redmi Turbo 4 Pro কর্মযন্ত্রে নথিভুক্ত ফল; সব ARM64 যন্ত্রে একই ফলের নিশ্চয়তা নয়।',
+      'use.c1.t': 'ফ্লাটার অ্যাপ নির্মাণ', 'use.c1.d': 'Gradle/Flutter দিয়ে APK বিল্ড ১ মিনিট ২১ সেকেন্ডে শেষ হয়েছে; ফোনে স্থাপন, arm64-v8a যাচাই, অ্যাপ চালানো ও ক্র্যাশ পরীক্ষা করেছি।',
+      'use.c2.t': 'নিজস্ব অ্যান্ড্রয়েড কোড যাচাই', 'use.c2.d': 'অ্যান্ড্রয়েডের জন্য নেটিভ কোড কম্পাইল করে APK-তে যুক্ত করেছি, ডিভাইসে JNI লাইব্রেরি চালিয়ে প্রসেস সচল ও লগ ত্রুটিমুক্ত নিশ্চিত করেছি।',
+      'use.c3.t': 'পরীক্ষিত সরঞ্জামসমষ্টি সংরক্ষণ', 'use.c3.d': 'যাচাইকৃত বিন্যাসে build-tools 35.0.2, NDK 27.2 ও অ্যান্ড্রয়েড API 36 নির্দিষ্ট করা। ARM64 llvm-strip শিম মেরামতের পর NDK 28-ও বিকল্প হিসেবে পরীক্ষা করেছি।',
+      'use.link': 'ডিভাইস রেকর্ড ও কমান্ড দেখুন →',
       'pair.title': 'একই ফোনে দুটো একসাথে ব্যবহার',
-      'pair.note': 'Debian desktop-এর জন্য Ternux install করুন, তারপর সেই Debian userland-এ ADT বসান। Termux থেকে `db` দিয়ে ঢুকুন; Xfce থেকে Debian session-এর terminal খুলুন।',
-      'pair.limit': 'এই shared Termux + PRoot host-এ ADT build ও physical-device workflow verified। Ternux Xfce session থেকে tool চালানো দেখা গেছে, তবে combined workflow-টি এখনো formal ভাবে পরীক্ষা করা হয়নি।',
-      'evi.title': 'প্রমাণ — বাস্তব ফলাফল',
+      'pair.note': 'ডেবিয়ান ডেস্কটপের জন্য টারনাক্স ইনস্টল করুন, তারপর একই ডেবিয়ান ইউজারল্যান্ডে ADT বসান। Termux থেকে `db` দিয়ে ঢুকুন; Xfce সেশনে টার্মিনাল খুলুন।',
+      'pair.limit': 'এই যৌথ Termux + PRoot হোস্টে ADT বিল্ড ও বাস্তব ডিভাইসের ওয়ার্কফ্লো ভেরিফায়েড। টারনাক্স Xfce সেশন থেকে টুল চালানো দেখা গেছে, তবে সম্মিলিত ওয়ার্কফ্লো এখনো আনুষ্ঠানিকভাবে টেস্ট করা হয়নি।',
+      'evi.title': 'প্রমাণ — বাস্তব ফল',
       'evi.note': 'সবচেয়ে শক্তিশালী পরীক্ষা বাইনারির উপস্থিতি নয়, সম্পূর্ণ পথ। ১ সেপ্টেম্বর ২০২৬-এ এই শৃঙ্খলটি একটি বাস্তব ফিজিক্যাল ডিভাইসে এন্ড-টু-এন্ড চলেছিল:',
-      'evi.c1.t': 'যাচাই রেকর্ড', 'evi.c1.d': 'REAL_DEVICE_BUILD_VALIDATION.md — যাচাইকৃত প্রজেক্ট অবস্থার জন্য অবস্থা ভেরিফায়েড / ক্লোজড। ডিভাইস টপোলজি, কমান্ড ও আউটপুট রিপোতেই রেকর্ড করা।',
+      'evi.c1.t': 'যাচাই রেকর্ড', 'evi.c1.d': 'REAL_DEVICE_BUILD_VALIDATION.md — যাচাইকৃত প্রজেক্ট অবস্থার জন্য স্ট্যাটাস ভেরিফায়েড / ক্লোজড। ডিভাইস টপোলজি, কমান্ড ও আউটপুট রিপোজিটরিতে নথিভুক্ত।',
       'evi.c1.l': 'রেকর্ড খুলুন →',
-      'evi.c2.t': 'রিলিজ', 'evi.c2.d': 'v৩৫.০.২, v৩৬.০.০ ও v৩৭.০.০ সিআই দ্বারা প্রকাশিত (ট্যাগে build.yml), এআরএম৬৪ টারবল সংযুক্ত ও gh release view দিয়ে নিশ্চিতকৃত।',
+      'evi.c2.t': 'রিলিজ', 'evi.c2.d': 'v৩৫.০.২, v৩৬.০.০ ও v৩৭.০.০ সিআই দ্বারা প্রকাশিত (ট্যাগে build.yml), এআরএম৬৪ টারবল সংযুক্ত ও gh রিলিজ view দিয়ে নিশ্চিতকৃত।',
       'evi.c2.l': 'রিলিজ খুলুন →',
       'evi.c3.t': 'ভার্সন রেজিস্ট্রি', 'evi.c3.d': 'versions.json প্রতি-ভার্সন অবস্থা, এওএসপি ট্যাগ, সিআই রান ও সৎ নোট রাখে — কী ইচ্ছা করে বিল্ড করা হয়নি এবং কেন, তাও।',
       'evi.c3.l': 'রেজিস্ট্রি খুলুন →',
@@ -489,19 +502,24 @@ cd ~/adt &amp;&amp; ./setup.sh doctor</code></pre>
       'tx.c3.t': 'যাচাইকৃত বনাম পরীক্ষামূলক', 'tx.c3.d': 'এডিটির পাইপলাইন ভাগ করা টার্মাক্স + পি-রুট ডেবিয়ান হোস্টে যাচাইকৃত; টারনাক্স ডেস্কটপ ও জিপিইউ স্ট্যাক আলাদাভাবে যাচাই করে। সম্মিলিত ক্রস-প্রজেক্ট ওয়ার্কফ্লো একসাথে চলতে দেখা গেলেও আনুষ্ঠানিকভাবে পরীক্ষিত নয় — সেগুলো পরীক্ষামূলক থেকে যায়।',
       'tx.site': 'টারনাক্স ওয়েবসাইট', 'tx.repo': 'টারনাক্স রিপোজিটরি',
       'docs.title': 'ডকুমেন্টেশন',
-      'docs.note': 'রিডমিতে আগে সহজ অংশ; কারিগরি গভীরতা রিপোজিটরিতে, এখান থেকে সরাসরি লিঙ্ক করা — যাতে আপনি যা পড়েন তা টুলচেইন আসলে যা করে তার সাথে মেলে।',
+      'docs.note': 'README-তে সহজ পরিচিতি; কারিগরি বিস্তারিত সংগ্রহশালায়। সরাসরি সংযোগ দেওয়া হয়েছে, তাই নথির বর্ণনা প্রকৃত সরঞ্জামের কাজের সঙ্গে মেলে।',
       'docs.c1': 'এডিটি কী, প্রমাণ, টারনাক্স সম্পর্ক ও সীমাবদ্ধতা — দ্রুত পথ।',
-      'docs.c2.t': 'টেকনিক্যাল রেফারেন্স', 'docs.c2.d': 'টুলের ভূমিকা, নেটিভ বিল্ড কৌশল, এনডিকে/পি-রুট বাস্তবতা, setup.sh সারফেস, প্রোফাইল।',
+      'docs.c2.t': 'টেকনিক্যাল রেফারেন্স', 'docs.c2.d': 'টুলের ভূমিকা, নেটিভ বিল্ড কৌশল, এনডিকে/পি-রুটের বাস্তবতা, setup.sh-এর ব্যবহার, প্রোফাইল।',
       'docs.c3.t': 'কমান্ড রেফারেন্স', 'docs.c3.d': 'প্রতিটি ইনস্টল করা টুলের দৈনন্দিন কমান্ড, ডিভাইস পেয়ারিং, ট্রাবলশুটিং।',
       'docs.c4.t': 'যাচাই রেকর্ড', 'docs.c4.d': 'বাস্তব-ডিভাইস প্রমাণ ও তারিখভিত্তিক সেশন রেকর্ড — যে কাজের বর্ণনা দেয় তার পাশেই রাখা।',
       'docs.open': 'পড়ুন →',
       'foot.portfolio': 'পোর্টফোলিও', 'foot.repo': 'রিপোজিটরি', 'foot.releases': 'রিলিজ', 'foot.docs': 'ডকুমেন্টেশন',
-      'foot.evidence': 'CI build result ও বাস্তব device validation আলাদা evidence হিসেবে রাখা হয়।',
+      'foot.evidence': 'CI নির্মাণের ফল ও বাস্তব যন্ত্রে যাচাইয়ের নথি আলাদাভাবে রাখা হয়।',
     };
     var EN = null; /* captured lazily from the DOM */
     var enCache = {};
 
     function setLang(lang) {
+      var images = document.querySelectorAll('[data-img-en][data-img-bn]');
+      for (var j = 0; j < images.length; j++) {
+        images[j].setAttribute('src', images[j].getAttribute(lang === 'bn' ? 'data-img-bn' : 'data-img-en'));
+        images[j].setAttribute('alt', images[j].getAttribute(lang === 'bn' ? 'data-alt-bn' : 'data-alt-en'));
+      }
       var els = document.querySelectorAll('[data-i18n]');
       for (var i = 0; i < els.length; i++) {
         var el = els[i];

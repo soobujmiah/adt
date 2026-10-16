@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 520" role="img" aria-labelledby="wf-title wf-desc">
+  <title id="wf-title">ADT On-Device Pipeline &amp; Closed-Loop Automation</title>
+  <desc id="wf-desc">Diagram showing the verified on-device APK build-test workflow and distinguishing it from possible future closed-loop agent automation.</desc>
+  <rect width="1200" height="520" rx="16" fill="#050507" stroke="rgba(228,226,223,0.08)" stroke-width="1"/>
+  <text x="50" y="48" fill="#e4e2df" font-family="'Space Grotesk', system-ui, 'Noto Sans Bengali', sans-serif" font-size="22" font-weight="700" letter-spacing="-0.02em">ADT · যন্ত্রে নির্মাণধারা ও স্বয়ংক্রিয়তার কাঠামো</text>
+  <text x="50" y="72" fill="rgba(228,226,223,0.45)" font-family="system-ui, 'Noto Sans Bengali', sans-serif" font-size="11.5" letter-spacing="0.06em">বর্তমান যাচাইকৃত সামর্থ্য ও ভবিষ্যৎ এজেন্ট-চালিত স্বয়ংক্রিয়তা আলাদা করে দেখানো হয়েছে</text>
+
+  <!-- Section 1: Verified Workflow (Upper Box) -->
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <rect x="50" y="96" width="1100" height="175" rx="12" fill="rgba(6,7,6,0.66)" stroke="rgba(34,197,94,0.4)" stroke-width="1.2"/>
+    <text x="75" y="126" fill="#4ade80" font-family="system-ui, 'Noto Sans Bengali', sans-serif" font-size="15" font-weight="700">আজ যাচাইকৃত: যন্ত্রে সম্পূর্ণ নির্মাণধারা</text>
+    <rect x="990" y="112" width="135" height="22" rx="11" fill="rgba(34,197,94,0.12)" stroke="rgba(34,197,94,0.4)" stroke-width="1"/>
+    <text x="1057" y="127" fill="#4ade80" font-family="system-ui, 'Noto Sans Bengali', sans-serif" font-size="10" font-weight="600" text-anchor="middle">যাচাইকৃত / সম্পন্ন</text>
+
+    <!-- 5 Steps -->
+    <rect x="75" y="148" width="185" height="100" rx="8" fill="#090d0b" stroke="rgba(228,226,223,0.09)" stroke-width="1"/>
+    <text x="90" y="174" fill="#22d3ee" font-family="system-ui, 'Noto Sans Bengali', sans-serif" font-size="11" font-weight="600">01 · কম্পাইল</text>
+    <text x="90" y="198" fill="#e4e2df" font-size="12" font-weight="600">AAPT2 + javac/d8</text>
+    <text x="90" y="218" fill="rgba(228,226,223,0.5)" font-size="11">XML, JNI, dex কম্পাইল</text>
+    <text x="90" y="234" fill="rgba(228,226,223,0.5)" font-size="11">স্বাক্ষরহীন APK তৈরি</text>
+
+    <rect x="295" y="148" width="185" height="100" rx="8" fill="#090d0b" stroke="rgba(228,226,223,0.09)" stroke-width="1"/>
+    <text x="310" y="174" fill="#22d3ee" font-family="system-ui, 'Noto Sans Bengali', sans-serif" font-size="11" font-weight="600">02 · প্যাকেজ</text>
+    <text x="310" y="198" fill="#e4e2df" font-size="12" font-weight="600">zipalign + apksigner</text>
+    <text x="310" y="218" fill="rgba(228,226,223,0.5)" font-size="11">৪-বাইট বিন্যাস</text>
+    <text x="310" y="234" fill="rgba(228,226,223,0.5)" font-size="11">v2/v3 ক্রিপ্টোগ্রাফিক স্বাক্ষর</text>
+
+    <rect x="515" y="148" width="185" height="100" rx="8" fill="#090d0b" stroke="rgba(228,226,223,0.09)" stroke-width="1"/>
+    <text x="530" y="174" fill="#22d3ee" font-family="system-ui, 'Noto Sans Bengali', sans-serif" font-size="11" font-weight="600">03 · স্থাপন</text>
+    <text x="530" y="198" fill="#e4e2df" font-size="12" font-weight="600">নিজস্ব adb স্থাপন</text>
+    <text x="530" y="218" fill="rgba(228,226,223,0.5)" font-size="11">APK adbd-তে পাঠানো</text>
+    <text x="530" y="234" fill="rgba(228,226,223,0.5)" font-size="11">লক্ষ্য: বাস্তব ফোন</text>
+
+    <rect x="735" y="148" width="185" height="100" rx="8" fill="#090d0b" stroke="rgba(228,226,223,0.09)" stroke-width="1"/>
+    <text x="750" y="174" fill="#22d3ee" font-family="system-ui, 'Noto Sans Bengali', sans-serif" font-size="11" font-weight="600">04 · চালানো</text>
+    <text x="750" y="198" fill="#e4e2df" font-size="12" font-weight="600">অ্যাক্টিভিটি ব্যবস্থাপক</text>
+    <text x="750" y="218" fill="rgba(228,226,223,0.5)" font-size="11">am start -n &lt;component&gt;</text>
+    <text x="750" y="234" fill="rgba(228,226,223,0.5)" font-size="11">সরাসরি যন্ত্রে চালু হয়</text>
+
+    <rect x="955" y="148" width="170" height="100" rx="8" fill="#090d0b" stroke="rgba(228,226,223,0.09)" stroke-width="1"/>
+    <text x="970" y="174" fill="#22d3ee" font-family="system-ui, 'Noto Sans Bengali', sans-serif" font-size="11" font-weight="600">05 · যাচাই</text>
+    <text x="970" y="198" fill="#e4e2df" font-size="12" font-weight="600">Logcat ও JNI পরীক্ষা</text>
+    <text x="970" y="218" fill="rgba(228,226,223,0.5)" font-size="11">arm64-v8a লোড নিশ্চিত</text>
+    <text x="970" y="234" fill="rgba(228,226,223,0.5)" font-size="11">মারাত্মক ত্রুটি নেই</text>
+
+    <path d="M260 198h35M480 198h35M700 198h35M920 198h35" stroke="rgba(228,226,223,0.2)" stroke-width="1.5" fill="none"/>
+    <path d="M290 194l5 4-5 4zM510 194l5 4-5 4zM730 194l5 4-5 4zM950 194l5 4-5 4z" fill="rgba(228,226,223,0.4)"/>
+  </g>
+
+  <!-- Section 2: Potential Agent Loop (Lower Box) -->
+  <g font-family="system-ui, -apple-system, sans-serif">
+    <rect x="50" y="295" width="1100" height="175" rx="12" fill="rgba(6,7,6,0.66)" stroke="rgba(245,158,11,0.35)" stroke-width="1.2"/>
+    <text x="75" y="325" fill="#f59e0b" font-family="system-ui, 'Noto Sans Bengali', sans-serif" font-size="15" font-weight="700">অনুমোদিত স্বয়ংক্রিয়তায় সম্ভব: এজেন্টের প্রতিক্রিয়া-চক্র</text>
+    <rect x="990" y="311" width="135" height="22" rx="11" fill="rgba(245,158,11,0.12)" stroke="rgba(245,158,11,0.4)" stroke-width="1"/>
+    <text x="1057" y="326" fill="#f59e0b" font-family="system-ui, 'Noto Sans Bengali', sans-serif" font-size="10" font-weight="600" text-anchor="middle">পরীক্ষাধীন</text>
+
+    <!-- 4 Stages of Agent Loop -->
+    <rect x="75" y="347" width="235" height="100" rx="8" fill="#090d0b" stroke="rgba(228,226,223,0.09)" stroke-width="1"/>
+    <text x="90" y="373" fill="#f59e0b" font-family="system-ui, 'Noto Sans Bengali', sans-serif" font-size="11" font-weight="600">A · এজেন্টের পুনরাবৃত্তি</text>
+    <text x="90" y="397" fill="#e4e2df" font-size="12" font-weight="600">কোড বদল ও কমিট</text>
+    <text x="90" y="417" fill="rgba(228,226,223,0.5)" font-size="11">এজেন্ট প্যাচ / সুবিধা তৈরি করে</text>
+    <text x="90" y="433" fill="rgba(228,226,223,0.5)" font-size="11">GitHub-এ শাখা পাঠায়</text>
+
+    <rect x="350" y="347" width="235" height="100" rx="8" fill="#090d0b" stroke="rgba(228,226,223,0.09)" stroke-width="1"/>
+    <text x="365" y="373" fill="#f59e0b" font-family="system-ui, 'Noto Sans Bengali', sans-serif" font-size="11" font-weight="600">B · ক্লাউড বা হোস্টে নির্মাণ</text>
+    <text x="365" y="397" fill="#e4e2df" font-size="12" font-weight="600">CI-তে APK ফাইল তৈরি</text>
+    <text x="365" y="417" fill="rgba(228,226,223,0.5)" font-size="11">নির্মাণ-ফাইল কম্পাইল ও স্বাক্ষরিত</text>
+    <text x="365" y="433" fill="rgba(228,226,223,0.5)" font-size="11">স্থানীয় যন্ত্রে ফাইল আনা হয়</text>
+
+    <rect x="625" y="347" width="235" height="100" rx="8" fill="#090d0b" stroke="rgba(228,226,223,0.09)" stroke-width="1"/>
+    <text x="640" y="373" fill="#f59e0b" font-family="system-ui, 'Noto Sans Bengali', sans-serif" font-size="11" font-weight="600">C · ADT স্থাপন &amp; TEST</text>
+    <text x="640" y="397" fill="#e4e2df" font-size="12" font-weight="600">হোস্টে স্থাপন ও চালনা</text>
+    <text x="640" y="417" fill="rgba(228,226,223,0.5)" font-size="11">ADB বাস্তব যন্ত্রে APK স্থাপন করে</text>
+    <text x="640" y="433" fill="rgba(228,226,223,0.5)" font-size="11">পরিমাপভিত্তিক পরীক্ষা চালায়</text>
+
+    <rect x="900" y="347" width="225" height="100" rx="8" fill="#090d0b" stroke="rgba(228,226,223,0.09)" stroke-width="1"/>
+    <text x="915" y="373" fill="#f59e0b" font-family="system-ui, 'Noto Sans Bengali', sans-serif" font-size="11" font-weight="600">D · চালনার তথ্য ফেরত</text>
+    <text x="915" y="397" fill="#e4e2df" font-size="12" font-weight="600">ক্র্যাশ ও logcat তথ্য সংগ্রহ</text>
+    <text x="915" y="417" fill="rgba(228,226,223,0.5)" font-size="11">এজেন্ট চালনার লগ পর্যালোচনা করে</text>
+    <text x="915" y="433" fill="rgba(228,226,223,0.5)" font-size="11">পরের কোড সংশোধনে ফিরে যায়</text>
+
+    <path d="M310 397h40M585 397h40M860 397h40" stroke="rgba(228,226,223,0.2)" stroke-width="1.5" fill="none"/>
+    <path d="M345 393l5 4-5 4zM620 393l5 4-5 4zM895 393l5 4-5 4z" fill="rgba(228,226,223,0.4)"/>
+  </g>
+
+  <text x="50" y="495" fill="rgba(228,226,223,0.4)" font-family="system-ui, 'Noto Sans Bengali', sans-serif" font-size="11">দ্রষ্টব্য: স্বয়ংক্রিয় প্রতিক্রিয়া-চক্রের জন্য অনুমোদিত এজেন্ট অবকাঠামো দরকার; ADT বর্তমানে এর ভিত্তিগত নিজস্ব সরঞ্জাম সরবরাহ করে।</text>
+</svg>
