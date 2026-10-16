@@ -73,17 +73,17 @@ adt_draw_phase_progress() {
     current="${BASH_REMATCH[1]}"; title="${BASH_REMATCH[2]}"; total=7
     rows="$(tput lines 2>/dev/null || printf 24)"; cols="$(tput cols 2>/dev/null || printf 80)"
     (( cols > 0 )) || cols=80
-    width=$((cols - 2)); (( width > 78 )) && width=78; (( width < 12 )) && width=12
+    width=$((cols - 2)); (( width > 200 )) && width=200; (( width < 12 )) && width=12
     inner=$((width - 4)); filled=$((inner * current / total)); (( filled > inner )) && filled=$inner
     ((ADT_UI_TICK+=1)); color="$CYAN"; ((ADT_UI_TICK % 4 == 1)) && color="$GREEN"; ((ADT_UI_TICK % 4 == 2)) && color="$BLUE"; ((ADT_UI_TICK % 4 == 3)) && color="$YELLOW"
-    printf '\n  %s+%s+%s\n' "$CYAN" "$(printf '%*s' "$inner" '' | tr ' ' '-')" "$NC"
+    printf '\n  %s+%s+%s\n' "$CYAN" "$(adt_ui_rule_text "$inner")" "$NC"
     printf '  %s|%s %sSTEPS %s/%s%s |%s\n' "$CYAN" "$NC" "$color" "$current" "$total" "$NC" "$CYAN" "$NC"
     printf '  %s|%s%s' "$CYAN" "$NC" "$color"
-    for ((i=0; i<inner; i++)); do if (( i < filled )); then printf '#'; else printf '-'; fi; done
+    for ((i=0; i<inner; i++)); do if (( i < filled )); then printf '▩'; else printf '-'; fi; done
     printf '%s%s|%s\n' "$NC" "$CYAN" "$NC"
     title="${title:0:$inner}"
     printf '  %s|%s %b%-*s%s |%s\n' "$CYAN" "$NC" "$BOLD" "$((inner - 2))" "$title" "$NC" "$CYAN"
-    printf '  %s+%s+%s\n' "$CYAN" "$(printf '%*s' "$inner" '' | tr ' ' '-')" "$NC"
+    printf '  %s+%s+%s\n' "$CYAN" "$(adt_ui_rule_text "$inner")" "$NC"
     return 0
 }
 header()  {
@@ -97,10 +97,16 @@ header()  {
 
 adt_banner() {
     [[ -t 1 ]] || return 0
-    printf '\n  %s+----------------------------------------------------------+%s\n' "$CYAN" "$NC"
-    printf '  %s|%s  %sADT%s  %s|  Android Development Toolchain  | Linux ARM64  %s|%s\n' "$CYAN" "$NC" "$BOLD" "$NC" "$DIM" "$CYAN" "$NC"
-    printf '  %s+----------------------------------------------------------+%s\n' "$CYAN" "$NC"
-    printf '  %sby @soobujmiah  |  AOSP tools · native ARM64 · real-device workflow%s\n\n' "$DIM" "$NC"
+    local cols width inner
+    cols="$(tput cols 2>/dev/null || printf 80)"; (( cols > 0 )) || cols=80
+    width=$((cols - 2)); (( width > 200 )) && width=200; (( width < 12 )) && width=12
+    inner=$((width - 4)); (( inner < 8 )) && inner=8
+    printf '\n  %s+%s+%s\n' "$CYAN" "$(adt_ui_rule_text "$((width - 2))")" "$CYAN"
+    adt_ui_draw_logo "$ADT_UI_TICK" "$inner"
+    adt_ui_center_line 'Android Development Toolchain · Linux ARM64' "$CYAN" "$inner"
+    adt_ui_center_line 'by @soobujmiah' "$GREEN" "$inner"
+    adt_ui_host_info "$inner"
+    printf '  %s+%s+%s\n\n' "$CYAN" "$(adt_ui_rule_text "$((width - 2))")" "$CYAN"
 }
 
 adt_signature() {
@@ -2303,6 +2309,46 @@ adt_ui_center_line() {
     printf '  %s|%s%*s%b%s%b%*s%s|%s\n' "$CYAN" "$NC" "$left" '' "$color" "$text" "$NC" "$right" '' "$CYAN" "$NC"
 }
 
+adt_ui_rule_text() {
+    local count="$1" pattern='*+=-~^-=+*' i out=""
+    for ((i=0; i<count; i++)); do out+="${pattern:i%${#pattern}:1}"; done
+    printf '%s' "$out"
+}
+
+adt_ui_footer() {
+    local inner="$1" free clock credit left_gap middle_gap right_gap free_width
+    free="$(df -Pk "$HOME" 2>/dev/null | awk 'NR==2 {printf "%dG", $4/1048576}')"
+    [[ -n "$free" ]] || free="Free n/a"
+    free="Free $free"
+    clock="$(date '+%H:%M')"
+    credit='© github.com/soobujmiah - 2026'
+    if (( ${#free} + ${#credit} + ${#clock} + 2 > inner )); then credit='© soobujmiah - 2026'; fi
+    if (( ${#free} + ${#credit} + ${#clock} + 2 > inner )); then
+        if (( inner < ${#credit} )); then credit='© ADT 2026'; fi
+        if (( inner < ${#credit} )); then credit='ADT'; fi
+        left_gap=$(((inner - ${#credit}) / 2)); right_gap=$((inner - ${#credit} - left_gap))
+        printf '  %s|%s%*s%b%s%b%*s%s|%s\n' "$CYAN" "$NC" "$left_gap" '' "$GREEN" "$credit" "$NC" "$right_gap" '' "$CYAN" "$NC"
+        return
+    fi
+    free_width=${#free}; left_gap=$(((inner - free_width - ${#credit} - ${#clock}) / 2))
+    middle_gap=$((inner - free_width - ${#credit} - ${#clock} - left_gap))
+    right_gap=0
+    printf '  %s|%s%b%s%b%*s%b%s%b%*s%b%s%b%s|%s%s\n' \
+        "$CYAN" "$NC" "$BLUE" "$free" "$NC" "$left_gap" '' \
+        "$GREEN" "$credit" "$NC" "$middle_gap" '' \
+        "$YELLOW" "$clock" "$NC" "$(printf '%*s' "$right_gap" '')" "$CYAN" "$NC"
+}
+
+adt_ui_host_info() {
+    local inner="$1" arch cores ram_mb ram_gb
+    arch="$(uname -m 2>/dev/null || printf 'unknown')"
+    cores="$(getconf _NPROCESSORS_ONLN 2>/dev/null || printf '?')"
+    ram_mb="$(awk '/^MemTotal:/ {print int($2/1024)}' /proc/meminfo 2>/dev/null)"
+    if [[ "$ram_mb" =~ ^[0-9]+$ ]]; then ram_gb="$(( (ram_mb + 512) / 1024 )) GB"; else ram_gb='RAM n/a'; fi
+    adt_ui_center_line "Host Linux $arch" "$CYAN" "$inner"
+    adt_ui_center_line "CPU ${cores} cores · RAM $ram_gb" "$BLUE" "$inner"
+}
+
 adt_ui_logo_line() {
     local text="$1" tick="$2" width="$3" i ch left right phase content="" color
     local -a primary=("$GREEN" "$CYAN" "$BLUE" "$GREEN" "$CYAN" "$BLUE")
@@ -2313,10 +2359,10 @@ adt_ui_logo_line() {
     content="$(printf '%*s' "$left" '')"
     for ((i=0; i<${#text}; i++)); do
         ch="${text:i:1}"
-        if [[ "$ch" == '#' || "$ch" == '_' ]]; then
+        if [[ "$ch" == '▩' ]]; then
             phase=$(((i + tick) % ${#primary[@]}))
             color="${primary[$phase]}"
-            [[ "$ch" == '_' ]] && color="${accent[$(((i + tick) % ${#accent[@]}))]}"
+            if (( (i + tick) % 5 == 0 )); then color="${accent[$(((i + tick) % ${#accent[@]}))]}"; fi
             content+="${BOLD}${color}${ch}${NC}"
         else
             content+="$ch"
@@ -2325,36 +2371,52 @@ adt_ui_logo_line() {
     printf '  %s|%s%s%*s%s|%s\n' "$CYAN" "$NC" "$content" "$right" '' "$CYAN" "$NC"
 }
 
+adt_ui_draw_logo() {
+    local tick="$1" width="$2" row
+    local -a logo
+    if (( width >= 19 )); then
+        logo=(
+            ' ▩▩▩  ▩▩▩▩   ▩▩▩▩▩'
+            '▩   ▩ ▩   ▩     ▩  '
+            '▩▩▩▩▩ ▩   ▩     ▩  '
+            '▩   ▩ ▩   ▩     ▩  '
+            '▩   ▩ ▩▩▩▩     ▩  '
+        )
+    elif (( width >= 13 )); then
+        logo=(
+            '▩▩▩  ▩▩   ▩▩▩'
+            '▩ ▩  ▩ ▩   ▩ '
+            '▩▩▩  ▩ ▩   ▩ '
+            '▩ ▩  ▩ ▩   ▩ '
+            '▩ ▩  ▩▩   ▩ '
+        )
+    else
+        adt_ui_center_line 'ADT' "$GREEN" "$width"
+        return 0
+    fi
+    for row in 0 1 2 3 4; do adt_ui_logo_line "${logo[$row]}" "$((tick + row))" "$width"; done
+}
+
 adt_draw_setup_menu() {
     local cursor="$1" size="${2:-}" tick="${3:-0}" rows cols visible start end i mark pointer group_color width label selected_count=0 inner fixed_rows
     local -a wave=("$CYAN" "$GREEN" "$BLUE" "$YELLOW")
     if [[ "$size" =~ ^[0-9]+[[:space:]][0-9]+$ ]]; then read -r rows cols <<<"$size"; else rows="$(tput lines 2>/dev/null || printf 24)"; cols="$(tput cols 2>/dev/null || printf 80)"; fi
     (( rows > 0 )) || rows=24; (( cols > 0 )) || cols=80
-    width=$((cols - 2)); (( width > 78 )) && width=78; (( width < 8 )) && width=8
+    width=$((cols - 2)); (( width > 200 )) && width=200; (( width < 8 )) && width=8
     inner=$((width - 4)); (( inner < 4 )) && inner=4
     fixed_rows=14; (( inner < 52 )) && fixed_rows=15
+    fixed_rows=$((fixed_rows + 2))
     visible=$((rows - fixed_rows)); (( visible < 1 )) && visible=1; (( visible > ${#ADT_SETUP_ITEMS[@]} )) && visible=${#ADT_SETUP_ITEMS[@]}
     start=0; (( cursor >= visible )) && start=$((cursor - visible + 1))
     end=$((start + visible)); (( end > ${#ADT_SETUP_ITEMS[@]} )) && end=${#ADT_SETUP_ITEMS[@]}
     for i in "${!ADT_SETUP_ITEMS[@]}"; do [[ " ${ADT_SETUP_SELECTED[*]} " == *" ${ADT_SETUP_ITEMS[$i]} "* ]] && ((selected_count+=1)); done
     printf '\033[H\033[2J'
-    printf '  %s+%s+%s\n' "$CYAN" "$(printf '%*s' "$((width - 2))" '' | tr ' ' '-')" "$CYAN"
-    if (( inner >= 19 )); then
-        adt_ui_logo_line '  #    ####   #####' "$tick" "$inner"
-        adt_ui_logo_line ' #_#   #___#  __#__' "$((tick + 1))" "$inner"
-        adt_ui_logo_line '#####  #   #    #  ' "$((tick + 2))" "$inner"
-        adt_ui_logo_line '#   #  #   #    #  ' "$((tick + 3))" "$inner"
-        adt_ui_logo_line '#   #  ####    #  ' "$((tick + 4))" "$inner"
-    else
-        adt_ui_logo_line '### ##_ ###' "$tick" "$inner"
-        adt_ui_logo_line '#_# #_# _#_' "$((tick + 1))" "$inner"
-        adt_ui_logo_line '### # #  # ' "$((tick + 2))" "$inner"
-        adt_ui_logo_line '# # #_#  # ' "$((tick + 3))" "$inner"
-        adt_ui_logo_line '# # ##_  # ' "$((tick + 4))" "$inner"
-    fi
-    adt_ui_center_line 'Linux Workstation In Your Pocket' "${wave[$(((tick + 2) % 4))]}" "$inner"
+    printf '  %s+%s+%s\n' "$CYAN" "$(adt_ui_rule_text "$((width - 2))")" "$CYAN"
+    adt_ui_draw_logo "$tick" "$inner"
+    adt_ui_center_line 'Android Development Toolchain · Linux ARM64' "${wave[$(((tick + 2) % 4))]}" "$inner"
     adt_ui_center_line 'by @soobujmiah' "${wave[$(((tick + 3) % 4))]}" "$inner"
-    printf '  %s+%s+%s\n' "$CYAN" "$(printf '%*s' "$((width - 2))" '' | tr ' ' '-')" "$CYAN"
+    adt_ui_host_info "$inner"
+    printf '  %s+%s+%s\n' "$CYAN" "$(adt_ui_rule_text "$((width - 2))")" "$CYAN"
     printf '  %sADT OPTIONAL COMPONENTS%s  %s%d/%d selected%s\n' "$BOLD" "$NC" "$CYAN" "$selected_count" "${#ADT_SETUP_ITEMS[@]}" "$NC"
     if (( inner >= 52 )); then
         printf '  %s↑/↓ j/k%s move  %sSpace/1–9%s toggle  %sEnter%s continue  %sq%s none\n' "$YELLOW" "$NC" "$GREEN" "$NC" "$BOLD" "$NC" "$DIM" "$NC"
@@ -2376,9 +2438,8 @@ adt_draw_setup_menu() {
             printf '  %s|%s %b%s%s %s%2d%s %-*.*s %s|%s\n' "$CYAN" "$NC" "$pointer" "$group_color" "$mark" "$DIM" "$((i + 1))" "$NC" "$((inner - 9))" "$((inner - 9))" "$label" "$CYAN" "$NC"
         fi
     done
-    printf '  %s+%s+%s\n' "$CYAN" "$(printf '%*s' "$((width - 2))" '' | tr ' ' '-')" "$CYAN"
-    printf '  %sSpace: toggle  ·  Enter: review and install%s\n' "$DIM" "$NC"
-    printf '  %s© github.com/soobujmiah - 2026%s\n' "$CYAN" "$NC"
+    printf '  %s+%s+%s\n' "$CYAN" "$(adt_ui_rule_text "$((width - 2))")" "$CYAN"
+    adt_ui_footer "$inner"
 }
 
 adt_choose_setup_components() {
