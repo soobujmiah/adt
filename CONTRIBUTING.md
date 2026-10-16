@@ -362,3 +362,10 @@ Some AOSP code may produce warnings with GCC 15. We suppress non-critical warnin
 ### Static library link ordering
 
 GCC is strict about link order (unlike Clang). If you see undefined symbol errors, the fix is usually `target_link_libraries` for dependency propagation or `--start-group`/`--end-group` for circular dependencies (used for adb).
+
+
+## License and third-party contributions
+
+Original documentation and website material authored by Sobuj Miah is offered under PolyForm Noncommercial 1.0.0. AOSP-derived build logic, patches, binaries, and the files containing `katiusu` contributions retain their applicable Apache-2.0 or other upstream terms. Submit only work you own or have permission to contribute, and include source/version/license details for third-party code, data, fonts, and binaries. See [LICENSE-SCOPE.md](LICENSE-SCOPE.md) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
+New first-party documentation or website contributions are accepted under the same PolyForm terms and commercial-use addendum only when the contributor explicitly agrees and has authority to grant those rights. Do not submit copied AOSP/upstream material as first-party work; preserve its original notices and license.

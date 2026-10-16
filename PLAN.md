@@ -33,7 +33,10 @@ This project adapts [lzhiyong/android-sdk-tools](https://github.com/lzhiyong/and
 - **Build scripts** (`get_source.py`, `build.py`) are clean Python -- no network calls during build, no suspicious code
 - **CMake files** are standard `add_library`/`add_executable` patterns referencing only AOSP source
 - **Patches** are small compatibility fixes (GCC/glibc compat, pre-generated headers)
-- **License**: Apache 2.0
+- **License scope**: Sobuj Miah's original documentation and website content use
+  PolyForm Noncommercial 1.0.0. AOSP-derived build logic, patches, compiled
+  binaries, fonts, and documented contributor files retain their respective
+  Apache-2.0 or other upstream licenses; see `LICENSE-SCOPE.md`.
 
 ## Architecture
 
