@@ -2304,8 +2304,9 @@ adt_ui_center_line() {
 }
 
 adt_ui_logo_line() {
-    local text="$1" tick="$2" width="$3" i ch left right phase content=""
-    local -a colors=("$GREEN" "$CYAN" "$YELLOW" "$BLUE" "$GREEN" "$CYAN")
+    local text="$1" tick="$2" width="$3" i ch left right phase content="" color
+    local -a primary=("$GREEN" "$CYAN" "$BLUE" "$GREEN" "$CYAN" "$BLUE")
+    local -a accent=("$YELLOW" "$RED" "$DIM" "$YELLOW" "$RED" "$DIM")
     (( width >= 1 )) || return 0
     text="${text:0:width}"
     left=$(((width - ${#text}) / 2)); right=$((width - ${#text} - left))
@@ -2313,8 +2314,10 @@ adt_ui_logo_line() {
     for ((i=0; i<${#text}; i++)); do
         ch="${text:i:1}"
         if [[ "$ch" == '#' || "$ch" == '_' ]]; then
-            phase=$(((i + tick) % ${#colors[@]}))
-            content+="${colors[$phase]}${ch}${NC}"
+            phase=$(((i + tick) % ${#primary[@]}))
+            color="${primary[$phase]}"
+            [[ "$ch" == '_' ]] && color="${accent[$(((i + tick) % ${#accent[@]}))]}"
+            content+="${BOLD}${color}${ch}${NC}"
         else
             content+="$ch"
         fi
@@ -2323,23 +2326,31 @@ adt_ui_logo_line() {
 }
 
 adt_draw_setup_menu() {
-    local cursor="$1" size="${2:-}" tick="${3:-0}" rows cols visible start end i mark pointer group_color width label selected_count=0 inner
+    local cursor="$1" size="${2:-}" tick="${3:-0}" rows cols visible start end i mark pointer group_color width label selected_count=0 inner fixed_rows
     local -a wave=("$CYAN" "$GREEN" "$BLUE" "$YELLOW")
     if [[ "$size" =~ ^[0-9]+[[:space:]][0-9]+$ ]]; then read -r rows cols <<<"$size"; else rows="$(tput lines 2>/dev/null || printf 24)"; cols="$(tput cols 2>/dev/null || printf 80)"; fi
     (( rows > 0 )) || rows=24; (( cols > 0 )) || cols=80
     width=$((cols - 2)); (( width > 78 )) && width=78; (( width < 8 )) && width=8
     inner=$((width - 4)); (( inner < 4 )) && inner=4
-    visible=$((rows - 12)); (( visible < 1 )) && visible=1; (( visible > ${#ADT_SETUP_ITEMS[@]} )) && visible=${#ADT_SETUP_ITEMS[@]}
+    fixed_rows=14; (( inner < 52 )) && fixed_rows=15
+    visible=$((rows - fixed_rows)); (( visible < 1 )) && visible=1; (( visible > ${#ADT_SETUP_ITEMS[@]} )) && visible=${#ADT_SETUP_ITEMS[@]}
     start=0; (( cursor >= visible )) && start=$((cursor - visible + 1))
     end=$((start + visible)); (( end > ${#ADT_SETUP_ITEMS[@]} )) && end=${#ADT_SETUP_ITEMS[@]}
     for i in "${!ADT_SETUP_ITEMS[@]}"; do [[ " ${ADT_SETUP_SELECTED[*]} " == *" ${ADT_SETUP_ITEMS[$i]} "* ]] && ((selected_count+=1)); done
     printf '\033[H\033[2J'
     printf '  %s+%s+%s\n' "$CYAN" "$(printf '%*s' "$((width - 2))" '' | tr ' ' '-')" "$CYAN"
-    if (( inner >= 12 )); then
-        adt_ui_logo_line '### ##_ ###' "$tick" "$inner"
-        adt_ui_logo_line '#_# # # _#_' "$((tick + 2))" "$inner"
+    if (( inner >= 19 )); then
+        adt_ui_logo_line '  #    ####   #####' "$tick" "$inner"
+        adt_ui_logo_line ' #_#   #___#  __#__' "$((tick + 1))" "$inner"
+        adt_ui_logo_line '#####  #   #    #  ' "$((tick + 2))" "$inner"
+        adt_ui_logo_line '#   #  #   #    #  ' "$((tick + 3))" "$inner"
+        adt_ui_logo_line '#   #  ####    #  ' "$((tick + 4))" "$inner"
     else
-        adt_ui_center_line 'ADT' "${wave[$((tick % 4))]}" "$inner"
+        adt_ui_logo_line '### ##_ ###' "$tick" "$inner"
+        adt_ui_logo_line '#_# #_# _#_' "$((tick + 1))" "$inner"
+        adt_ui_logo_line '### # #  # ' "$((tick + 2))" "$inner"
+        adt_ui_logo_line '# # #_#  # ' "$((tick + 3))" "$inner"
+        adt_ui_logo_line '# # ##_  # ' "$((tick + 4))" "$inner"
     fi
     adt_ui_center_line 'Linux Workstation In Your Pocket' "${wave[$(((tick + 2) % 4))]}" "$inner"
     adt_ui_center_line 'by @soobujmiah' "${wave[$(((tick + 3) % 4))]}" "$inner"
