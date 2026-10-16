@@ -630,17 +630,18 @@ main, .site-footer { position: relative; z-index: 1; }
 .hero {
   display: grid; grid-template-columns: minmax(0, 1.04fr) minmax(0, .96fr);
   gap: 22px; align-items: center; min-height: 570px; padding: 28px 0 48px;
-  position: relative; isolation: isolate;
-  background: linear-gradient(112deg, #060b08 12%, #08120b 77%, #060d09 100%);
+  position: relative; isolation: isolate; overflow: visible;
+  background: transparent;
 }
 .hero::before {
-  content: ''; position: absolute; z-index: -1; inset: 0 -24px; pointer-events: none;
+  content: ''; position: absolute; z-index: -1; top: 0; bottom: 0; left: 50%;
+  width: 100vw; transform: translateX(-50%); pointer-events: none;
   background: radial-gradient(ellipse 54% 75% at 78% 36%, rgba(34,197,94,.10), transparent 72%),
               radial-gradient(ellipse 37% 52% at 85% 58%, rgba(34,211,238,.055), transparent 74%),
               linear-gradient(rgba(228,226,223,.018) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(228,226,223,.018) 1px, transparent 1px);
-  background-size: auto, auto, 48px 48px, 48px 48px;
-  mask-image: linear-gradient(90deg, transparent, #000 38%, #000 100%);
+              linear-gradient(90deg, rgba(228,226,223,.018) 1px, transparent 1px),
+              linear-gradient(112deg, #060b08 12%, #08120b 77%, #060d09 100%);
+  background-size: auto, auto, 48px 48px, 48px 48px, auto;
 }
 .hero-copy { min-width: 0; position: relative; z-index: 2; padding: 0 0 12px; }
 .hero .eyebrow {
