@@ -74,17 +74,16 @@ header()  {
 
 adt_banner() {
     [[ -t 1 ]] || return 0
-    printf '\n  +----------------------------------------------------------+\n'
-    printf '  |  ADT  |  Android Development Toolchain  |  Linux ARM64  |\n'
-    printf '  +----------------------------------------------------------+\n'
-    printf '  %sAOSP tools · native ARM64 · real-device workflow%s\n\n' "$DIM" "$NC"
+    printf '\n  %s+----------------------------------------------------------+%s\n' "$CYAN" "$NC"
+    printf '  %s|%s  %sADT%s  %s|  Android Development Toolchain  | Linux ARM64  %s|%s\n' "$CYAN" "$NC" "$BOLD" "$NC" "$DIM" "$CYAN" "$NC"
+    printf '  %s+----------------------------------------------------------+%s\n' "$CYAN" "$NC"
+    printf '  %sby @soobujmiah  |  AOSP tools · native ARM64 · real-device workflow%s\n\n' "$DIM" "$NC"
 }
 
 adt_signature() {
     local status="${1:-0}" label="session complete"
     [[ "$status" -eq 0 ]] || label="session ended with status $status"
-    printf '\n  %s%s · © 2026 Sobuj Miah%s\n' "$DIM" "$label" "$NC" >&2
-    printf '  %sAndroid Development Toolchain · github.com/soobujmiah/adt%s\n' "$DIM" "$NC" >&2
+    printf '\n  %s%s%s  ·  %s© github.com/soobujmiah - 2026%s\n' "$DIM" "$label" "$NC" "$CYAN" "$NC" >&2
 }
 
 if [[ ! -t 1 || -n "${NO_COLOR:-}" || "${TERM:-}" == "dumb" ]]; then
@@ -866,24 +865,22 @@ cmd_install_platforms() {
         run_sdkmanager "${packages[@]}"
     else
         header "Install Android Platforms"
-        echo "  Common packages:"
-        echo ""
-        echo "    android-36    (Android 16 / Baklava)"
-        echo "    android-35    (Android 15)"
-        echo "    android-34    (Android 14)"
-        echo "    android-33    (Android 13)"
-        echo ""
-        read -rp "  Packages to install (space-separated): " input
+        local -a common_platforms=(android-36 android-35 android-34 android-33)
+        echo "  Select platform numbers separated by spaces (example: 1 2):"
+        echo "    1) Android 16 — API 36"
+        echo "    2) Android 15 — API 35"
+        echo "    3) Android 14 — API 34"
+        echo "    4) Android 13 — API 33"
+        echo "    0) Cancel"
+        read -rp "  Platforms to install: " input
 
-        if [[ -n "$input" ]]; then
+        if [[ -n "$input" && "$input" != "0" ]]; then
             accept_licenses
             local packages=()
-            for arg in $input; do
-                case "$arg" in
-                    platforms\;*) packages+=("$arg") ;;
-                    android-*)    packages+=("platforms;${arg}") ;;
-                    *)            packages+=("$arg") ;;
-                esac
+            local choice
+            for choice in $input; do
+                [[ "$choice" =~ ^[1-4]$ ]] || die "Choose platform numbers 1-4, or 0 to cancel."
+                packages+=("platforms;${common_platforms[$((choice - 1))]}")
             done
             run_sdkmanager "${packages[@]}"
         fi
@@ -2246,6 +2243,116 @@ cmd_cleanup() {
 
 # ── bootstrap ────────────────────────────────────────────────────────────────
 
+ADT_SETUP_ITEMS=(host build-tools platform-tools ndk cmake cmdline platform env cleanup)
+ADT_SETUP_LABELS=()
+ADT_SETUP_SELECTED=()
+
+adt_toggle_setup_item() {
+    local item="$1" i
+    for i in "${!ADT_SETUP_SELECTED[@]}"; do
+        if [[ "${ADT_SETUP_SELECTED[$i]}" == "$item" ]]; then
+            unset 'ADT_SETUP_SELECTED[i]'
+            ADT_SETUP_SELECTED=("${ADT_SETUP_SELECTED[@]}")
+            return
+        fi
+    done
+    ADT_SETUP_SELECTED+=("$item")
+}
+
+adt_draw_setup_menu() {
+    local cursor="$1" i mark pointer color
+    printf '\033[H\033[2J'
+    adt_banner
+    printf '  %sChoose setup components%s  %sArrow/j-k move · Space toggle · Enter continue · q skip all%s\n\n' "$CYAN" "$NC" "$DIM" "$NC"
+    for i in "${!ADT_SETUP_ITEMS[@]}"; do
+        mark=' '
+        [[ " ${ADT_SETUP_SELECTED[*]} " == *" ${ADT_SETUP_ITEMS[$i]} "* ]] && mark='✓'
+        pointer=' '
+        color="$NC"
+        if (( i == cursor )); then pointer='>'; color="$CYAN$BOLD"; fi
+        printf '  %s%s%s [%s] %d  %s\n' "$color" "$pointer" "$NC" "$mark" "$((i + 1))" "${ADT_SETUP_LABELS[$i]}"
+    done
+    printf '\n  %sComponents are optional; release versions are selectable after this menu.%s\n' "$DIM" "$NC"
+}
+
+adt_choose_setup_components() {
+    local bt="$1" pt="$2" ndk="$3" cursor=0 key seq i result=""
+    ADT_SETUP_LABELS=(
+        "Host dependencies (only missing packages)"
+        "Build Tools ${bt} (verified ADT release; more versions available)"
+        "Platform Tools ${pt} — ADB + fastboot (verified ADT release; more versions available)"
+        "NDK ${ndk} shim (device-tested registry version)"
+        "CMake shim (system CMake)"
+        "SDK command-line tools (sdkmanager)"
+        "Android API 36 platform (Google sdkmanager)"
+        "Shell environment (ANDROID_HOME and PATH)"
+        "Temporary-file and package-cache cleanup"
+    )
+    ADT_SETUP_SELECTED=("${ADT_SETUP_ITEMS[@]}")
+    [[ "$INTERACTIVE" == "1" ]] || { printf '%s\n' "${ADT_SETUP_ITEMS[*]}"; return; }
+    if { exec 3<>/dev/tty; } 2>/dev/null; then
+        local old_stty
+        old_stty="$(stty -g <&3 2>/dev/null || true)"
+        stty -echo -icanon min 1 time 0 <&3 2>/dev/null || true
+        adt_draw_setup_menu "$cursor" >&3
+        while IFS= read -r -s -n 1 -u 3 key; do
+            case "$key" in
+                $'\033') IFS= read -r -s -n 2 -t 1 -u 3 seq || seq=""; case "$seq" in '[A') (( cursor > 0 )) && cursor=$((cursor - 1)) ;; '[B') (( cursor + 1 < ${#ADT_SETUP_ITEMS[@]} )) && cursor=$((cursor + 1)) ;; esac ;;
+                k) (( cursor > 0 )) && cursor=$((cursor - 1)) ;;
+                j) (( cursor + 1 < ${#ADT_SETUP_ITEMS[@]} )) && cursor=$((cursor + 1)) ;;
+                ' ') adt_toggle_setup_item "${ADT_SETUP_ITEMS[$cursor]}" ;;
+                [1-9]) i=$((10#$key - 1)); (( i < ${#ADT_SETUP_ITEMS[@]} )) && adt_toggle_setup_item "${ADT_SETUP_ITEMS[$i]}" ;;
+                $'\r'|$'\n') break ;;
+                q|Q) ADT_SETUP_SELECTED=(); break ;;
+            esac
+            adt_draw_setup_menu "$cursor" >&3
+        done
+        [[ -n "$old_stty" ]] && stty "$old_stty" <&3 2>/dev/null || true
+        printf '\033[H\033[2J' >&3
+        exec 3>&-
+    else
+        echo "" >&2
+        for i in "${!ADT_SETUP_ITEMS[@]}"; do printf '  %2d) %s\n' "$((i + 1))" "${ADT_SETUP_LABELS[$i]}" >&2; done
+        read -rp "  Select numbers (default: all, 0: none): " result || result=""
+        if [[ -n "$result" ]]; then
+            ADT_SETUP_SELECTED=()
+            [[ "$result" == "0" ]] && { printf '\n'; return 0; }
+            for i in $result; do
+                [[ "$i" =~ ^[0-9]+$ ]] && (( i >= 1 && i <= ${#ADT_SETUP_ITEMS[@]} )) || die "Choose a listed number."
+                ADT_SETUP_SELECTED+=("${ADT_SETUP_ITEMS[$((i - 1))]}")
+            done
+        fi
+    fi
+    printf '%s\n' "${ADT_SETUP_SELECTED[*]}"
+}
+
+adt_step_selected() { [[ " $ADT_SELECTED_STEPS " == *" $1 "* ]]; }
+
+adt_pick_release_version() {
+    local component="$1" preferred="$2" json choice index
+    local -a versions=()
+    [[ "$INTERACTIVE" == "1" ]] || { printf '%s\n' "$preferred"; return; }
+    json="$(get_versions_json)"
+    while IFS= read -r choice; do [[ -n "$choice" ]] && versions+=("$choice"); done < <(python3 -c '
+import json,sys
+d=json.load(sys.stdin)
+for v,item in d.get(sys.argv[1],{}).items():
+    if item.get("status")=="verified" and item.get("release"):
+        print(v)
+' "$component" <<<"$json")
+    (( ${#versions[@]} > 0 )) || { printf '%s\n' "$preferred"; return; }
+    printf '\n  %sAvailable %s releases%s\n' "$CYAN" "$component" "$NC" >&2
+    for index in "${!versions[@]}"; do
+        local marker=""
+        [[ "${versions[$index]}" == "$preferred" ]] && marker=" (recommended)"
+        printf '    %d) %s%s\n' "$((index + 1))" "${versions[$index]}" "$marker" >&2
+    done
+    read -rp "  Version number [default: $preferred]: " choice || choice=""
+    [[ -z "$choice" ]] && { printf '%s\n' "$preferred"; return; }
+    [[ "$choice" =~ ^[0-9]+$ ]] && (( choice >= 1 && choice <= ${#versions[@]} )) || die "Choose a listed version number."
+    printf '%s\n' "${versions[$((choice - 1))]}"
+}
+
 # Full automatic setup for a fresh ARM64 device:
 # device check -> host deps -> SDK tools -> shims -> Google packages -> env -> verify -> guide
 cmd_bootstrap() {
@@ -2258,77 +2365,77 @@ cmd_bootstrap() {
     done
 
     if [[ "$INTERACTIVE" == "1" ]]; then
-        echo ""
-        echo "  ADT guided setup. I will check this device, then ask your permission"
-        echo "  before each step. Unattended mode: ./setup.sh bootstrap --auto"
+        echo "  Guided setup. Review the components, then toggle only what you need."
+        echo "  Unattended mode: ./setup.sh bootstrap --auto"
     fi
 
     # Phase 0 — automatic device/environment check (always read-only)
     detect_environment
 
+    local bt_version pt_version ndk_default
+    bt_version="$(get_bootstrap_version build-tools)" || die "No verified build-tools version in versions.json"
+    pt_version="$(get_bootstrap_version platform-tools)" || die "No verified platform-tools version in versions.json"
+    ndk_default="$(get_bootstrap_ndk)" || ndk_default=""
+    local ADT_SELECTED_STEPS
+    ADT_SELECTED_STEPS="$(adt_choose_setup_components "$bt_version" "$pt_version" "${ndk_default:-not registered}")"
+    if adt_step_selected build-tools; then bt_version="$(adt_pick_release_version build-tools "$bt_version")"; fi
+    if adt_step_selected platform-tools; then pt_version="$(adt_pick_release_version platform-tools "$pt_version")"; fi
+
     # Phase 1 — host dependencies
     header "1/7  Host dependencies"
-    if confirm "Install missing host packages automatically (apt/dnf, needs root or sudo)?"; then
+    if adt_step_selected host; then
         ensure_commands git curl tar unzip python3 java cmake ninja llvm-strip
     else
-        warn "Skipped — later steps will stop on any missing tool"
+        info "Skipped by selection"
     fi
 
     # Phase 2 — SDK location
-    detect_sdk_root
-
     # Phase 3 — native tools (prefers checked-in, SHA256-verified artifacts; offline)
     header "2/7  build-tools + platform-tools"
-    local bt_version pt_version
-    bt_version="$(get_bootstrap_version build-tools)"    || die "No verified build-tools version in versions.json"
-    pt_version="$(get_bootstrap_version platform-tools)" || die "No verified platform-tools version in versions.json"
-    if confirm "Install build-tools ${bt_version} and platform-tools ${pt_version} (offline, validated artifacts)?"; then
+    if adt_step_selected build-tools; then
         cmd_install_build_tools "$bt_version"
+    else
+        info "Skipped by selection"
+    fi
+    if adt_step_selected platform-tools; then
         cmd_install_platform_tools "$pt_version"
     else
-        warn "Skipped native tools — SDK will be incomplete"
+        info "Skipped by selection"
     fi
 
     # Phase 4 — shims (device-tested NDK version preferred)
     header "3/7  NDK + CMake shims"
-    local ndk_default ndk_version=""
-    ndk_default="$(get_bootstrap_ndk)" || ndk_default=""
-    if [[ -n "$ndk_default" ]]; then
-        if [[ "$INTERACTIVE" == "1" ]]; then
-            local answer
-            read -rp "  Create NDK shim for ${ndk_default} (device-tested)? [Y/n, or type another version] " answer
-            case "$answer" in
-                ""|[Yy]*) ndk_version="$ndk_default" ;;
-                [Nn]*)    ndk_version="" ;;
-                *)        ndk_version="$answer" ;;
-            esac
-        else
-            ndk_version="$ndk_default"
-        fi
-        if [[ -n "$ndk_version" ]]; then
-            cmd_install_ndk "$ndk_version"
-        else
-            warn "Skipped NDK/CMake shims"
-        fi
+    local ndk_version=""
+    if [[ -n "$ndk_default" ]] && adt_step_selected ndk; then
+        cmd_install_ndk "$ndk_default"
     else
-        warn "No NDK shim version registered — skipping"
+        info "NDK shim skipped or no verified registry version is available"
+    fi
+    if adt_step_selected cmake; then
+        local cmake_version
+        cmake_version="$(python3 -c 'import json,sys; d=json.load(sys.stdin); print(next((v for v,x in d.get("cmake",{}).items() if x.get("status")=="shim"), "3.22.1"))' <<<"$(get_versions_json)")"
+        cmd_install_cmake "$cmake_version"
+    else
+        info "CMake shim skipped by selection"
     fi
 
     # Phase 5 — Google packages (network)
     header "4/7  sdkmanager + Android platform"
-    if confirm "Download Android cmdline-tools + platform android-35 from Google (network needed)?"; then
+    if adt_step_selected cmdline || adt_step_selected platform; then
         cmd_install_cmd_tools
-        cmd_install_platforms android-35
+    fi
+    if adt_step_selected platform; then
+        cmd_install_platforms android-36
     else
-        warn "Skipped Google packages — add later with: $0 install-cmd-tools && $0 install-platforms android-35"
+        info "Android platform skipped; install later with: $0 install-cmd-tools && $0 install-platforms android-36"
     fi
 
     # Phase 6 — persistent shell environment
     header "5/7  Shell environment"
-    if confirm "Write ANDROID_HOME/PATH into ~/.bashrc (small marked block, easy to remove)?"; then
+    if adt_step_selected env; then
         write_env_block
     else
-        info "Skipped — run '$0 setup-env' any time"
+        info "Skipped by selection — run '$0 setup-env' any time"
     fi
 
     # Verification + final guide
@@ -2337,10 +2444,10 @@ cmd_bootstrap() {
 
     # Final — temporary cleanup (temp dirs, sdkmanager temp, apt cache)
     header "7/7  Cleanup"
-    if confirm "Remove temporary files and package-cache leftovers?"; then
+    if adt_step_selected cleanup; then
         cmd_cleanup
     else
-        info "Skipped — run '$0 cleanup' any time"
+        info "Skipped by selection — run '$0 cleanup' any time"
     fi
     print_post_install_guide
 }
