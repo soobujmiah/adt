@@ -600,158 +600,164 @@ pre.cmd .g { color: rgba(228, 226, 223, 0.55); }
   .site-footer .row span:last-child { text-align: left; }
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   GEOGRAPHIC LAYER + TECHNICAL ATMOSPHERE
-
-   The same visual language the portfolio uses, implemented for this
-   site on ADT's own committed data (assets/geo/adt-geo.js) by
-   assets/js/adt-map.js. Nothing is fetched from another site at
-   runtime and no other repository is a dependency.
-
-   Layer order, back to front:
-     .geomap            fixed background geography (this block)
-     .site-header       z-index 20 (existing)
-     main / footer      z-index 1, so content always wins
-
-   Motion rules: geometry never animates in CSS — the camera flies by
-   rewriting the SVG viewBox, and the only moving parts are the signal
-   packets. Both stop under prefers-reduced-motion.
-   ═══════════════════════════════════════════════════════════════ */
-
+/* ── Android app workshop homepage ── */
 .sr-only {
-  position: absolute;
-  width: 1px; height: 1px;
-  padding: 0; margin: -1px;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  white-space: nowrap;
-  border: 0;
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
 }
-
-/* content sits above the background geography */
 main, .site-footer { position: relative; z-index: 1; }
-
-.geomap {
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  overflow: hidden;
-  pointer-events: none;
-  /* the deep-green ground the portfolio uses, re-composed for this page */
-  background:
-    radial-gradient(70% 55% at 78% 6%, rgba(34, 197, 94, 0.07), transparent 68%),
-    radial-gradient(60% 50% at 12% 88%, rgba(16, 185, 129, 0.05), transparent 70%),
-    linear-gradient(180deg, #050507 0%, #060807 55%, #050507 100%);
+.wrap { max-width: 1180px; }
+.site-header { background: rgba(5, 5, 7, .9); border-bottom-color: var(--border); }
+.site-header .wrap { min-height: 68px; height: auto; gap: 22px; }
+.brand .tag { color: var(--muted); border-color: var(--border-2); letter-spacing: .08em; }
+.site-nav { gap: clamp(10px, 1.6vw, 23px); }
+.site-nav a { color: var(--muted); }
+.site-nav a.nav-cta { color: var(--accent-bright); border: 1px solid rgba(74, 222, 128, .34); border-radius: 8px; padding: 7px 11px; background: rgba(34, 197, 94, .07); }
+.hero {
+  display: grid; grid-template-columns: minmax(0, 1.04fr) minmax(0, .96fr);
+  gap: 22px; align-items: center; min-height: 570px; padding: 54px 0 48px;
+  position: relative; isolation: isolate;
 }
-
-.geomap-svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.9;
-  /* the layer is painted by script; it fades in once frames exist */
-  transition: opacity 1.4s var(--ease);
+.hero::before {
+  content: ''; position: absolute; z-index: -1; inset: 0 -24px; pointer-events: none;
+  background: radial-gradient(ellipse 54% 75% at 78% 36%, rgba(34,197,94,.10), transparent 72%),
+              radial-gradient(ellipse 37% 52% at 85% 58%, rgba(34,211,238,.055), transparent 74%),
+              linear-gradient(rgba(228,226,223,.018) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(228,226,223,.018) 1px, transparent 1px);
+  background-size: auto, auto, 48px 48px, 48px 48px;
+  mask-image: linear-gradient(90deg, transparent, #000 38%, #000 100%);
 }
-
-/* L1 — land and countries. Real 1:110m geometry: every coast keeps
-   its shape, and the origin country is the only territory that is
-   ever lit. Inactive countries stay subdued. */
-.geo-land {
-  fill: rgba(148, 163, 184, 0.035);
-  stroke: rgba(148, 163, 184, 0.06);
-  stroke-width: 0.5;
-  vector-effect: non-scaling-stroke;
+.hero-copy { min-width: 0; position: relative; z-index: 2; padding: 0 0 12px; }
+.hero .eyebrow {
+  display: inline-flex; align-items: center; gap: 9px; margin: 0 0 20px;
+  padding: 7px 10px; border: 1px solid rgba(74,222,128,.24); border-radius: 999px;
+  background: rgba(34,197,94,.07); color: #94e8a9; font: 10px var(--font-mono);
+  letter-spacing: .12em; text-transform: uppercase;
 }
-
-.geo-country {
-  fill: rgba(148, 163, 184, 0.03);
-  stroke: rgba(148, 163, 184, 0.09);
-  stroke-width: 0.5;
-  stroke-linejoin: round;
-  vector-effect: non-scaling-stroke;
-  transition: fill 0.8s var(--ease), stroke 0.8s var(--ease);
+.signal { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 12px var(--accent); flex: none; }
+.hero h1 {
+  max-width: 12ch; margin: 0 0 20px; font: 680 clamp(2.8rem, 6vw, 5rem)/.99 var(--font-display);
+  letter-spacing: -.075em;
 }
-
-/* the origin country — the one place this site's evidence names */
-.geo-country-origin {
-  fill: rgba(34, 197, 94, 0.06);
-  stroke: rgba(74, 222, 128, 0.28);
+.hero h1 em { color: var(--accent-bright); font-style: normal; }
+html[lang='bn'] .hero h1 { max-width: 15ch; font-family: var(--font-bengali); font-size: clamp(2.45rem, 5.7vw, 4.25rem); line-height: 1.2; letter-spacing: 0; }
+.hero .lede { max-width: 56ch; margin: 0; color: rgba(228,226,223,.72); font-size: 15px; line-height: 1.8; }
+.hero .actions { margin-top: 25px; gap: 10px; }
+.hero .btn { min-height: 44px; padding: 11px 16px; border-radius: 9px; font-size: 12.5px; font-weight: 650; }
+.hero .btn.primary { background: var(--accent); color: #061109; border-color: var(--accent); box-shadow: 0 8px 28px rgba(34,197,94,.16); }
+.hero-proofline { display: flex; align-items: center; flex-wrap: wrap; gap: 9px; margin: 24px 0 0; color: var(--muted); font: 10px var(--font-mono); }
+.hero-proofline > span { color: var(--accent-bright); font-size: 14px; }
+.hero-proofline strong { color: #c6e8cb; font-weight: 500; }
+.hero-proofline i { color: #555b56; font-style: normal; }
+.hero-visual { min-width: 0; height: 510px; position: relative; z-index: 1; }
+.visual-halo { position: absolute; width: 92%; aspect-ratio: 1; top: 6%; left: 5%; border-radius: 50%; background: radial-gradient(circle, rgba(34,197,94,.16), rgba(34,211,238,.05) 43%, transparent 70%); filter: blur(12px); }
+.visual-orbit { position: absolute; width: 112%; height: 61%; top: 23%; left: -5%; border: 1px solid rgba(74,222,128,.13); border-radius: 50%; transform: rotate(-18deg); }
+.visual-orbit::after { content: ''; position: absolute; width: 7px; height: 7px; top: 15%; right: 16%; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 18px var(--cyan); }
+.tool-float { position: absolute; z-index: 2; display: flex; align-items: center; gap: 9px; min-width: 142px; padding: 10px 12px; border: 1px solid rgba(74,222,128,.22); border-radius: 11px; background: rgba(9,15,11,.94); box-shadow: 0 18px 42px rgba(0,0,0,.38); backdrop-filter: blur(12px); }
+.tool-float > span:last-child { display: grid; gap: 3px; }
+.tool-float b { color: #e5f2e7; font: 9px var(--font-mono); letter-spacing: .06em; }
+.tool-float small { color: #8c9b90; font: 6px var(--font-mono); letter-spacing: .09em; }
+.tool-glyph { display: grid; place-items: center; width: 27px; height: 27px; border: 1px solid rgba(74,222,128,.25); border-radius: 8px; background: rgba(34,197,94,.1); color: var(--accent-bright); font: 700 10px var(--font-mono); }
+.tool-aapt { top: 19%; left: 0; transform: rotate(-5deg); }
+.tool-adb { top: 47%; right: -2%; transform: rotate(4deg); }
+.tool-arm { top: 72%; left: 8%; transform: rotate(3deg); }
+.visual-caption { position: absolute; top: 1%; right: 1%; color: var(--faint); font: 8px var(--font-mono); letter-spacing: .1em; writing-mode: vertical-rl; }
+.device-frame {
+  position: absolute; z-index: 1; top: 5%; left: 50%; width: 230px; height: 438px; padding: 8px;
+  border: 1px solid #606760; border-radius: 34px; transform: translateX(-24%) rotate(5deg);
+  background: linear-gradient(140deg,#373c38,#101311 30%,#262b27);
+  box-shadow: 0 32px 80px rgba(0,0,0,.72), 0 0 0 1px rgba(255,255,255,.04), inset 0 1px 2px rgba(255,255,255,.35);
 }
-
-.geomap[data-state='region'] .geo-country-origin,
-.geomap[data-state='device'] .geo-country-origin {
-  fill: rgba(34, 197, 94, 0.17);
-  stroke: rgba(74, 222, 128, 0.55);
-  stroke-width: 1.1;
+.device-screen { height: 100%; position: relative; overflow: hidden; border: 1px solid #080b09; border-radius: 27px; background: #101512; color: #f1f4f0; font-family: var(--font-body); }
+.device-island { position: absolute; z-index: 2; top: 8px; left: 50%; width: 64px; height: 17px; border-radius: 20px; transform: translateX(-50%); background: #060807; }
+.app-status { height: 34px; display: flex; justify-content: space-between; padding: 10px 13px 0; color: #97a59a; font: 6px var(--font-mono); letter-spacing: .04em; }
+.app-status span:last-child { color: #91e6a2; }
+.ide-head { display: flex; align-items: center; gap: 7px; padding: 12px 13px 10px; border-bottom: 1px solid rgba(255,255,255,.07); }
+.ide-head strong { color: #eff5ef; font-size: 10px; }
+.ide-head small { margin-left: auto; color: #7d8a80; font: 5px var(--font-mono); letter-spacing: .05em; }
+.ide-android { display: grid; place-items: center; width: 20px; height: 20px; border-radius: 6px 6px 8px 8px; background: #8fe69d; color: #102d17; font: 800 10px var(--font-display); }
+.ide-tabs { display: flex; align-items: center; gap: 11px; height: 29px; padding: 0 12px; border-bottom: 1px solid rgba(255,255,255,.07); color: #849087; font: 6px var(--font-mono); }
+.ide-tabs .active { align-self: stretch; display: flex; align-items: center; border-bottom: 1px solid #75db8a; color: #dce8de; }
+.ide-code { display: grid; gap: 8px; padding: 15px 10px 15px 8px; color: #d0ddd2; font: 6.5px/1.45 var(--font-mono); }
+.ide-code > div { display: grid; grid-template-columns: 23px 1fr; white-space: nowrap; }
+.ide-code i { color: #657369; font-style: normal; text-align: right; padding-right: 8px; }
+.ide-code b { color: #8de39c; font-weight: 500; }
+.ide-code em { color: #74cfe0; font-style: normal; }
+.ide-code strong { color: #e4c582; font-weight: 500; }
+.build-console { display: grid; gap: 6px; margin: 0 9px 10px; padding: 9px; border: 1px solid rgba(255,255,255,.08); border-radius: 8px; background: #0b100d; }
+.build-console span { color: #829087; font: 5px var(--font-mono); letter-spacing: .1em; }
+.build-console b { color: #8de39c; font: 7px var(--font-mono); }
+.build-console small { color: #a4b0a7; font: 5px var(--font-mono); }
+.ide-bottom { position: absolute; right: 0; bottom: 0; left: 0; display: flex; justify-content: space-between; align-items: center; height: 25px; padding: 0 10px; border-top: 1px solid rgba(255,255,255,.08); background: #111712; color: #9eaaa0; font: 5px var(--font-mono); }
+.ide-bottom span:first-child { color: #8de39c; }
+.workflow-preview {
+  position: absolute; z-index: 2; left: 0; bottom: 3%; width: 66%; padding: 13px 15px 11px;
+  border: 1px solid rgba(255,255,255,.13); border-radius: 13px; background: rgba(12,15,13,.95);
+  box-shadow: 0 20px 45px rgba(0,0,0,.42); backdrop-filter: blur(16px);
 }
+.workflow-preview-head { display: flex; justify-content: space-between; gap: 8px; color: #dedfdb; font: 8px var(--font-mono); }
+.workflow-preview-head b { color: #8fdf9c; font-size: 7px; font-weight: 500; }
+.workflow-progress { display: flex; gap: 5px; margin-top: 12px; }
+.workflow-progress i { height: 4px; flex: 1; border-radius: 4px; background: #34523b; }
+.workflow-progress i:first-child { background: var(--accent); }
+.workflow-labels { display: flex; justify-content: space-between; margin-top: 6px; color: #818780; font: 6px var(--font-mono); }
+.artifact-preview { position: absolute; z-index: 3; right: 0; bottom: 14%; display: flex; align-items: center; gap: 8px; width: 48%; padding: 10px; border: 1px solid rgba(34,211,238,.24); border-radius: 12px; background: rgba(8,18,18,.96); box-shadow: 0 16px 40px rgba(0,0,0,.45); transform: rotate(-4deg); }
+.artifact-icon { display: grid; place-items: center; width: 26px; height: 26px; flex: none; border-radius: 8px; background: rgba(34,211,238,.13); color: var(--cyan); font: 8px var(--font-mono); }
+.artifact-name { min-width: 0; color: #e4e2df; font-size: 8px; font-weight: 650; }
+.artifact-name small { display: block; margin-top: 3px; color: #8b9490; font: 6px var(--font-mono); }
+.artifact-preview > b { margin-left: auto; color: var(--cyan); }
+.proof-strip { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); margin: 0 -24px 26px; padding: 21px 24px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: rgba(255,255,255,.015); }
+.proof-item { min-width: 0; padding: 0 18px; border-left: 1px solid var(--border); }
+.proof-item:first-child { padding-left: 0; border-left: 0; }
+.proof-item b { display: block; margin-bottom: 6px; color: #d9e9dc; font: 10px var(--font-mono); letter-spacing: .04em; }
+.proof-item span { color: var(--muted); font-size: 11px; }
+main > section:not(.hero):not(.proof-strip) { padding-top: 58px; padding-bottom: 8px; scroll-margin-top: 76px; }
+main > section:not(.hero):not(.proof-strip) h2 { font-size: clamp(1.5rem,3.2vw,2rem); letter-spacing: -.035em; }
+.card { background: linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.012)); transition: border-color .2s ease, transform .2s ease; }
+.card:hover { border-color: rgba(74,222,128,.24); transform: translateY(-2px); }
+.pipeline .stage { background: linear-gradient(145deg,rgba(255,255,255,.035),rgba(255,255,255,.012)); }
+.pipeline .stage.hot { border-color: rgba(34,211,238,.4); background: var(--cyan-soft); }
+.site-footer { margin-top: 62px; }
 
-.geo-focus { pointer-events: none; }
-
-/* origin marker: halo pulse is opacity-only, and it stops when the
-   map is off-screen or the tab is hidden */
-.geo-halo { fill: none; stroke: rgba(34, 197, 94, 0.55); stroke-width: 0.6; animation: adtOriginPulse 5.4s ease-in-out infinite; }
-.geo-ring { fill: none; stroke: rgba(74, 222, 128, 0.5); stroke-width: 0.8; }
-.geo-core { fill: var(--accent-bright); }
-
-@keyframes adtOriginPulse {
-  0%, 100% { opacity: 0.12; }
-  50%      { opacity: 0.44; }
+@media (min-width: 801px) and (max-width: 1100px) {
+  .hero { grid-template-columns: minmax(0,1.05fr) minmax(0,.95fr); gap: 14px; }
+  .hero-visual { transform: scale(.82); transform-origin: center; }
+  .hero h1 { font-size: clamp(2.55rem,5vw,3.5rem); }
 }
-
-.geomap[data-paused='true'] .geo-halo { animation-play-state: paused; }
-
-/* L3 — data flow. The arcs carry a signal away from the origin into
-   the page; they are directional, not destinations, and no place is
-   claimed at their far end. */
-.geo-arc {
-  fill: none;
-  stroke: rgba(234, 179, 8, 0.14);
-  stroke-width: 0.7;
-  stroke-dasharray: 3 7;
-  vector-effect: non-scaling-stroke;
+@media (max-width: 800px) {
+  .wrap { padding-right: 20px; padding-left: 20px; }
+  .site-header .wrap { gap: 12px; }
+  .site-nav { max-width: calc(100vw - 180px); gap: 15px; }
+  .site-nav a[href='#what'], .site-nav a[href='#ternux'] { display: none; }
+  .hero { grid-template-columns: minmax(0,1fr); min-height: 0; gap: 0; padding: 52px 0 28px; }
+  .hero-copy { max-width: 620px; }
+  .hero h1 { max-width: 13ch; font-size: clamp(3rem,9vw,4.6rem); }
+  .hero-visual { width: min(100%,540px); height: 470px; margin: 8px auto 0; }
+  .proof-strip { margin-right: -20px; margin-left: -20px; padding-right: 20px; padding-left: 20px; }
+  main > section:not(.hero):not(.proof-strip) { padding-top: 48px; }
 }
-.geo-arc--primary { stroke: rgba(34, 197, 94, 0.22); }
-.geo-packet { fill: rgba(74, 222, 128, 0.7); }
-
-/* L4 — technical vector motifs: screen-space, decorative, very low
-   ink. ADT's own set: a toolchain trace, a die with pins, a waveform
-   fragment, a device with signal, coordinate ticks, and the pipeline
-   rail (build → sign → install → verify). */
-.geomap-tech {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.85;
-}
-
-.geo-tech path, .geo-tech circle, .geo-tech rect {
-  fill: none;
-  stroke: rgba(148, 163, 184, 0.16);
-  stroke-width: 1;
-  vector-effect: non-scaling-stroke;
-}
-.geo-tech .tech-dot { fill: rgba(74, 222, 128, 0.5); stroke: none; }
-.geo-tech .tech-accent { stroke: rgba(34, 197, 94, 0.32); }
-
-/* the pipeline rail: a quiet line under the content, with packets
-   travelling build → sign → install → verify */
-.geo-rail { stroke: rgba(148, 163, 184, 0.14); stroke-dasharray: 2 6; }
-.geo-rail-packet { fill: rgba(74, 222, 128, 0.55); }
-
-/* the map fades in once the script has frames to show, so a no-JS or
-   slow-JS visitor never sees a half-drawn layer */
-.geomap[data-cam=''] .geomap-svg { opacity: 0; }
-
-@media (max-width: 640px) {
-  .geomap-svg { opacity: 0.72; }
-  .geomap-tech { opacity: 0.6; }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  /* no packets, no halo pulse, no camera flight (the script also
-     declines to animate) — the geography stays, static */
-  .geo-packet, .geo-rail-packet, .geo-halo { display: none; }
-  .geo-country { transition: none; }
+@media (max-width: 560px) {
+  .wrap { padding-right: 16px; padding-left: 16px; }
+  .site-header .wrap { min-height: 62px; }
+  .brand .tag { display: none; }
+  .site-nav { max-width: calc(100vw - 115px); gap: 13px; }
+  .site-nav a[href='#workflows'], .site-nav a[href='#evidence'] { display: none; }
+  .site-nav a.nav-cta { padding: 6px 8px; }
+  .lang-switch button { padding: 4px 7px; font-size: 11px; }
+  .hero { padding-top: 42px; }
+  .hero h1 { max-width: 11ch; font-size: clamp(2.7rem,12vw,3.6rem); }
+  html[lang='bn'] .hero h1 { max-width: 14ch; font-size: clamp(2.3rem,9.8vw,3rem); }
+  .hero .lede { font-size: 14px; }
+  .hero-proofline { gap: 6px; font-size: 8px; }
+  .hero-visual { height: 430px; margin-right: -10px; margin-left: -10px; width: calc(100% + 20px); }
+  .device-frame { width: 205px; height: 400px; top: 3%; left: 50%; transform: translateX(-20%) rotate(4deg); }
+  .workflow-preview { width: 66%; left: 0; bottom: 0; padding: 11px; }
+  .artifact-preview { width: 48%; right: 0; bottom: 13%; }
+  .proof-strip { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px 0; margin-right: -16px; margin-left: -16px; padding: 18px 16px; }
+  .proof-item { padding: 0 10px; }
+  .proof-item:nth-child(odd) { padding-left: 0; border-left: 0; }
+  .proof-item b { font-size: 9px; }
+  .proof-item span { font-size: 10px; }
+  main > section:not(.hero):not(.proof-strip) { padding-top: 40px; }
+  .site-footer { margin-top: 42px; }
 }

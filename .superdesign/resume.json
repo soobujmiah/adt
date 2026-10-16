@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "targets": {
+    "/": {
+      "targetKind": "existing-ui",
+      "projectId": "d7616c87-9a0e-46ed-89f2-b386819ebb87",
+      "activeDraftId": "ce59aa49-88cb-4df8-98a5-c3ee55fff533",
+      "designSystemPath": ".superdesign/init/theme.md",
+      "contextFiles": [
+        "index.html",
+        "assets/css/adt.css",
+        ".superdesign/init/theme.md",
+        ".superdesign/init/pages.md"
+      ],
+      "fingerprints": {
+        "index.html": "8784d092da9ddbb41c347a17f3161844429204a5c65ff00af97e9b614748425b",
+        "assets/css/adt.css": "563633a875d928b4ea24e62368ef8cd60d3997320d762fe05b470af2167bb889",
+        ".superdesign/init/theme.md": "12eea0fb27ad5a50eef32f818d1d74a5b680763663a2db0bbcd8a7104595dc34",
+        ".superdesign/init/pages.md": "840504a958393e0f8498003182a1e1194d6d51faf8c78c0c4094b5bb91ef6dcc"
+      },
+      "drafts": {
+        "ce59aa49-88cb-4df8-98a5-c3ee55fff533": {
+          "title": "ADT — Android App Workshop",
+          "visualDirection": "Ternux-matched dark emerald/cyan Android development workshop with a floating ARM64 phone IDE, build tools and APK verification graphics",
+          "currentVersion": 3
+        }
+      },
+      "updatedAt": "2026-10-16T04:40:00Z"
+    }
+  },
+  "updatedAt": "2026-10-16T04:53:00Z"
+}
