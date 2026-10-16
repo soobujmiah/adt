@@ -777,8 +777,15 @@ main > section:not(.hero):not(.proof-strip) h2 { font-size: clamp(1.5rem,3.2vw,2
 }
 @media (max-width: 800px) {
   .wrap { padding-right: 20px; padding-left: 20px; }
+  .brand { flex: none; }
+  .brand small { display: none; }
+  .site-header .wrap { justify-content: space-between; }
+  .site-nav { max-width: none; flex: none; overflow: visible; }
+  .site-nav a[href^='#'], .site-nav a[href='/adt/docs/'] { display: none; }
+  .tool-adb { right: 2%; }
+  .artifact-preview { right: 2%; }
   .site-header .wrap { min-height: 68px; gap: 12px; }
-  .site-nav { max-width: calc(100vw - 180px); gap: 15px; }
+  .site-nav { max-width: none; gap: 15px; }
   .site-nav a[href='#what'], .site-nav a[href='#ternux'] { display: none; }
   .hero { grid-template-columns: minmax(0,1fr); min-height: 0; gap: 0; padding: 52px 0 28px; }
   .hero-copy { max-width: 620px; }
