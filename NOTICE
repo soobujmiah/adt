@@ -1,11 +1,26 @@
 ADT — ARM64 Android Development Toolchain
 Copyright (c) 2026 Sobuj Miah (@soobujmiah)
 
+Required Notice: Copyright (c) 2026 Sobuj Miah (https://github.com/soobujmiah/adt)
+
+ADT first-party documentation and website material authored by Sobuj Miah is
+offered under PolyForm Noncommercial License 1.0.0 plus the project-specific
+commercial-use condition. AOSP-derived build files,
+compiled tools, fonts, and contributor material retain their own terms; see
+LICENSE-SCOPE.md and THIRD_PARTY_NOTICES.md.
+The project-specific company-use condition for scoped first-party material is in
+LICENSE-COMMERCIAL-ADDENDUM.md.
+
+The tools/repo_knowledge utility was originally developed by Sobuj Miah for
+https://github.com/soobujmiah/skb and is included here as first-party code.
+
 This product includes software developed by Sobuj Miah (@soobujmiah)
 (https://github.com/soobujmiah/adt).
 
 This project adapts build logic originally developed by Lzhiyong
 (https://github.com/lzhiyong/android-sdk-tools), licensed under the Apache License 2.0.
+The Linux/glibc adaptation lineage also acknowledges
+https://github.com/hamza72x/android-sdk-linux-arm64 (Apache 2.0 per its upstream README).
 
 This product compiles official Android Open Source Project (AOSP) source code
 (https://android.googlesource.com), predominantly licensed under the Apache License 2.0,
@@ -16,3 +31,6 @@ This product bundles font software redistributed under the SIL Open Font License
 - JetBrains Mono (Copyright 2020 JetBrains s.r.o.)
 - Noto Sans Bengali (Copyright 2015 Google Inc.)
 For full font license terms, see assets/fonts/LICENSES.md.
+
+The generated world-map data uses Natural Earth 1:110m public-domain geography;
+see tools/make-geo.py for provenance.

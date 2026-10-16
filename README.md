@@ -10,7 +10,7 @@
 [![Release](https://img.shields.io/badge/release-v37.0.0-22c55e?style=flat-square)](https://github.com/soobujmiah/adt/releases)
 [![Platform](https://img.shields.io/badge/platform-Linux%20ARM64-5bd8f5?style=flat-square)](https://soobujmiah.github.io/adt/)
 [![Device-verified](https://img.shields.io/badge/device--verified-Android%2016%20%2F%20API%2036-f2bd62?style=flat-square)](docs/REAL_DEVICE_BUILD_VALIDATION.md)
-[![License](https://img.shields.io/badge/license-Apache--2.0-a69bff?style=flat-square)](LICENSE)
+[![License](https://img.shields.io/badge/license-PolyForm--NC--plus--terms-a69bff?style=flat-square)](LICENSE-SCOPE.md)
 [![SEO audited](https://img.shields.io/badge/SEO-audited%202026--09--16-22c55e?style=flat-square)](docs/SEO.md)
 
 [Website](https://soobujmiah.github.io/adt/) · [Documentation](https://soobujmiah.github.io/adt/docs/) · [Quick start](#quick-start) · [Commands](COMMANDS.md) · [Evidence](docs/REAL_DEVICE_BUILD_VALIDATION.md) · [Releases](https://github.com/soobujmiah/adt/releases)
@@ -131,7 +131,7 @@ ADT is the canonical project for this ARM64 Android development-tooling work. Hi
 
 ## License & Trademarks
 
-- **Code & Toolchain:** Licensed under the Apache License, Version 2.0. See [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE).
-- **Trademarks & Brand Identity:** The ADT and TERNUX project names, logos, and visual branding elements are reserved properties of Sobuj Miah and are not licensed under Apache 2.0. See [`TRADEMARKS.md`](TRADEMARKS.md).
-- **Upstream Attributions:** ADT's build system is adapted from [lzhiyong/android-sdk-tools](https://github.com/lzhiyong/android-sdk-tools) (Apache 2.0); the built tools compile official AOSP source ([`repos.json`](repos.json)), predominantly Apache 2.0 with permissively licensed third-party components under `external/`, as AOSP aggregates.
-- **Fonts:** Space Grotesk and JetBrains Mono are licensed under the SIL Open Font License 1.1 (see `assets/fonts/LICENSES.md`).
+- **Sobuj's scoped original documentation, website, artwork, and standalone helpers (including `tools/repo_knowledge/`):** PolyForm Noncommercial 1.0.0 plus the project-specific company-use condition. Personal and other noncommercial use and modification are allowed; business-capacity use needs a separate written commercial agreement, with any royalty negotiated separately. See [`LICENSE`](LICENSE), [`LICENSE-SCOPE.md`](LICENSE-SCOPE.md), and [`LICENSE-COMMERCIAL-ADDENDUM.md`](LICENSE-COMMERCIAL-ADDENDUM.md).
+- **Upstream-derived build files and compiled tools:** retain their upstream licenses, including Apache-2.0; see [`LICENSE-APACHE-2.0`](LICENSE-APACHE-2.0), [`NOTICE`](NOTICE), and [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md). The release workflow bundles source license files. Existing checked-in archives predate that fix and are marked legacy in the third-party notice.
+- **Contributed files:** the documented `katiusu` contributions remain under their existing Apache-2.0 grant; see [`LICENSE-SCOPE.md`](LICENSE-SCOPE.md).
+- **Fonts and brand:** fonts retain SIL OFL 1.1 (`assets/fonts/LICENSES.md`); ADT/TERNUX names and marks remain governed separately by [`TRADEMARKS.md`](TRADEMARKS.md).

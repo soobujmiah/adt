@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# Copyright (c) 2026 Sobuj Miah
+# PolyForm Noncommercial 1.0.0 plus the project-specific terms in LICENSE-SCOPE.md.
 # =============================================================================
 #  Android SDK ARM64 (ADT) — one-line installer
 # =============================================================================

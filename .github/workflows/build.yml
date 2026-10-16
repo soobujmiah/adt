@@ -159,6 +159,7 @@ jobs:
             cp "${BUILD_BIN}/${bin}" "$BT_DIR/"
             chmod +x "$BT_DIR/${bin}"
           done
+          python3 tools/collect-license-bundle.py --source src --package "$BT_DIR"
           BT_TAR="build-tools-${VERSION}-linux-arm64.tar.gz"
           tar -czf "${STAGING}/${BT_TAR}" -C "$STAGING" build-tools
           echo "bt_tarball=${STAGING}/${BT_TAR}" >> "$GITHUB_OUTPUT"
@@ -171,6 +172,7 @@ jobs:
             cp "${BUILD_BIN}/${bin}" "$PT_DIR/"
             chmod +x "$PT_DIR/${bin}"
           done
+          python3 tools/collect-license-bundle.py --source src --package "$PT_DIR"
           PT_TAR="platform-tools-${VERSION}-linux-arm64.tar.gz"
           tar -czf "${STAGING}/${PT_TAR}" -C "$STAGING" platform-tools
           echo "pt_tarball=${STAGING}/${PT_TAR}" >> "$GITHUB_OUTPUT"
@@ -188,8 +190,27 @@ jobs:
             cp "${BUILD_BIN}/veridex" "$ALL_DIR/"
             chmod +x "$ALL_DIR/veridex"
           fi
+          python3 tools/collect-license-bundle.py --source src --package "$ALL_DIR"
           ALL_TAR="android-sdk-linux-arm64-v${VERSION}.tar.gz"
           tar -czf "${STAGING}/${ALL_TAR}" -C "$STAGING" bin
+          for package_dir in "$BT_DIR" "$PT_DIR" "$ALL_DIR"; do
+            if [[ "$package_dir" == "$BT_DIR" ]]; then
+              archive="${STAGING}/${BT_TAR}"
+            elif [[ "$package_dir" == "$PT_DIR" ]]; then
+              archive="${STAGING}/${PT_TAR}"
+            else
+              archive="${STAGING}/${ALL_TAR}"
+            fi
+            listing="${archive}.contents"
+            tar -tzf "$archive" > "$listing"
+            root_name="$(basename "$package_dir")"
+            for required in LICENSE LICENSE-APACHE-2.0 LICENSE-SCOPE.md LICENSE-COMMERCIAL-ADDENDUM.md NOTICE THIRD_PARTY_NOTICES.md upstream-licenses/INDEX.txt; do
+              grep -Fqx "${root_name}/${required}" "$listing"
+            done
+            while IFS= read -r license_path; do
+              grep -Fqx "${root_name}/upstream-licenses/${license_path}" "$listing"
+            done < "$package_dir/upstream-licenses/INDEX.txt"
+          done
           echo "all_tarball=${STAGING}/${ALL_TAR}" >> "$GITHUB_OUTPUT"
           echo "all_tarball_name=${ALL_TAR}" >> "$GITHUB_OUTPUT"
 
