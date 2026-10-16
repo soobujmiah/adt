@@ -2338,7 +2338,6 @@ adt_draw_setup_menu() {
     if (( inner >= 12 )); then
         adt_ui_logo_line '### ##_ ###' "$tick" "$inner"
         adt_ui_logo_line '#_# # # _#_' "$((tick + 2))" "$inner"
-        adt_ui_logo_line '# # ##_ _#_' "$((tick + 4))" "$inner"
     else
         adt_ui_center_line 'ADT' "${wave[$((tick % 4))]}" "$inner"
     fi
