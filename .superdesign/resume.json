@@ -13,8 +13,8 @@
         ".superdesign/init/pages.md"
       ],
       "fingerprints": {
-        "index.html": "8784d092da9ddbb41c347a17f3161844429204a5c65ff00af97e9b614748425b",
-        "assets/css/adt.css": "563633a875d928b4ea24e62368ef8cd60d3997320d762fe05b470af2167bb889",
+        "index.html": "af38b6f59a35944bf67a8051cf02e8605a46cdc267a88c605de1765224bb75fe",
+        "assets/css/adt.css": "68b90ba5af3602f9c2308829d880013a22b2dd883c28d403864508c6fd041904",
         ".superdesign/init/theme.md": "12eea0fb27ad5a50eef32f818d1d74a5b680763663a2db0bbcd8a7104595dc34",
         ".superdesign/init/pages.md": "840504a958393e0f8498003182a1e1194d6d51faf8c78c0c4094b5bb91ef6dcc"
       },
@@ -25,7 +25,7 @@
           "currentVersion": 3
         }
       },
-      "updatedAt": "2026-10-16T04:40:00Z"
+      "updatedAt": "2026-10-16T05:28:00Z"
     }
   },
   "updatedAt": "2026-10-16T04:53:00Z"
