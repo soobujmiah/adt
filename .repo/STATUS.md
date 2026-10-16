@@ -2,16 +2,16 @@
 # adt -- deterministic status
 
 - Repository: `soobujmiah/adt`
-- Generated at: 2026-10-16T06:16:19Z (by `tools/repo_knowledge collect`)
-- Version: `v35.0.2-84-g27df572`
-- Head: `27df572a59540bfb8ae6ed0b971675794db34cec` on `main` (2026-10-16T06:06:23Z)
+- Generated at: 2026-10-16T06:32:38Z (by `tools/repo_knowledge collect`)
+- Version: `v35.0.2-87-g20c1a09`
+- Head: `20c1a092500603098e956280ee98422a02d9e507` on `main` (2026-10-16T06:22:41Z)
 
 ## Build / test
 
-- Build: **passed** (run `38859339484`)
+- Build: **failed** (run `38860862814`)
 - Test: **passed** -- setup.sh unit tests (ci.yml)
 - Last successful build: `27df572a59540bfb8ae6ed0b971675794db34cec` at 2026-10-16T06:16:19Z
-- Last failed build: `2a9da2a310732675c4dea5dfdefcdce3754c29c5` at 2026-10-14T03:32:44Z
+- Last failed build: `20c1a092500603098e956280ee98422a02d9e507` at 2026-10-16T06:32:38Z
 
 ## Phases
 - Not configured (no `.repo/phases.yaml`).
@@ -20,4 +20,4 @@
 
 - Status: ok
 - Source: ci
-- Last synced at: 2026-10-16T06:16:19Z
+- Last synced at: 2026-10-16T06:32:38Z
