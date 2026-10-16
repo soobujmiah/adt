@@ -159,7 +159,7 @@ It fetches the repo into `~/adt` (git clone when git exists, otherwise the GitHu
 
 **Two full-setup modes** (from a clone):
 
-- **Guided (default):** `./setup.sh` or `./setup.sh bootstrap` — checks the device first, then asks permission before each step (host packages, tools, network downloads, shell config).
+- **Guided (default):** `./setup.sh` or `./setup.sh bootstrap` — checks the device, then shows an individual component checklist. Navigate with arrows or `j`/`k`, toggle with Space or a number, and continue with Enter. For selected Build Tools and Platform Tools, choose among verified release versions, with the recommended artifact preselected. API 36 and SDK Manager are separate choices.
 - **Automatic:** `./setup.sh bootstrap --auto` — start-to-finish unattended: device check, host dependency install, artifact-preferred tools, shims, sdkmanager + platform, environment, verification, final guide. Zero prompts.
 
 Both detect root/sudo automatically for system packages; with neither, the exact root command is printed and the run stops loudly instead of half-failing.

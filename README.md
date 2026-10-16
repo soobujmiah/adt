@@ -54,7 +54,7 @@ curl -fsSL https://raw.githubusercontent.com/soobujmiah/adt/main/install.sh | ba
 source ~/.bashrc
 ```
 
-From a clone, `./setup.sh` runs **guided** (checks the device first, asks before each step) and `./setup.sh bootstrap --auto` runs **unattended**. Both are idempotent — re-running updates an existing clone and skips what is already installed.
+From a clone, `./setup.sh` opens a guided, color-coded component checklist: use arrows or `j`/`k`, Space or a number to toggle, and Enter to continue. The list fits the terminal height and redraws when the terminal resizes (including when the Android keyboard opens). The checklist shows the recommended verified ADT release for Build Tools and Platform Tools (including ADB); when either is selected, choose among the verified release versions before installation. Optional shims, SDK Manager, API 36, environment setup, and cleanup are separate choices. `./setup.sh bootstrap --auto` keeps the full unattended setup. Both are idempotent — re-running updates an existing clone and skips what is already installed.
 
 Verify afterwards:
 
