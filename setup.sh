@@ -66,7 +66,30 @@ ok()      { echo -e "  ${GREEN}[DONE]${NC} $*"; }
 warn()    { echo -e "  ${YELLOW}[WARN]${NC} $*"; }
 err()     { echo -e "  ${RED}[FAIL]${NC} $*"; }
 die()     { err "$@"; exit 1; }
+ADT_UI_TICK=0
+adt_draw_phase_progress() {
+    local title="$1" rows cols width inner current total filled bar i color
+    [[ "$title" =~ ^([0-9]+)/7[[:space:]]+(.*)$ ]] || return 1
+    current="${BASH_REMATCH[1]}"; title="${BASH_REMATCH[2]}"; total=7
+    rows="$(tput lines 2>/dev/null || printf 24)"; cols="$(tput cols 2>/dev/null || printf 80)"
+    (( cols > 0 )) || cols=80
+    width=$((cols - 2)); (( width > 78 )) && width=78; (( width < 12 )) && width=12
+    inner=$((width - 4)); filled=$((inner * current / total)); (( filled > inner )) && filled=$inner
+    ((ADT_UI_TICK+=1)); color="$CYAN"; ((ADT_UI_TICK % 4 == 1)) && color="$GREEN"; ((ADT_UI_TICK % 4 == 2)) && color="$BLUE"; ((ADT_UI_TICK % 4 == 3)) && color="$YELLOW"
+    printf '\n  %s+%s+%s\n' "$CYAN" "$(printf '%*s' "$inner" '' | tr ' ' '-')" "$NC"
+    printf '  %s|%s %sSTEPS %s/%s%s |%s\n' "$CYAN" "$NC" "$color" "$current" "$total" "$NC" "$CYAN" "$NC"
+    printf '  %s|%s%s' "$CYAN" "$NC" "$color"
+    for ((i=0; i<inner; i++)); do if (( i < filled )); then printf '#'; else printf '-'; fi; done
+    printf '%s%s|%s\n' "$NC" "$CYAN" "$NC"
+    title="${title:0:$inner}"
+    printf '  %s|%s %b%-*s%s |%s\n' "$CYAN" "$NC" "$BOLD" "$((inner - 2))" "$title" "$NC" "$CYAN"
+    printf '  %s+%s+%s\n' "$CYAN" "$(printf '%*s' "$inner" '' | tr ' ' '-')" "$NC"
+    return 0
+}
 header()  {
+    if [[ "${ADT_GUIDED_UI:-0}" == "1" ]] && adt_draw_phase_progress "$*"; then
+        return 0
+    fi
     echo ""
     echo -e "  ${BOLD}== $* ==${NC}"
     printf '  %s------------------------------------------------------------%s\n' "$DIM" "$NC"
@@ -575,8 +598,20 @@ print_post_install_guide() {
     NDK / CMake    shims delegating to system tools
     cmdline-tools  sdkmanager   (Java-based)
 
-  Load the environment into THIS shell:
+EOF
+    if adt_step_selected env; then
+        cat <<'EOF'
+  Load the saved Android environment into THIS shell:
     source ~/.bashrc
+EOF
+    else
+        cat <<'EOF'
+  Shell environment was skipped. Configure it whenever you want:
+    ./setup.sh setup-env
+    source ~/.bashrc
+EOF
+    fi
+    cat <<'EOF'
 
   Everyday use:
     adb devices -l                    # talk to a device
@@ -2260,24 +2295,43 @@ adt_toggle_setup_item() {
     ADT_SETUP_SELECTED+=("$item")
 }
 
+adt_ui_center_line() {
+    local text="$1" color="${2:-$CYAN}" width="$3" length left right
+    (( width >= 1 )) || return 0
+    text="${text:0:width}"
+    length=${#text}; left=$(((width - length) / 2)); right=$((width - length - left))
+    printf '  %s|%s%*s%b%s%b%*s%s|%s\n' "$CYAN" "$NC" "$left" '' "$color" "$text" "$NC" "$right" '' "$CYAN" "$NC"
+}
+
 adt_draw_setup_menu() {
-    local cursor="$1" size="${2:-}" rows cols visible start end i mark pointer group_color width label selected_count=0
-    if [[ "$size" =~ ^[0-9]+[[:space:]][0-9]+$ ]]; then
-        read -r rows cols <<<"$size"
-    else
-        rows="$(tput lines 2>/dev/null || printf 24)"; cols="$(tput cols 2>/dev/null || printf 80)"
-    fi
+    local cursor="$1" size="${2:-}" tick="${3:-0}" rows cols visible start end i mark pointer group_color width label selected_count=0 inner
+    local -a wave=("$CYAN" "$GREEN" "$BLUE" "$YELLOW")
+    if [[ "$size" =~ ^[0-9]+[[:space:]][0-9]+$ ]]; then read -r rows cols <<<"$size"; else rows="$(tput lines 2>/dev/null || printf 24)"; cols="$(tput cols 2>/dev/null || printf 80)"; fi
     (( rows > 0 )) || rows=24; (( cols > 0 )) || cols=80
-    width=$((cols - 8)); (( width > 76 )) && width=76; (( width < 24 )) && width=24
-    visible=$((rows - 10)); (( visible < 1 )) && visible=1; (( visible > ${#ADT_SETUP_ITEMS[@]} )) && visible=${#ADT_SETUP_ITEMS[@]}
-    start=0
-    (( cursor >= visible )) && start=$((cursor - visible + 1))
+    width=$((cols - 2)); (( width > 78 )) && width=78; (( width < 8 )) && width=8
+    inner=$((width - 4)); (( inner < 4 )) && inner=4
+    visible=$((rows - 12)); (( visible < 1 )) && visible=1; (( visible > ${#ADT_SETUP_ITEMS[@]} )) && visible=${#ADT_SETUP_ITEMS[@]}
+    start=0; (( cursor >= visible )) && start=$((cursor - visible + 1))
     end=$((start + visible)); (( end > ${#ADT_SETUP_ITEMS[@]} )) && end=${#ADT_SETUP_ITEMS[@]}
     for i in "${!ADT_SETUP_ITEMS[@]}"; do [[ " ${ADT_SETUP_SELECTED[*]} " == *" ${ADT_SETUP_ITEMS[$i]} "* ]] && ((selected_count+=1)); done
     printf '\033[H\033[2J'
-    printf '  %s╭─%s %sADT · SETUP COMPONENTS%s %s─╮%s\n' "$CYAN" "$NC" "$BOLD" "$NC" "$CYAN" "$NC"
-    printf '  %sby @soobujmiah%s  %s|  Linux ARM64  ·  %d of %d selected%s\n' "$DIM" "$NC" "$CYAN" "$selected_count" "${#ADT_SETUP_ITEMS[@]}" "$NC"
-    printf '  %s↑/↓ or j/k%s move   %sSpace/1–9%s toggle   %sEnter%s continue   %sq%s none\n\n' "$YELLOW" "$NC" "$GREEN" "$NC" "$BOLD" "$NC" "$DIM" "$NC"
+    printf '  %s+%s+%s\n' "$CYAN" "$(printf '%*s' "$((width - 2))" '' | tr ' ' '-')" "$CYAN"
+    if (( inner >= 20 )); then
+        adt_ui_center_line '  /\   ###   TTT' "${wave[$((tick % 4))]}" "$inner"
+        adt_ui_center_line ' /--\  # #    T' "${wave[$(((tick + 1) % 4))]}" "$inner"
+    else
+        adt_ui_center_line 'ADT' "${wave[$((tick % 4))]}" "$inner"
+    fi
+    adt_ui_center_line 'Linux Workstation In Your Pocket' "${wave[$(((tick + 2) % 4))]}" "$inner"
+    adt_ui_center_line 'by @soobujmiah' "${wave[$(((tick + 3) % 4))]}" "$inner"
+    printf '  %s+%s+%s\n' "$CYAN" "$(printf '%*s' "$((width - 2))" '' | tr ' ' '-')" "$CYAN"
+    printf '  %sADT OPTIONAL COMPONENTS%s  %s%d/%d selected%s\n' "$BOLD" "$NC" "$CYAN" "$selected_count" "${#ADT_SETUP_ITEMS[@]}" "$NC"
+    if (( inner >= 52 )); then
+        printf '  %s↑/↓ j/k%s move  %sSpace/1–9%s toggle  %sEnter%s continue  %sq%s none\n' "$YELLOW" "$NC" "$GREEN" "$NC" "$BOLD" "$NC" "$DIM" "$NC"
+    else
+        adt_ui_center_line '↑/↓ or j/k: move' "$YELLOW" "$inner"
+        adt_ui_center_line 'Space: toggle · Enter: next · q: none' "$GREEN" "$inner"
+    fi
     for ((i=start; i<end; i++)); do
         mark=' '; group_color="$BLUE"; pointer=' '
         [[ " ${ADT_SETUP_SELECTED[*]} " == *" ${ADT_SETUP_ITEMS[$i]} "* ]] && mark='+' && group_color="$GREEN"
@@ -2285,25 +2339,30 @@ adt_draw_setup_menu() {
         [[ "${ADT_SETUP_GROUPS[$i]}" == NDK ]] && group_color="$YELLOW"
         [[ "${ADT_SETUP_GROUPS[$i]}" == CLEANUP ]] && group_color="$DIM"
         [[ $i -eq $cursor ]] && pointer="${YELLOW}>${NC}"
-        label="${ADT_SETUP_LABELS[$i]}"; label="${label:0:$((width - 19))}"
-        printf '  %b %s[%s] %s%2d%s  %s%-7s%s %s\n' "$pointer" "$group_color" "$mark" "$DIM" "$((i + 1))" "$NC" "$group_color" "${ADT_SETUP_GROUPS[$i]}" "$NC" "$label"
+        label="${ADT_SETUP_LABELS[$i]}"
+        if (( inner >= 24 )); then
+            printf '  %s|%s %b%s%s %s%2d%s %s%-7s%s %-*.*s %s|%s\n' "$CYAN" "$NC" "$pointer" "$group_color" "$mark" "$DIM" "$((i + 1))" "$NC" "$group_color" "${ADT_SETUP_GROUPS[$i]}" "$NC" "$((inner - 17))" "$((inner - 17))" "$label" "$CYAN" "$NC"
+        else
+            printf '  %s|%s %b%s%s %s%2d%s %-*.*s %s|%s\n' "$CYAN" "$NC" "$pointer" "$group_color" "$mark" "$DIM" "$((i + 1))" "$NC" "$((inner - 9))" "$((inner - 9))" "$label" "$CYAN" "$NC"
+        fi
     done
-    printf '\n  %sComponents are optional; selected release versions follow this menu.%s\n' "$DIM" "$NC"
+    printf '  %s+%s+%s\n' "$CYAN" "$(printf '%*s' "$((width - 2))" '' | tr ' ' '-')" "$CYAN"
+    printf '  %sSpace: toggle  ·  Enter: review and install%s\n' "$DIM" "$NC"
     printf '  %s© github.com/soobujmiah - 2026%s\n' "$CYAN" "$NC"
 }
 
 adt_choose_setup_components() {
     local bt="$1" pt="$2" ndk="$3" cursor=0 key seq i result="" size new_size read_status
     ADT_SETUP_LABELS=(
-        "Host dependencies (only missing packages)"
-        "Build Tools ${bt} (verified ADT release; more versions available)"
-        "Platform Tools ${pt} — ADB + fastboot (verified ADT release; more versions available)"
-        "NDK ${ndk} shim (device-tested registry version)"
-        "CMake shim (system CMake)"
-        "SDK command-line tools (sdkmanager)"
-        "Android API 36 platform (Google sdkmanager)"
-        "Shell environment (ANDROID_HOME and PATH)"
-        "Temporary-file and package-cache cleanup"
+        "Missing host dependencies"
+        "Build Tools ${bt} (verified; choose version next)"
+        "Platform Tools ${pt} (ADB + fastboot; choose version next)"
+        "NDK ${ndk} system shim"
+        "CMake system shim"
+        "Google SDK command-line tools"
+        "Android API 36 platform"
+        "Shell environment (ANDROID_HOME + PATH)"
+        "Temporary files and package cache cleanup"
     )
     ADT_SETUP_SELECTED=("${ADT_SETUP_ITEMS[@]}")
     [[ "$INTERACTIVE" == "1" ]] || { printf '%s\n' "${ADT_SETUP_ITEMS[*]}"; return; }
@@ -2313,12 +2372,15 @@ adt_choose_setup_components() {
         stty -echo -icanon min 1 time 0 <&3 2>/dev/null || true
         printf '\033[?25l' >&3
         size="$(stty size <&3 2>/dev/null || true)"
-        adt_draw_setup_menu "$cursor" "$size" >&3
+        local tick=0
+        adt_draw_setup_menu "$cursor" "$size" "$tick" >&3
         while :; do
             key=""; IFS= read -r -s -n 1 -t 0.5 -u 3 key; read_status=$?
             if (( read_status > 128 )); then
                 new_size="$(stty size <&3 2>/dev/null || true)"
-                if [[ "$new_size" != "$size" ]]; then size="$new_size"; adt_draw_setup_menu "$cursor" "$size" >&3; fi
+                ((tick+=1))
+                if [[ "$new_size" != "$size" ]]; then size="$new_size"; fi
+                adt_draw_setup_menu "$cursor" "$size" "$tick" >&3
                 continue
             fi
             (( read_status == 0 )) || break
@@ -2328,11 +2390,11 @@ adt_choose_setup_components() {
                 j) (( cursor + 1 < ${#ADT_SETUP_ITEMS[@]} )) && cursor=$((cursor + 1)) ;;
                 ' ') adt_toggle_setup_item "${ADT_SETUP_ITEMS[$cursor]}" ;;
                 [1-9]) i=$((10#$key - 1)); (( i < ${#ADT_SETUP_ITEMS[@]} )) && adt_toggle_setup_item "${ADT_SETUP_ITEMS[$i]}" ;;
-                $'\r'|$'\n') break ;;
+                ''|$'\r'|$'\n') break ;;
                 q|Q) ADT_SETUP_SELECTED=(); break ;;
             esac
             size="$(stty size <&3 2>/dev/null || true)"
-            adt_draw_setup_menu "$cursor" "$size" >&3
+            ((tick+=1)); adt_draw_setup_menu "$cursor" "$size" "$tick" >&3
         done
         [[ -n "$old_stty" ]] && stty "$old_stty" <&3 2>/dev/null || true
         printf '\033[?25h\033[H\033[2J' >&3
@@ -2405,6 +2467,7 @@ cmd_bootstrap() {
     ndk_default="$(get_bootstrap_ndk)" || ndk_default=""
     local ADT_SELECTED_STEPS
     ADT_SELECTED_STEPS="$(adt_choose_setup_components "$bt_version" "$pt_version" "${ndk_default:-not registered}")"
+    if [[ "$INTERACTIVE" == "1" && -t 1 ]]; then export ADT_GUIDED_UI=1; else unset ADT_GUIDED_UI; fi
     if adt_step_selected build-tools; then bt_version="$(adt_pick_release_version build-tools "$bt_version")"; fi
     if adt_step_selected platform-tools; then pt_version="$(adt_pick_release_version platform-tools "$pt_version")"; fi
 
