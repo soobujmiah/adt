@@ -2303,6 +2303,25 @@ adt_ui_center_line() {
     printf '  %s|%s%*s%b%s%b%*s%s|%s\n' "$CYAN" "$NC" "$left" '' "$color" "$text" "$NC" "$right" '' "$CYAN" "$NC"
 }
 
+adt_ui_logo_line() {
+    local text="$1" tick="$2" width="$3" i ch left right phase content=""
+    local -a colors=("$GREEN" "$CYAN" "$YELLOW" "$BLUE" "$GREEN" "$CYAN")
+    (( width >= 1 )) || return 0
+    text="${text:0:width}"
+    left=$(((width - ${#text}) / 2)); right=$((width - ${#text} - left))
+    content="$(printf '%*s' "$left" '')"
+    for ((i=0; i<${#text}; i++)); do
+        ch="${text:i:1}"
+        if [[ "$ch" == '#' || "$ch" == '_' ]]; then
+            phase=$(((i + tick) % ${#colors[@]}))
+            content+="${colors[$phase]}${ch}${NC}"
+        else
+            content+="$ch"
+        fi
+    done
+    printf '  %s|%s%s%*s%s|%s\n' "$CYAN" "$NC" "$content" "$right" '' "$CYAN" "$NC"
+}
+
 adt_draw_setup_menu() {
     local cursor="$1" size="${2:-}" tick="${3:-0}" rows cols visible start end i mark pointer group_color width label selected_count=0 inner
     local -a wave=("$CYAN" "$GREEN" "$BLUE" "$YELLOW")
@@ -2316,9 +2335,10 @@ adt_draw_setup_menu() {
     for i in "${!ADT_SETUP_ITEMS[@]}"; do [[ " ${ADT_SETUP_SELECTED[*]} " == *" ${ADT_SETUP_ITEMS[$i]} "* ]] && ((selected_count+=1)); done
     printf '\033[H\033[2J'
     printf '  %s+%s+%s\n' "$CYAN" "$(printf '%*s' "$((width - 2))" '' | tr ' ' '-')" "$CYAN"
-    if (( inner >= 20 )); then
-        adt_ui_center_line '  /\   ###   TTT' "${wave[$((tick % 4))]}" "$inner"
-        adt_ui_center_line ' /--\  # #    T' "${wave[$(((tick + 1) % 4))]}" "$inner"
+    if (( inner >= 12 )); then
+        adt_ui_logo_line '### ##_ ###' "$tick" "$inner"
+        adt_ui_logo_line '#_# # # _#_' "$((tick + 2))" "$inner"
+        adt_ui_logo_line '# # ##_ _#_' "$((tick + 4))" "$inner"
     else
         adt_ui_center_line 'ADT' "${wave[$((tick % 4))]}" "$inner"
     fi
