@@ -146,14 +146,6 @@ a:hover { text-decoration: underline; text-underline-offset: 3px; }
 .brand b span {
   color: var(--accent-bright);
 }
-.brand small {
-  margin-left: 4px;
-  padding-left: 14px;
-  border-left: 1px solid var(--border-2);
-  color: var(--muted);
-  font: 9px var(--font-mono);
-  letter-spacing: .13em;
-}
 .site-nav {
   margin-left: auto;
   display: flex;
@@ -778,7 +770,6 @@ main > section:not(.hero):not(.proof-strip) h2 { font-size: clamp(1.5rem,3.2vw,2
 @media (max-width: 800px) {
   .wrap { padding-right: 20px; padding-left: 20px; }
   .brand { flex: none; }
-  .brand small { display: none; }
   .site-header .wrap { justify-content: space-between; }
   .site-nav { max-width: none; flex: none; overflow: visible; }
   .site-nav a[href^='#'], .site-nav a[href='/adt/docs/'] { display: none; }
@@ -797,7 +788,6 @@ main > section:not(.hero):not(.proof-strip) h2 { font-size: clamp(1.5rem,3.2vw,2
 @media (max-width: 560px) {
   .wrap { padding-right: 16px; padding-left: 16px; }
   .site-header .wrap { min-height: 62px; }
-  .brand small { display: none; }
   .site-nav { max-width: calc(100vw - 115px); gap: 13px; }
   .site-nav a[href='#workflows'], .site-nav a[href='#evidence'], .site-nav a[href='/adt/docs/'] { display: none; }
   .site-nav a.nav-cta { padding: 6px 8px; }
