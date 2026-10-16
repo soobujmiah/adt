@@ -1,13 +1,13 @@
 schema_version: 1
 project_id: adt
 repository: soobujmiah/adt
-generated_at: '2026-10-16T05:55:36Z'
+generated_at: '2026-10-16T06:16:19Z'
 generated_by: tools/repo_knowledge collect
-version: v35.0.2-81-g4a87e2f
+version: v35.0.2-84-g27df572
 head:
-  commit: 4a87e2fce5c62d22cfd03336e96ac5dcb669aad6
+  commit: 27df572a59540bfb8ae6ed0b971675794db34cec
   branch: main
-  committed_at: '2026-10-16T05:44:32Z'
+  committed_at: '2026-10-16T06:06:23Z'
 phases:
   source: not_configured
   completed: []
@@ -15,42 +15,42 @@ phases:
   next: null
 build:
   status: passed
-  run_id: '38857357657'
-  commit: 4a87e2fce5c62d22cfd03336e96ac5dcb669aad6
+  run_id: '38859339484'
+  commit: 27df572a59540bfb8ae6ed0b971675794db34cec
   run_attempt: '1'
-  at: '2026-10-16T05:55:36Z'
+  at: '2026-10-16T06:16:19Z'
   timestamp_source: observed
   workflow_name: CI
   workflow_id: '346750754'
   event_type: push
-  started_at: '2026-10-16T05:44:35Z'
-  completed_at: '2026-10-16T05:55:12Z'
+  started_at: '2026-10-16T06:06:26Z'
+  completed_at: '2026-10-16T06:15:57Z'
   actor: soobujmiah
-  run_url: https://github.com/soobujmiah/adt/actions/runs/38857357657
+  run_url: https://github.com/soobujmiah/adt/actions/runs/38859339484
 test:
   status: passed
-  run_id: '38857357657'
-  commit: 4a87e2fce5c62d22cfd03336e96ac5dcb669aad6
+  run_id: '38859339484'
+  commit: 27df572a59540bfb8ae6ed0b971675794db34cec
   run_attempt: '1'
-  at: '2026-10-16T05:55:36Z'
+  at: '2026-10-16T06:16:19Z'
   timestamp_source: observed
   workflow_name: CI
   workflow_id: '346750754'
   event_type: push
-  started_at: '2026-10-16T05:44:35Z'
-  completed_at: '2026-10-16T05:55:12Z'
+  started_at: '2026-10-16T06:06:26Z'
+  completed_at: '2026-10-16T06:15:57Z'
   actor: soobujmiah
-  run_url: https://github.com/soobujmiah/adt/actions/runs/38857357657
+  run_url: https://github.com/soobujmiah/adt/actions/runs/38859339484
   summary: setup.sh unit tests (ci.yml)
 last_successful_build:
-  commit: 4a87e2fce5c62d22cfd03336e96ac5dcb669aad6
-  at: '2026-10-16T05:55:36Z'
-  run_id: '38857357657'
+  commit: 27df572a59540bfb8ae6ed0b971675794db34cec
+  at: '2026-10-16T06:16:19Z'
+  run_id: '38859339484'
 last_failed_build:
   commit: 2a9da2a310732675c4dea5dfdefcdce3754c29c5
   at: '2026-10-14T03:32:44Z'
   run_id: '38505800412'
 sync:
   status: ok
-  last_synced_at: '2026-10-16T05:55:36Z'
+  last_synced_at: '2026-10-16T06:16:19Z'
   source: ci
