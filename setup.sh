@@ -2244,6 +2244,7 @@ cmd_cleanup() {
 # ── bootstrap ────────────────────────────────────────────────────────────────
 
 ADT_SETUP_ITEMS=(host build-tools platform-tools ndk cmake cmdline platform env cleanup)
+ADT_SETUP_GROUPS=(SYSTEM BUILD ADB NDK BUILD SDK API SHELL CLEANUP)
 ADT_SETUP_LABELS=()
 ADT_SETUP_SELECTED=()
 
@@ -2260,23 +2261,39 @@ adt_toggle_setup_item() {
 }
 
 adt_draw_setup_menu() {
-    local cursor="$1" i mark pointer color
+    local cursor="$1" size="${2:-}" rows cols visible start end i mark pointer group_color width label selected_count=0
+    if [[ "$size" =~ ^[0-9]+[[:space:]][0-9]+$ ]]; then
+        read -r rows cols <<<"$size"
+    else
+        rows="$(tput lines 2>/dev/null || printf 24)"; cols="$(tput cols 2>/dev/null || printf 80)"
+    fi
+    (( rows > 0 )) || rows=24; (( cols > 0 )) || cols=80
+    width=$((cols - 8)); (( width > 76 )) && width=76; (( width < 24 )) && width=24
+    visible=$((rows - 10)); (( visible < 1 )) && visible=1; (( visible > ${#ADT_SETUP_ITEMS[@]} )) && visible=${#ADT_SETUP_ITEMS[@]}
+    start=0
+    (( cursor >= visible )) && start=$((cursor - visible + 1))
+    end=$((start + visible)); (( end > ${#ADT_SETUP_ITEMS[@]} )) && end=${#ADT_SETUP_ITEMS[@]}
+    for i in "${!ADT_SETUP_ITEMS[@]}"; do [[ " ${ADT_SETUP_SELECTED[*]} " == *" ${ADT_SETUP_ITEMS[$i]} "* ]] && ((selected_count+=1)); done
     printf '\033[H\033[2J'
-    adt_banner
-    printf '  %sChoose setup components%s  %sArrow/j-k move · Space toggle · Enter continue · q skip all%s\n\n' "$CYAN" "$NC" "$DIM" "$NC"
-    for i in "${!ADT_SETUP_ITEMS[@]}"; do
-        mark=' '
-        [[ " ${ADT_SETUP_SELECTED[*]} " == *" ${ADT_SETUP_ITEMS[$i]} "* ]] && mark='✓'
-        pointer=' '
-        color="$NC"
-        if (( i == cursor )); then pointer='>'; color="$CYAN$BOLD"; fi
-        printf '  %s%s%s [%s] %d  %s\n' "$color" "$pointer" "$NC" "$mark" "$((i + 1))" "${ADT_SETUP_LABELS[$i]}"
+    printf '  %s╭─%s %sADT · SETUP COMPONENTS%s %s─╮%s\n' "$CYAN" "$NC" "$BOLD" "$NC" "$CYAN" "$NC"
+    printf '  %sby @soobujmiah%s  %s|  Linux ARM64  ·  %d of %d selected%s\n' "$DIM" "$NC" "$CYAN" "$selected_count" "${#ADT_SETUP_ITEMS[@]}" "$NC"
+    printf '  %s↑/↓ or j/k%s move   %sSpace/1–9%s toggle   %sEnter%s continue   %sq%s none\n\n' "$YELLOW" "$NC" "$GREEN" "$NC" "$BOLD" "$NC" "$DIM" "$NC"
+    for ((i=start; i<end; i++)); do
+        mark=' '; group_color="$BLUE"; pointer=' '
+        [[ " ${ADT_SETUP_SELECTED[*]} " == *" ${ADT_SETUP_ITEMS[$i]} "* ]] && mark='+' && group_color="$GREEN"
+        [[ "${ADT_SETUP_GROUPS[$i]}" == ADB ]] && group_color="$CYAN"
+        [[ "${ADT_SETUP_GROUPS[$i]}" == NDK ]] && group_color="$YELLOW"
+        [[ "${ADT_SETUP_GROUPS[$i]}" == CLEANUP ]] && group_color="$DIM"
+        [[ $i -eq $cursor ]] && pointer="${YELLOW}>${NC}"
+        label="${ADT_SETUP_LABELS[$i]}"; label="${label:0:$((width - 19))}"
+        printf '  %b %s[%s] %s%2d%s  %s%-7s%s %s\n' "$pointer" "$group_color" "$mark" "$DIM" "$((i + 1))" "$NC" "$group_color" "${ADT_SETUP_GROUPS[$i]}" "$NC" "$label"
     done
-    printf '\n  %sComponents are optional; release versions are selectable after this menu.%s\n' "$DIM" "$NC"
+    printf '\n  %sComponents are optional; selected release versions follow this menu.%s\n' "$DIM" "$NC"
+    printf '  %s© github.com/soobujmiah - 2026%s\n' "$CYAN" "$NC"
 }
 
 adt_choose_setup_components() {
-    local bt="$1" pt="$2" ndk="$3" cursor=0 key seq i result=""
+    local bt="$1" pt="$2" ndk="$3" cursor=0 key seq i result="" size new_size read_status
     ADT_SETUP_LABELS=(
         "Host dependencies (only missing packages)"
         "Build Tools ${bt} (verified ADT release; more versions available)"
@@ -2294,8 +2311,17 @@ adt_choose_setup_components() {
         local old_stty
         old_stty="$(stty -g <&3 2>/dev/null || true)"
         stty -echo -icanon min 1 time 0 <&3 2>/dev/null || true
-        adt_draw_setup_menu "$cursor" >&3
-        while IFS= read -r -s -n 1 -u 3 key; do
+        printf '\033[?25l' >&3
+        size="$(stty size <&3 2>/dev/null || true)"
+        adt_draw_setup_menu "$cursor" "$size" >&3
+        while :; do
+            key=""; IFS= read -r -s -n 1 -t 0.5 -u 3 key; read_status=$?
+            if (( read_status > 128 )); then
+                new_size="$(stty size <&3 2>/dev/null || true)"
+                if [[ "$new_size" != "$size" ]]; then size="$new_size"; adt_draw_setup_menu "$cursor" "$size" >&3; fi
+                continue
+            fi
+            (( read_status == 0 )) || break
             case "$key" in
                 $'\033') IFS= read -r -s -n 2 -t 1 -u 3 seq || seq=""; case "$seq" in '[A') (( cursor > 0 )) && cursor=$((cursor - 1)) ;; '[B') (( cursor + 1 < ${#ADT_SETUP_ITEMS[@]} )) && cursor=$((cursor + 1)) ;; esac ;;
                 k) (( cursor > 0 )) && cursor=$((cursor - 1)) ;;
@@ -2305,10 +2331,11 @@ adt_choose_setup_components() {
                 $'\r'|$'\n') break ;;
                 q|Q) ADT_SETUP_SELECTED=(); break ;;
             esac
-            adt_draw_setup_menu "$cursor" >&3
+            size="$(stty size <&3 2>/dev/null || true)"
+            adt_draw_setup_menu "$cursor" "$size" >&3
         done
         [[ -n "$old_stty" ]] && stty "$old_stty" <&3 2>/dev/null || true
-        printf '\033[H\033[2J' >&3
+        printf '\033[?25h\033[H\033[2J' >&3
         exec 3>&-
     else
         echo "" >&2
